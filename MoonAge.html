@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>حالة القمر اليوم + عمر القمر</title>
+  <style>
+    body {
+      background-color: #0D0D0D;
+      color: #F8C8DC;
+      font-family: sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      color: #FF66B2;
+    }
+    .moon-container {
+      margin-top: 20px;
+    }
+    img {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      box-shadow: 0 0 0px #FF66B2;
+      object-fit: cover;
+    }
+    .phase-name {
+      margin-top: 10px;
+      font-size: 18px;
+      color: #FF66B2;
+    }
+    .age-details {
+      margin-top: 20px;
+      font-size: 16px;
+      text-align: center;
+      color: #F8C8DC;
+    }
+    .age-details ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      text-align: left;
+      display: inline-block;
+      margin-top: 10px;
+    }
+    .age-details li {
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>حالة القمر اليوم</h1>
+  <div class="moon-container">
+    <a href="index.html">
+      <img id="moonImage" src="" alt="شكل القمر">
+    </a>
+    <div id="phaseName" class="phase-name"></div>
+  </div>
+
+  <!-- قسم سيحتوي على عمر القمر منذ 23 أبريل 2001 -->
+  <div id="moonAgeDetails" class="age-details"></div>
+
+  <script>
+    /*
+      1) نستدعي Farmsense API: 
+         https://api.farmsense.net/v1/moonphases/?d=<Unix_Timestamp>
+         لجلب اسم المرحلة (Phase).
+
+      2) نحسب عمر القمر منذ 23 أبريل 2001، ونظهره بالسنوات والأشهر والأسابيع والأيام والساعات والدقائق والثواني.
+    */
+
+    // دالة لاختيار اسم ملف الصورة المحلية بناءً على قيمة phase
+    function getMoonImage(phaseName) {
+      const lowerPhase = phaseName.toLowerCase();
+
+      if (lowerPhase.includes("new")) {
+        return { file: "newMoon.png", name: "محاق (New Moon)" };
+      } else if (lowerPhase.includes("waxing crescent")) {
+        return { file: "waxingCrescent.png", name: "هلال متزايد (Waxing Crescent)" };
+      } else if (lowerPhase.includes("first quarter")) {
+        return { file: "firstQuarter.png", name: "تربيع أول (First Quarter)" };
+      } else if (lowerPhase.includes("waxing gibbous")) {
+        return { file: "waxingGibbous.png", name: "أحدب متزايد (Waxing Gibbous)" };
+      } else if (lowerPhase.includes("full")) {
+        return { file: "fullMoon.png", name: "بدر (Full Moon)" };
+      } else if (lowerPhase.includes("waning gibbous")) {
+        return { file: "waningGibbous.png", name: "أحدب متناقص (Waning Gibbous)" };
+      } else if (lowerPhase.includes("last quarter")) {
+        return { file: "lastQuarter.png", name: "تربيع أخير (Last Quarter)" };
+      } else if (lowerPhase.includes("waning crescent")) {
+        return { file: "waningCrescent.png", name: "هلال متناقص (Waning Crescent)" };
+      }
+      // حالة افتراضية لو لم تتطابق أي مرحلة
+      return { file: "newMoon.png", name: "محاق (New Moon)" };
+    }
+
+    // دالة لحساب عمر القمر من 23 أبريل 2001
+    function calculateMoonAgeFromDate() {
+      // تاريخ 23 أبريل 2001 => الشهر = 3 (أبريل = index 3)
+      const startDate = new Date(2001, 3, 23);
+      const now = new Date();
+      const diffMs = now - startDate; // الفرق بالميلي ثانية
+      const diffDays = diffMs / (1000 * 60 * 60 * 24);
+
+      return {
+        years: diffDays / 365.25,
+        months: (diffDays / 365.25) * 12,
+        weeks: diffDays / 7,
+        days: diffDays,
+        hours: diffDays * 24,
+        minutes: diffDays * 24 * 60,
+        seconds: diffDays * 24 * 60 * 60,
+      };
+    }
+
+    async function fetchMoonPhase() {
+      try {
+        // نحسب الوقت الحالي بنظام Unix
+        const nowUnix = Math.floor(Date.now() / 1000);
+
+        // Farmsense API
+        const url = `https://api.farmsense.net/v1/moonphases/?d=${nowUnix}`;
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (!Array.isArray(data) || !data[0] || !data[0].Phase) {
+          throw new Error("البيانات المستلمة غير متوقعة");
+        }
+
+        // المرحلة من API
+        const phaseNameFromAPI = data[0].Phase;
+        // حدد الصورة والاسم بالعربية
+        const { file, name } = getMoonImage(phaseNameFromAPI);
+
+        // تعيين الصورة والنص
+        document.getElementById("moonImage").src = "images1/" + file;
+        document.getElementById("phaseName").textContent = `${phaseNameFromAPI} - ${name}`;
+
+        // حساب عمر القمر من 23 أبريل 2001
+        const moonAge = calculateMoonAgeFromDate();
+
+        // تعبئة التفاصيل في قسم #moonAgeDetails
+        document.getElementById("moonAgeDetails").innerHTML = `
+          <p>عمر القمر منذ 23 أبريل 2001</p>
+          <ul>
+            <li>بالسنوات: ${moonAge.years.toFixed(1)}</li>
+            <li>بالأشهر: ${moonAge.months.toFixed(1)}</li>
+            <li>بالأسابيع: ${moonAge.weeks.toFixed(1)}</li>
+            <li>بالأيام: ${moonAge.days.toFixed(1)}</li>
+            <li>بالساعات: ${moonAge.hours.toFixed(0)}</li>
+            <li>بالدقائق: ${moonAge.minutes.toFixed(0)}</li>
+            <li>بالثواني: ${moonAge.seconds.toFixed(0)}</li>
+          </ul>
+        `;
+      } catch (err) {
+        document.getElementById("moonImage").src = "";
+        document.getElementById("phaseName").textContent = "حدث خطأ في جلب بيانات القمر.";
+        document.getElementById("moonAgeDetails").innerHTML = "";
+        console.error(err);
+      }
+    }
+
+    // عند تحميل الصفحة
+    fetchMoonPhase();
+  </script>
+
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyBrRTOF1aSWotqOm-XPiTNT8KMnvvuLvlg",
+    authDomain: "moon-phases-f87b5.firebaseapp.com",
+    projectId: "moon-phases-f87b5",
+    storageBucket: "moon-phases-f87b5.firebasestorage.app",
+    messagingSenderId: "483516134334",
+    appId: "1:483516134334:web:5700c9c879af7da2793fef",
+    measurementId: "G-ZD040K9ZNX"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
+
+</body>
+</html>
