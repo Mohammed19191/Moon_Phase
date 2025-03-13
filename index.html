@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
+  <link rel="stylesheet" href="main.">
   <meta charset="UTF-8">
   <title>شكل القمر اليوم + عمر القمر</title>
   <style>
@@ -28,6 +29,7 @@
 
 
   </style>
+  
 </head>
 <body>
   <h1>شكل القمر اليوم</h1>
@@ -129,3 +131,51 @@
   </script>
 </body>
 </html>
+
+<!--من هنا خاصية عرض الأيات القرأنية-->
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>آية اليوم</title>
+    <style>
+       
+        .ayah-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px); /*Blut effect*/
+            -webkit-backdrop-filter: blur(10Px); /*safari support*/
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgb(218, 221, 193);
+            display:inline-block;
+            position:relative;
+            top:10px
+        }
+        .ayah {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ayah-container">
+        <p class="ayah" id="ayah"></p>
+    </div>
+
+    <script>
+      fetch('ayat.json') // استدعاء الملف الخارجي
+          .then(response => response.json()) // تحويله إلى JSON
+          .then(ayat => {
+              const today = new Date().getDate();
+              const ayahOfDay = ayat[today % ayat.length].ayah; // اختيار آية بناءً على اليوم
+              document.getElementById("ayah").textContent = ayahOfDay;
+          })
+          .catch(error => console.error("حدث خطأ أثناء تحميل الآيات:", error));
+  </script>
+  
+
+</body>
+</html>
+<!--نهاية خاصية عرض الآيات-->
