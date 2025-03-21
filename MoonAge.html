@@ -1,106 +1,704 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>شكل القمر </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>عمر القمر</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
-    body {
-      background-color: #0D0D0D;
-      color: #F8C8DC;
-      font-family: sans-serif;
-      text-align: center;
+    :root {
+      --primary-color: #8E9AAF;
+      --secondary-color: #EFD3D7;
+      --accent-color: #FEEAFA;
+      --bg-color: #0B1026;
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --text-shadow: 0 0 20px rgba(142, 154, 175, 0.4);
+      --star-color: rgba(255, 255, 255, 0.8);
+    }
+
+    * {
       margin: 0;
-      padding: 20px;
-    }
-    h1 {
-      color: #FF66B2;
-    }
-    .moon-container {
-      margin-top: 20px;
-    }
-    img {
-      width: 400px;
-      height: 400px;
-      border-radius: 50%;
-      box-shadow: 0 0 0px #FF66B2;
-      object-fit: cover;
-    }
-    .phase-name {
-      margin-top: 10px;
-      font-size: 18px;
-      color: #FF66B2;
-    }
-    .age-details {
-      margin-top: 20px;
-      font-size: 16px;
-      text-align: center;
-      color: #F8C8DC;
-    }
-    .age-details ul {
-      list-style: none;
       padding: 0;
-      margin: 0;
-      text-align: right;
-      display: inline-block;
-      margin-top: 10px;
+      box-sizing: border-box;
     }
-    .age-details li {
-      margin: 5px 0;
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 1; }
+    }
+
+    @keyframes shooting-star {
+      0% {
+        transform: translateX(0) translateY(0) rotate(45deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(-500px) translateY(500px) rotate(45deg);
+        opacity: 0;
+      }
+    }
+
+    .stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background-color: var(--star-color);
+      border-radius: 50%;
+      animation: twinkle var(--duration, 4s) ease-in-out infinite;
+      animation-delay: var(--delay, 0s);
+    }
+
+    .shooting-star {
+      position: absolute;
+      width: 100px;
+      height: 1px;
+      background: linear-gradient(90deg, white, transparent);
+      animation: shooting-star 5s linear infinite;
+      opacity: 0;
+    }
+
+    .nebula {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 20% 30%, rgba(142, 154, 175, 0.05) 0%, transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(142, 154, 175, 0.05) 0%, transparent 40%),
+        radial-gradient(circle at 50% 50%, rgba(142, 154, 175, 0.02) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0B1026 0%, #1A1B36 100%);
+      color: var(--secondary-color);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      text-align: center;
+      min-height: 100vh;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      position: relative;
+      z-index: 2;
+    }
+
+    h1, h2 {
+      color: var(--accent-color);
+      text-shadow: var(--text-shadow);
+      letter-spacing: 1px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 30px;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      margin-bottom: 25px;
+    }
+
+    .moon-container {
+      background: var(--card-bg);
+      border-radius: 30px;
+      padding: 40px;
+      margin: 20px auto;
+      backdrop-filter: blur(15px);
+      box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.1),
+        inset 0 0 32px rgba(142, 154, 175, 0.1);
+      transition: transform 0.5s ease, box-shadow 0.5s ease;
+      max-width: 500px;
+      border: 1px solid rgba(142, 154, 175, 0.1);
+    }
+
+    .moon-container:hover {
+      transform: translateY(-5px);
+      box-shadow: 
+        0 15px 45px rgba(0, 0, 0, 0.15),
+        inset 0 0 32px rgba(142, 154, 175, 0.2);
+    }
+
+    .moon-image-wrapper {
+      position: relative;
+      width: 300px;
+      height: 300px;
+      margin: 0 auto;
+      cursor: pointer;
+      transition: all 0.5s ease;
+    }
+
+    .moon-link {
+      display: block;
+      text-decoration: none;
+      position: relative;
+    }
+
+    .moon-link::after {
+      content: 'العودة للصفحة الرئيسية';
+      position: absolute;
+      bottom: -40px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: var(--accent-color);
+      font-size: 1rem;
+      opacity: 0;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+      text-shadow: var(--text-shadow);
+    }
+
+    .moon-link:hover::after {
+      opacity: 0.8;
+      bottom: -30px;
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      box-shadow: 0 0 60px rgba(142, 154, 175, 0.3);
+      transition: all 0.8s ease;
+      object-fit: cover;
+      filter: brightness(1.1);
+    }
+
+    .moon-image-wrapper:hover img {
+      transform: scale(1.03) rotate(2deg);
+      box-shadow: 0 0 80px rgba(142, 154, 175, 0.4);
+    }
+
+    .phase-name {
+      margin-top: 25px;
+      font-size: 1.6rem;
+      color: var(--accent-color);
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.8s ease forwards;
+      text-shadow: var(--text-shadow);
+    }
+
+    .age-details {
+      background: var(--card-bg);
+      border-radius: 30px;
+      padding: 40px 40px 30px;
+      margin-top: 40px;
+      backdrop-filter: blur(15px);
+      box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.1),
+        inset 0 0 32px rgba(142, 154, 175, 0.1);
+      border: 1px solid rgba(142, 154, 175, 0.1);
+      transition: all 0.5s ease;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+      perspective: 1000px;
+      position: relative;
+    }
+
+    .age-details:hover {
+      box-shadow: 
+        0 15px 45px rgba(0, 0, 0, 0.15),
+        inset 0 0 32px rgba(142, 154, 175, 0.2);
+    }
+
+    .expand-button {
+      position: absolute;
+      bottom: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(142, 154, 175, 0.1);
+      color: var(--accent-color);
+      padding: 8px 20px;
+      border-radius: 20px;
+      border: 1px solid rgba(142, 154, 175, 0.2);
+      cursor: pointer;
+      backdrop-filter: blur(15px);
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 10;
+    }
+
+    .expand-button:hover {
+      background: rgba(142, 154, 175, 0.2);
+      transform: translateX(-50%) translateY(-2px);
+    }
+
+    .expand-button i {
+      transition: transform 0.3s ease;
+    }
+
+    .age-grid {
+      max-height: 400px;
+      overflow-y: auto;
+      margin-top: 30px;
+      padding: 20px;
+      scroll-behavior: smooth;
+      transform-style: preserve-3d;
+      transition: max-height 0.5s ease;
+    }
+
+    .age-grid.expanded {
+      max-height: none;
+    }
+
+    .expand-button.expanded i {
+      transform: rotate(180deg);
+    }
+
+    /* Custom Scrollbar Styling */
+    .age-grid::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .age-grid::-webkit-scrollbar-track {
+      background: rgba(142, 154, 175, 0.1);
+      border-radius: 10px;
+      margin: 5px;
+    }
+
+    .age-grid::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, var(--accent-color) 0%, var(--primary-color) 100%);
+      border-radius: 10px;
+      border: 2px solid transparent;
+      background-clip: content-box;
+      transition: all 0.3s ease;
+    }
+
+    .age-grid::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(180deg, var(--primary-color) 0%, var(--accent-color) 100%);
+    }
+
+    .age-card {
+      background: rgba(142, 154, 175, 0.1);
+      padding: 25px;
+      border-radius: 20px;
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid rgba(142, 154, 175, 0.1);
+      backdrop-filter: blur(5px);
+      margin-bottom: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      transform-style: preserve-3d;
+      transform: translateZ(0) translateY(0);
+      opacity: 0.8;
+      filter: brightness(0.8);
+    }
+
+    .age-card.visible {
+      opacity: 1;
+      filter: brightness(1);
+    }
+
+    .age-card:hover {
+      transform: translateZ(20px) translateY(-10px);
+      background: rgba(142, 154, 175, 0.2);
+      opacity: 1;
+      filter: brightness(1.1);
+    }
+
+    .age-card:last-child {
+      margin-bottom: 0;
+    }
+
+    .age-card .value {
+      font-size: 2.2rem;
+      color: var(--accent-color);
+      margin: 0;
+      font-weight: bold;
+      text-shadow: var(--text-shadow);
+      transform: translateZ(10px);
+    }
+
+    .age-card .label {
+      color: var(--secondary-color);
+      font-size: 1.2rem;
+      opacity: 0.9;
+      margin-left: 20px;
+      transform: translateZ(10px);
+    }
+
+    .back-button {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: rgba(142, 154, 175, 0.1);
+      color: var(--accent-color);
+      padding: 12px 25px;
+      border-radius: 30px;
+      text-decoration: none;
+      transition: all 0.5s ease;
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(142, 154, 175, 0.2);
+      font-size: 1.1rem;
+      z-index: 3;
+    }
+
+    .back-button:hover {
+      background: rgba(142, 154, 175, 0.15);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .back-button i {
+      margin-left: 8px;
+      transition: transform 0.3s ease;
+    }
+
+    .back-button:hover i {
+      transform: translateX(-5px);
+    }
+
+    .loading {
+      display: none;
+      justify-content: center;
+      align-items: center;
+      margin: 20px 0;
+      gap: 8px;
+    }
+
+    .loading span {
+      width: 8px;
+      height: 8px;
+      margin: 0 5px;
+      background-color: var(--primary-color);
+      border-radius: 50%;
+      animation: bounce 1.5s ease-in-out infinite;
+      opacity: 0.7;
+    }
+
+    .loading span:nth-child(2) { animation-delay: 0.2s; }
+    .loading span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); opacity: 0.7; }
+      50% { transform: translateY(-15px); opacity: 1; }
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0) rotate(0deg);
+      }
+      50% {
+        transform: translateY(-10px) rotate(1deg);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .moon-image-wrapper {
+        width: 250px;
+        height: 250px;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      h2 {
+        font-size: 1.6rem;
+      }
+
+      .age-details {
+        padding: 30px 25px 20px;
+      }
+
+      .age-grid {
+        max-height: 350px;
+      }
+
+      .age-card {
+        padding: 20px;
+        margin-bottom: 25px;
+      }
+
+      .age-card::before {
+        top: 3px;
+        bottom: -3px;
+      }
+
+      .age-card::after {
+        top: 6px;
+        bottom: -6px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .moon-image-wrapper {
+        width: 200px;
+        height: 200px;
+      }
+
+      .container {
+        padding: 10px;
+      }
+
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      h2 {
+        font-size: 1.3rem;
+      }
+
+      .age-details {
+        padding: 25px 20px 15px;
+      }
+
+      .age-grid {
+        max-height: 300px;
+        padding: 15px;
+      }
+
+      .age-card {
+        padding: 15px;
+        margin-bottom: 20px;
+      }
+
+      .age-card::before {
+        top: 2px;
+        bottom: -2px;
+      }
+
+      .age-card::after {
+        top: 4px;
+        bottom: -4px;
+      }
+    }
+
+    /* Zoro Animation and Styling */
+    .zoro-container {
+      position: fixed;
+      width: 80px;
+      height: 80px;
+      pointer-events: none;
+      z-index: 2;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .zoro-image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      cursor: pointer;
+      pointer-events: auto;
+      filter: drop-shadow(0 0 10px rgba(142, 154, 175, 0.3));
+      transition: transform 0.3s ease;
+    }
+
+    .zoro-image:hover {
+      transform: scale(1.1);
+    }
+
+    @keyframes floatZoro {
+      0% {
+        transform: translate(0, 0) rotate(0deg);
+      }
+      25% {
+        transform: translate(20px, -20px) rotate(5deg);
+      }
+      50% {
+        transform: translate(0, -40px) rotate(0deg);
+      }
+      75% {
+        transform: translate(-20px, -20px) rotate(-5deg);
+      }
+      100% {
+        transform: translate(0, 0) rotate(0deg);
+      }
+    }
+
+    .heart {
+      position: absolute;
+      font-size: 20px;
+      color: #ff6b6b;
+      pointer-events: none;
+      animation: floatHeart 1s ease-out forwards;
+      text-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+    }
+
+    @keyframes floatHeart {
+      0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(-50%, -200%) scale(1.5);
+        opacity: 0;
+      }
+    }
+
+    .click-counter {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(142, 154, 175, 0.1);
+      color: var(--accent-color);
+      padding: 10px 20px;
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(142, 154, 175, 0.2);
+      font-size: 1.1rem;
+      z-index: 10;
+      display: none;  /* Hide initially */
+      align-items: center;
+      gap: 8px;
+      animation: fadeInUp 0.5s ease forwards;
+    }
+
+    .click-counter i {
+      color: #ff6b6b;
     }
   </style>
 </head>
 <body>
-  <h1>حالة القمر اليوم</h1>
-  <div class="moon-container">
-    <a href="index.html">
-      <img id="moonImage" src="" alt="شكل القمر">
-    </a>
-    <div id="phaseName" class="phase-name"></div>
+  <div class="stars"></div>
+  <div class="nebula"></div>
+  <div class="zoro-container">
+    <img src="images1/zoro.png" alt="Zoro" class="zoro-image">
+  </div>
+  <div class="click-counter">
+    <i class="fas fa-heart"></i>
+    <span id="zoroClicks">0</span>
   </div>
 
-  <!-- قسم سيحتوي على عمر القمر منذ 23 أبريل 2001 -->
-  <div id="moonAgeDetails" class="age-details"></div>
+  <a href="index.html" class="back-button">
+    <i class="fas fa-arrow-left"></i> العودة
+  </a>
+
+  <div class="container">
+    <h1>حالة القمر اليوم</h1>
+    
+    <div class="moon-container">
+      <div class="moon-image-wrapper">
+        <a href="index.html" class="moon-link">
+          <img id="moonImage" src="" alt="شكل القمر">
+        </a>
+      </div>
+      <div id="phaseName" class="phase-name"></div>
+    </div>
+
+    <div class="loading">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+    <div class="age-details">
+      <h2>عمر القمر منذ 23 أبريل 2001</h2>
+      <div class="age-grid" id="moonAgeDetails"></div>
+      <button class="expand-button" id="expandButton">
+        عرض الكل
+        <i class="fas fa-chevron-down"></i>
+      </button>
+    </div>
+  </div>
 
   <script>
-    /*
-      1) نستدعي Farmsense API: 
-         https://api.farmsense.net/v1/moonphases/?d=<Unix_Timestamp>
-         لجلب اسم المرحلة (Phase).
-
-      2) نحسب عمر القمر منذ 23 أبريل 2001، ونظهره بالسنوات والأشهر والأسابيع والأيام والساعات والدقائق والثواني.
-    */
-
-    // دالة لاختيار اسم ملف الصورة المحلية بناءً على قيمة phase
-    function getMoonImage(phaseName) {
-      const lowerPhase = phaseName.toLowerCase();
-
-      if (lowerPhase.includes("new")) {
-        return { file: "newMoon.png", name: "محاق (New Moon)" };
-      } else if (lowerPhase.includes("waxing crescent")) {
-        return { file: "waxingCrescent.png", name: "هلال متزايد (Waxing Crescent)" };
-      } else if (lowerPhase.includes("first quarter")) {
-        return { file: "firstQuarter.png", name: "تربيع أول (First Quarter)" };
-      } else if (lowerPhase.includes("waxing gibbous")) {
-        return { file: "waxingGibbous.png", name: "أحدب متزايد (Waxing Gibbous)" };
-      } else if (lowerPhase.includes("full")) {
-        return { file: "fullMoon.png", name: "بدر (Full Moon)" };
-      } else if (lowerPhase.includes("waning gibbous")) {
-        return { file: "waningGibbous.png", name: "أحدب متناقص (Waning Gibbous)" };
-      } else if (lowerPhase.includes("last quarter")) {
-        return { file: "lastQuarter.png", name: "تربيع أخير (Last Quarter)" };
-      } else if (lowerPhase.includes("waning crescent")) {
-        return { file: "waningCrescent.png", name: "هلال متناقص (Waning Crescent)" };
+    // Add stars to the background
+    function createStars() {
+      const starsContainer = document.querySelector('.stars');
+      const numberOfStars = 200;
+      
+      for (let i = 0; i < numberOfStars; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        
+        // Random position
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.top = `${Math.random() * 100}%`;
+        
+        // Random size
+        const size = Math.random() * 2;
+        star.style.width = `${size}px`;
+        star.style.height = `${size}px`;
+        
+        // Random animation duration and delay
+        star.style.setProperty('--duration', `${2 + Math.random() * 3}s`);
+        star.style.setProperty('--delay', `${Math.random() * 2}s`);
+        
+        starsContainer.appendChild(star);
       }
-      // حالة افتراضية لو لم تتطابق أي مرحلة
-      return { file: "newMoon.png", name: "محاق (New Moon)" };
+
+      // Add shooting stars
+      setInterval(() => {
+        const shootingStar = document.createElement('div');
+        shootingStar.className = 'shooting-star';
+        
+        // Random position at the top-right of the screen
+        shootingStar.style.top = `${Math.random() * 50}%`;
+        shootingStar.style.right = '0';
+        
+        starsContainer.appendChild(shootingStar);
+        
+        // Remove shooting star after animation
+        setTimeout(() => {
+          shootingStar.remove();
+        }, 5000);
+      }, 8000);
     }
 
-    // دالة لحساب عمر القمر من 23 أبريل 2001
+    // Initialize stars
+    createStars();
+
+    function getMoonImage(phaseName) {
+      const lowerPhase = phaseName.toLowerCase();
+      const phases = {
+        "new": { file: "newMoon.png", name: "محاق (New Moon)" },
+        "waxing crescent": { file: "waxingCrescent.png", name: "هلال متزايد (Waxing Crescent)" },
+        "first quarter": { file: "firstQuarter.png", name: "تربيع أول (First Quarter)" },
+        "waxing gibbous": { file: "waxingGibbous.png", name: "أحدب متزايد (Waxing Gibbous)" },
+        "full": { file: "fullMoon.png", name: "بدر (Full Moon)" },
+        "waning gibbous": { file: "waningGibbous.png", name: "أحدب متناقص (Waning Gibbous)" },
+        "last quarter": { file: "lastQuarter.png", name: "تربيع أخير (Last Quarter)" },
+        "waning crescent": { file: "waningCrescent.png", name: "هلال متناقص (Waning Crescent)" }
+      };
+
+      for (const [key, value] of Object.entries(phases)) {
+        if (lowerPhase.includes(key)) {
+          return value;
+        }
+      }
+      return phases["new"];
+    }
+
     function calculateMoonAgeFromDate() {
-      // تاريخ 23 أبريل 2001 => الشهر = 3 (أبريل = index 3)
       const startDate = new Date(2001, 3, 23);
       const now = new Date();
-      const diffMs = now - startDate; // الفرق بالميلي ثانية
+      const diffMs = now - startDate;
       const diffDays = diffMs / (1000 * 60 * 60 * 24);
 
       return {
@@ -110,16 +708,38 @@
         days: diffDays,
         hours: diffDays * 24,
         minutes: diffDays * 24 * 60,
-        seconds: diffDays * 24 * 60 * 60,
+        seconds: diffDays * 24 * 60 * 60
       };
     }
 
-    async function fetchMoonPhase() {
-      try {
-        // نحسب الوقت الحالي بنظام Unix
-        const nowUnix = Math.floor(Date.now() / 1000);
+    function updateMoonAge() {
+      const moonAge = calculateMoonAgeFromDate();
+      const ageDetails = document.getElementById("moonAgeDetails");
+      
+      const units = [
+        { key: 'years', label: 'سنة' },
+        { key: 'months', label: 'أشهر' },
+        { key: 'weeks', label: 'أسابيع' },
+        { key: 'days', label: 'أيام' },
+        { key: 'hours', label: 'ساعات' },
+        { key: 'minutes', label: 'دقائق' },
+        { key: 'seconds', label: 'ثواني' }
+      ];
 
-        // Farmsense API
+      ageDetails.innerHTML = units.map(unit => `
+        <div class="age-card">
+          <div class="label">${unit.label}</div>
+          <div class="value">${Math.floor(moonAge[unit.key]).toLocaleString('ar-SA')}</div>
+        </div>
+      `).join('');
+    }
+
+    async function fetchMoonPhase() {
+      const loading = document.querySelector('.loading');
+      loading.style.display = 'flex';
+
+      try {
+        const nowUnix = Math.floor(Date.now() / 1000);
         const url = `https://api.farmsense.net/v1/moonphases/?d=${nowUnix}`;
         const response = await fetch(url);
         const data = await response.json();
@@ -128,41 +748,200 @@
           throw new Error("البيانات المستلمة غير متوقعة");
         }
 
-        // المرحلة من API
         const phaseNameFromAPI = data[0].Phase;
-        // حدد الصورة والاسم بالعربية
         const { file, name } = getMoonImage(phaseNameFromAPI);
 
-        // تعيين الصورة والنص
-        document.getElementById("moonImage").src = "images1/" + file;
-        document.getElementById("phaseName").textContent = `${phaseNameFromAPI} - ${name}`;
+        const moonImage = document.getElementById("moonImage");
+        moonImage.src = "images1/" + file;
+        moonImage.style.animation = "float 3s ease-in-out infinite";
 
-        // حساب عمر القمر من 23 أبريل 2001
-        const moonAge = calculateMoonAgeFromDate();
-
-        // تعبئة التفاصيل في قسم #moonAgeDetails
-        document.getElementById("moonAgeDetails").innerHTML = `
-          <p>عمر القمر منذ 23 أبريل 2001</p>
-          <ul>
-            <li>بالسنوات: ${moonAge.years.toFixed(1)}</li>
-            <li>بالأشهر: ${moonAge.months.toFixed(1)}</li>
-            <li>بالأسابيع: ${moonAge.weeks.toFixed(1)}</li>
-            <li>بالأيام: ${moonAge.days.toFixed(1)}</li>
-            <li>بالساعات: ${moonAge.hours.toFixed(0)}</li>
-            <li>بالدقائق: ${moonAge.minutes.toFixed(0)}</li>
-            <li>بالثواني: ${moonAge.seconds.toFixed(0)}</li>
-          </ul>
-        `;
+        document.getElementById("phaseName").textContent = `${name}`;
       } catch (err) {
         document.getElementById("moonImage").src = "";
-        document.getElementById("phaseName").textContent = "حدث خطأ في جلب بيانات القمر.";
-        document.getElementById("moonAgeDetails").innerHTML = "";
+        document.getElementById("phaseName").textContent = "حدث خطأ في جلب بيانات القمر";
         console.error(err);
+      } finally {
+        loading.style.display = 'none';
       }
     }
 
-    // عند تحميل الصفحة
+    // Add scroll reveal animation for cards
+    function handleCardVisibility() {
+      const cards = document.querySelectorAll('.age-card');
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, {
+        threshold: 0.3
+      });
+
+      cards.forEach(card => {
+        observer.observe(card);
+      });
+    }
+
+    // Add expand/collapse functionality
+    function setupExpandButton() {
+      const expandButton = document.getElementById('expandButton');
+      const ageGrid = document.getElementById('moonAgeDetails');
+      
+      expandButton.addEventListener('click', () => {
+        ageGrid.classList.toggle('expanded');
+        expandButton.classList.toggle('expanded');
+        
+        if (ageGrid.classList.contains('expanded')) {
+          expandButton.innerHTML = `إخفاء <i class="fas fa-chevron-down"></i>`;
+        } else {
+          expandButton.innerHTML = `عرض الكل <i class="fas fa-chevron-down"></i>`;
+          // Smooth scroll back to the top of age-details when collapsing
+          document.querySelector('.age-details').scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    }
+
+    // Zoro Animation and Interaction
+    function setupZoro() {
+      const zoroContainer = document.querySelector('.zoro-container');
+      const zoroImage = document.querySelector('.zoro-image');
+      const clickCounter = document.querySelector('.click-counter');
+      const clickCounterSpan = document.getElementById('zoroClicks');
+      let clicks = 0;
+      let isFirstClick = true;
+      let isClicked = false;
+
+      // Function to check if a position overlaps with clickable elements
+      function isPositionSafe(x, y) {
+        // Get dimensions of Zoro
+        const zoroWidth = 80;
+        const zoroHeight = 80;
+
+        // Get positions and dimensions of clickable elements
+        const moonContainer = document.querySelector('.moon-container');
+        const ageDetails = document.querySelector('.age-details');
+        const backButton = document.querySelector('.back-button');
+        const moonRect = moonContainer.getBoundingClientRect();
+        const ageRect = ageDetails.getBoundingClientRect();
+        const backRect = backButton.getBoundingClientRect();
+
+        // Add padding around clickable elements
+        const padding = 20;
+
+        // Check if Zoro would overlap with any element (including padding)
+        const wouldOverlap = (rect) => {
+          return !(x + zoroWidth + padding < rect.left ||
+                  x - padding > rect.right ||
+                  y + zoroHeight + padding < rect.top ||
+                  y - padding > rect.bottom);
+        };
+
+        // Return true if position is safe (no overlaps)
+        return !wouldOverlap(moonRect) && 
+               !wouldOverlap(ageRect) && 
+               !wouldOverlap(backRect);
+      }
+
+      // Function to get a safe random position
+      function getSafePosition() {
+        const maxX = window.innerWidth - 100;
+        const maxY = window.innerHeight - 100;
+        let attempts = 0;
+        let x, y;
+
+        // Try to find a safe position, max 50 attempts
+        do {
+          x = Math.random() * maxX;
+          y = Math.random() * maxY;
+          attempts++;
+        } while (!isPositionSafe(x, y) && attempts < 50);
+
+        // If no safe position found after 50 attempts, use default safe zones
+        if (attempts >= 50) {
+          // Default to right side of the screen, middle height
+          x = maxX - 100;
+          y = window.innerHeight / 2;
+        }
+
+        return { x, y };
+      }
+
+      // Function to randomly position Zoro
+      function repositionZoro() {
+        const { x, y } = getSafePosition();
+        zoroContainer.style.left = x + 'px';
+        zoroContainer.style.top = y + 'px';
+      }
+
+      // Function to show Zoro
+      function showZoro() {
+        zoroContainer.style.opacity = '1';
+        zoroContainer.style.animation = 'floatZoro 5s ease-in-out infinite';
+        if (!isClicked) {
+          repositionZoro();
+        }
+      }
+
+      // Function to hide Zoro
+      function hideZoro() {
+        if (!isClicked) {
+          zoroContainer.style.opacity = '0';
+          zoroContainer.style.animation = 'none';
+        }
+      }
+
+      // Create hearts on click
+      zoroImage.addEventListener('click', (e) => {
+        clicks++;
+        isClicked = true;
+        clickCounterSpan.textContent = clicks;
+        
+        // Show counter on first click
+        if (isFirstClick) {
+          clickCounter.style.display = 'flex';
+          isFirstClick = false;
+        }
+
+        // Create heart
+        const heart = document.createElement('div');
+        heart.className = 'heart';
+        heart.innerHTML = '❤️';
+        heart.style.left = e.offsetX + 'px';
+        heart.style.top = e.offsetY + 'px';
+        zoroContainer.appendChild(heart);
+
+        // Remove heart after animation
+        setTimeout(() => heart.remove(), 1000);
+
+        // Keep Zoro visible and floating
+        showZoro();
+      });
+
+      // Handle window resize
+      window.addEventListener('resize', () => {
+        if (!isClicked) {
+          repositionZoro();
+        }
+      });
+
+      // Initial setup - Show Zoro after 5 seconds
+      setTimeout(() => {
+        showZoro();
+      }, 5000);
+    }
+
+    // Initialize all
     fetchMoonPhase();
+    updateMoonAge();
+    handleCardVisibility();
+    setupExpandButton();
+    setupZoro();
+
+    // Update moon age every second
+    setInterval(updateMoonAge, 1000);
+    // Refresh moon phase every hour
+    setInterval(fetchMoonPhase, 3600000);
   </script>
 </body>
 </html>
