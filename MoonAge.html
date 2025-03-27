@@ -2,7 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>عمر القمر</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
@@ -72,7 +74,9 @@
       height: 2px;
       background-color: var(--star-color);
       border-radius: 50%;
+      -webkit-animation: twinkle var(--duration, 4s) ease-in-out infinite;
       animation: twinkle var(--duration, 4s) ease-in-out infinite;
+      -webkit-animation-delay: var(--delay, 0s);
       animation-delay: var(--delay, 0s);
     }
 
@@ -81,6 +85,7 @@
       width: 100px;
       height: 1px;
       background: linear-gradient(90deg, white, transparent);
+      -webkit-animation: shooting-star 5s linear infinite;
       animation: shooting-star 5s linear infinite;
       opacity: 0;
     }
@@ -153,6 +158,7 @@
     }
 
     .moon-container:hover {
+      -webkit-transform: translateY(-5px);
       transform: translateY(-5px);
       box-shadow: 
         0 15px 45px rgba(0, 0, 0, 0.15),
@@ -179,10 +185,12 @@
       position: absolute;
       bottom: -40px;
       left: 50%;
+      -webkit-transform: translateX(-50%);
       transform: translateX(-50%);
       color: var(--accent-color);
       font-size: 1rem;
       opacity: 0;
+      -webkit-transition: all 0.3s ease;
       transition: all 0.3s ease;
       white-space: nowrap;
       text-shadow: var(--text-shadow);
@@ -204,6 +212,7 @@
     }
 
     .moon-image-wrapper:hover img {
+      -webkit-transform: scale(1.03) rotate(2deg);
       transform: scale(1.03) rotate(2deg);
       box-shadow: 0 0 80px rgba(142, 154, 175, 0.4);
     }
@@ -214,7 +223,9 @@
       font-size: 1.6rem;
       color: var(--accent-color);
       opacity: 0;
+      -webkit-transform: translateY(20px);
       transform: translateY(20px);
+      -webkit-animation: fadeInUp 0.8s ease forwards;
       animation: fadeInUp 0.8s ease forwards;
       text-shadow: var(--text-shadow);
     }
@@ -274,7 +285,13 @@
     }
 
     .expand-button i {
+      -webkit-transition: -webkit-transform 0.3s ease;
       transition: transform 0.3s ease;
+    }
+
+    .expand-button.expanded i {
+      -webkit-transform: rotate(180deg);
+      transform: rotate(180deg);
     }
 
     .age-grid {
@@ -293,10 +310,6 @@
 
     .age-grid.expanded {
       max-height: none;
-    }
-
-    .expand-button.expanded i {
-      transform: rotate(180deg);
     }
 
     /* Custom Scrollbar Styling */
@@ -430,12 +443,18 @@
       margin: 0 5px;
       background-color: var(--primary-color);
       border-radius: 50%;
+      -webkit-animation: bounce 1.5s ease-in-out infinite;
       animation: bounce 1.5s ease-in-out infinite;
       opacity: 0.7;
     }
 
     .loading span:nth-child(2) { animation-delay: 0.2s; }
     .loading span:nth-child(3) { animation-delay: 0.4s; }
+
+    @-webkit-keyframes bounce {
+      0%, 100% { -webkit-transform: translateY(0); transform: translateY(0); opacity: 0.7; }
+      50% { -webkit-transform: translateY(-15px); transform: translateY(-15px); opacity: 1; }
+    }
 
     @keyframes bounce {
       0%, 100% { transform: translateY(0); opacity: 0.7; }
@@ -583,6 +602,29 @@
       transform: scale(1.1);
     }
 
+    @-webkit-keyframes floatZoro {
+      0% {
+        -webkit-transform: translate(0, 0) rotate(0deg);
+        transform: translate(0, 0) rotate(0deg);
+      }
+      25% {
+        -webkit-transform: translate(20px, -20px) rotate(5deg);
+        transform: translate(20px, -20px) rotate(5deg);
+      }
+      50% {
+        -webkit-transform: translate(0, -40px) rotate(0deg);
+        transform: translate(0, -40px) rotate(0deg);
+      }
+      75% {
+        -webkit-transform: translate(-20px, -20px) rotate(-5deg);
+        transform: translate(-20px, -20px) rotate(-5deg);
+      }
+      100% {
+        -webkit-transform: translate(0, 0) rotate(0deg);
+        transform: translate(0, 0) rotate(0deg);
+      }
+    }
+
     @keyframes floatZoro {
       0% {
         transform: translate(0, 0) rotate(0deg);
@@ -608,6 +650,19 @@
       pointer-events: none;
       animation: floatHeart 1s ease-out forwards;
       text-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+    }
+
+    @-webkit-keyframes floatHeart {
+      0% {
+        -webkit-transform: translate(-50%, -50%) scale(0);
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 1;
+      }
+      100% {
+        -webkit-transform: translate(-50%, -200%) scale(1.5);
+        transform: translate(-50%, -200%) scale(1.5);
+        opacity: 0;
+      }
     }
 
     @keyframes floatHeart {
@@ -690,6 +745,11 @@
   </div>
 
   <script>
+    // Safari/iOS detection
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent) || 
+                     (/iPad|iPhone|iPod/.test(navigator.platform) || 
+                     (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1));
+
     // Add stars to the background
     function createStars() {
       const starsContainer = document.querySelector('.stars');
@@ -815,7 +875,13 @@
 
         const moonImage = document.getElementById("moonImage");
         moonImage.src = "images1/" + file;
-        moonImage.style.animation = "float 3s ease-in-out infinite";
+        
+        // Set the animation with proper Safari prefixing
+        if (isSafari) {
+          moonImage.style.WebkitAnimation = "float 3s ease-in-out infinite";
+        } else {
+          moonImage.style.animation = "float 3s ease-in-out infinite";
+        }
 
         document.getElementById("phaseName").textContent = `${name}`;
       } catch (err) {
@@ -860,6 +926,7 @@
     function setupExpandButton() {
       const expandButton = document.getElementById('expandButton');
       const ageGrid = document.getElementById('moonAgeDetails');
+      const buttonIcon = expandButton.querySelector('i');
       
       expandButton.addEventListener('click', () => {
         ageGrid.classList.toggle('expanded');
@@ -867,6 +934,16 @@
         
         if (ageGrid.classList.contains('expanded')) {
           expandButton.innerHTML = `إخفاء <i class="fas fa-chevron-down"></i>`;
+          // Ensure icon rotates correctly in iOS
+          setTimeout(() => {
+            const newIcon = expandButton.querySelector('i');
+            if (newIcon) {
+              if (isSafari) {
+                newIcon.style.WebkitTransform = 'rotate(180deg)';
+              }
+              newIcon.style.transform = 'rotate(180deg)';
+            }
+          }, 0);
         } else {
           expandButton.innerHTML = `عرض الكل <i class="fas fa-chevron-down"></i>`;
           // Smooth scroll back to the top of age-details when collapsing
@@ -950,7 +1027,11 @@
       // Function to show Zoro
       function showZoro() {
         zoroContainer.style.opacity = '1';
-        zoroContainer.style.animation = 'floatZoro 5s ease-in-out infinite';
+        if (isSafari) {
+          zoroContainer.style.WebkitAnimation = 'floatZoro 5s ease-in-out infinite';
+        } else {
+          zoroContainer.style.animation = 'floatZoro 5s ease-in-out infinite';
+        }
         if (!isClicked) {
           repositionZoro();
         }
@@ -964,8 +1045,33 @@
         }
       }
 
-      // Create hearts on click
-      zoroImage.addEventListener('click', (e) => {
+      // Add touch event listeners for iOS
+      zoroImage.addEventListener('touchstart', function(e) {
+        // Prevent default to avoid scrolling/zooming
+        e.preventDefault();
+        
+        // Trigger the click handler with touch data
+        const touch = e.touches[0];
+        const touchTarget = e.target;
+        
+        // Calculate position within the element
+        const rect = touchTarget.getBoundingClientRect();
+        const offsetX = touch.clientX - rect.left;
+        const offsetY = touch.clientY - rect.top;
+        
+        // Create a simulated event with the touch coordinates
+        const simulatedEvent = {
+          offsetX: offsetX,
+          offsetY: offsetY,
+          touches: e.touches
+        };
+        
+        // Call the click handler with our simulated event
+        clickHandler(simulatedEvent);
+      });
+      
+      // Create separate click handler function
+      function clickHandler(e) {
         clicks++;
         isClicked = true;
         clickCounterSpan.textContent = clicks;
@@ -976,12 +1082,17 @@
           isFirstClick = false;
         }
 
-        // Create heart
+        // Create heart - adjust for touch events in Safari/iOS
         const heart = document.createElement('div');
         heart.className = 'heart';
         heart.innerHTML = '❤️';
-        heart.style.left = e.offsetX + 'px';
-        heart.style.top = e.offsetY + 'px';
+        
+        // Handle different event objects for mouse vs touch
+        const offsetX = e.offsetX || (e.touches && e.touches[0] ? e.touches[0].clientX : 10);
+        const offsetY = e.offsetY || (e.touches && e.touches[0] ? e.touches[0].clientY : 10);
+        
+        heart.style.left = `${offsetX}px`;
+        heart.style.top = `${offsetY}px`;
         zoroContainer.appendChild(heart);
 
         // Remove heart after animation
@@ -989,7 +1100,10 @@
 
         // Keep Zoro visible and floating
         showZoro();
-      });
+      }
+      
+      // Replace click handler with our function
+      zoroImage.addEventListener('click', clickHandler);
 
       // Handle window resize
       window.addEventListener('resize', () => {
