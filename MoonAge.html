@@ -22,9 +22,27 @@
       box-sizing: border-box;
     }
 
+    @-webkit-keyframes twinkle {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 1; }
+    }
+
     @keyframes twinkle {
       0%, 100% { opacity: 0.2; }
       50% { opacity: 1; }
+    }
+
+    @-webkit-keyframes shooting-star {
+      0% {
+        -webkit-transform: translateX(0) translateY(0) rotate(45deg);
+        transform: translateX(0) translateY(0) rotate(45deg);
+        opacity: 1;
+      }
+      100% {
+        -webkit-transform: translateX(-500px) translateY(500px) rotate(45deg);
+        transform: translateX(-500px) translateY(500px) rotate(45deg);
+        opacity: 0;
+      }
     }
 
     @keyframes shooting-star {
@@ -124,6 +142,7 @@
       border-radius: 30px;
       padding: 40px;
       margin: 20px auto;
+      -webkit-backdrop-filter: blur(15px);
       backdrop-filter: blur(15px);
       box-shadow: 
         0 8px 32px rgba(0, 0, 0, 0.1),
@@ -205,6 +224,7 @@
       border-radius: 30px;
       padding: 40px 40px 30px;
       margin-top: 40px;
+      -webkit-backdrop-filter: blur(15px);
       backdrop-filter: blur(15px);
       box-shadow: 
         0 8px 32px rgba(0, 0, 0, 0.1),
@@ -214,6 +234,7 @@
       max-width: 500px;
       margin-left: auto;
       margin-right: auto;
+      -webkit-perspective: 1000px;
       perspective: 1000px;
       position: relative;
     }
@@ -228,6 +249,7 @@
       position: absolute;
       bottom: -20px;
       left: 50%;
+      -webkit-transform: translateX(-50%);
       transform: translateX(-50%);
       background: rgba(142, 154, 175, 0.1);
       color: var(--accent-color);
@@ -235,6 +257,7 @@
       border-radius: 20px;
       border: 1px solid rgba(142, 154, 175, 0.2);
       cursor: pointer;
+      -webkit-backdrop-filter: blur(15px);
       backdrop-filter: blur(15px);
       transition: all 0.3s ease;
       font-size: 0.9rem;
@@ -246,6 +269,7 @@
 
     .expand-button:hover {
       background: rgba(142, 154, 175, 0.2);
+      -webkit-transform: translateX(-50%) translateY(-2px);
       transform: translateX(-50%) translateY(-2px);
     }
 
@@ -259,8 +283,12 @@
       margin-top: 30px;
       padding: 20px;
       scroll-behavior: smooth;
+      -webkit-transform-style: preserve-3d;
       transform-style: preserve-3d;
+      -webkit-transition: max-height 0.5s ease;
       transition: max-height 0.5s ease;
+      -webkit-perspective: 1000px;
+      perspective: 1000px;
     }
 
     .age-grid.expanded {
@@ -298,18 +326,25 @@
       background: rgba(142, 154, 175, 0.1);
       padding: 25px;
       border-radius: 20px;
+      -webkit-transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
       transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
       border: 1px solid rgba(142, 154, 175, 0.1);
+      -webkit-backdrop-filter: blur(5px);
       backdrop-filter: blur(5px);
       margin-bottom: 30px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       position: relative;
+      -webkit-transform-style: preserve-3d;
       transform-style: preserve-3d;
-      transform: translateZ(0) translateY(0);
+      -webkit-transform: translate3d(0, 0, 0);
+      transform: translate3d(0, 0, 0);
       opacity: 0.8;
       filter: brightness(0.8);
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      will-change: transform, opacity;
     }
 
     .age-card.visible {
@@ -318,7 +353,8 @@
     }
 
     .age-card:hover {
-      transform: translateZ(20px) translateY(-10px);
+      -webkit-transform: translate3d(0, -10px, 20px);
+      transform: translate3d(0, -10px, 20px);
       background: rgba(142, 154, 175, 0.2);
       opacity: 1;
       filter: brightness(1.1);
@@ -334,6 +370,7 @@
       margin: 0;
       font-weight: bold;
       text-shadow: var(--text-shadow);
+      -webkit-transform: translateZ(10px);
       transform: translateZ(10px);
     }
 
@@ -342,6 +379,7 @@
       font-size: 1.2rem;
       opacity: 0.9;
       margin-left: 20px;
+      -webkit-transform: translateZ(10px);
       transform: translateZ(10px);
     }
 
@@ -355,6 +393,7 @@
       border-radius: 30px;
       text-decoration: none;
       transition: all 0.5s ease;
+      -webkit-backdrop-filter: blur(15px);
       backdrop-filter: blur(15px);
       border: 1px solid rgba(142, 154, 175, 0.2);
       font-size: 1.1rem;
@@ -363,6 +402,7 @@
 
     .back-button:hover {
       background: rgba(142, 154, 175, 0.15);
+      -webkit-transform: translateY(-2px);
       transform: translateY(-2px);
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     }
@@ -409,11 +449,30 @@
       }
     }
 
+    @-webkit-keyframes fadeInUp {
+      to {
+        opacity: 1;
+        -webkit-transform: translateY(0);
+        transform: translateY(0);
+      }
+    }
+
     @keyframes float {
       0%, 100% {
         transform: translateY(0) rotate(0deg);
       }
       50% {
+        transform: translateY(-10px) rotate(1deg);
+      }
+    }
+
+    @-webkit-keyframes float {
+      0%, 100% {
+        -webkit-transform: translateY(0) rotate(0deg);
+        transform: translateY(0) rotate(0deg);
+      }
+      50% {
+        -webkit-transform: translateY(-10px) rotate(1deg);
         transform: translateY(-10px) rotate(1deg);
       }
     }
@@ -570,6 +629,7 @@
       color: var(--accent-color);
       padding: 10px 20px;
       border-radius: 20px;
+      -webkit-backdrop-filter: blur(10px);
       backdrop-filter: blur(10px);
       border: 1px solid rgba(142, 154, 175, 0.2);
       font-size: 1.1rem;
@@ -577,6 +637,7 @@
       display: none;  /* Hide initially */
       align-items: center;
       gap: 8px;
+      -webkit-animation: fadeInUp 0.5s ease forwards;
       animation: fadeInUp 0.5s ease forwards;
     }
 
@@ -769,19 +830,30 @@
     // Add scroll reveal animation for cards
     function handleCardVisibility() {
       const cards = document.querySelectorAll('.age-card');
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-          }
+      
+      // Check if IntersectionObserver is supported
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+            }
+          });
+        }, {
+          threshold: 0.3,
+          rootMargin: '0px 0px -10% 0px' // More forgiving margin for Safari
         });
-      }, {
-        threshold: 0.3
-      });
 
-      cards.forEach(card => {
-        observer.observe(card);
-      });
+        cards.forEach(card => {
+          observer.observe(card);
+        });
+      } else {
+        // Fallback for browsers without IntersectionObserver support
+        // Simply show all cards
+        cards.forEach(card => {
+          card.classList.add('visible');
+        });
+      }
     }
 
     // Add expand/collapse functionality
