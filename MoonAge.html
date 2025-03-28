@@ -2,9 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>عمر القمر</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
@@ -24,27 +22,9 @@
       box-sizing: border-box;
     }
 
-    @-webkit-keyframes twinkle {
-      0%, 100% { opacity: 0.2; }
-      50% { opacity: 1; }
-    }
-
     @keyframes twinkle {
       0%, 100% { opacity: 0.2; }
       50% { opacity: 1; }
-    }
-
-    @-webkit-keyframes shooting-star {
-      0% {
-        -webkit-transform: translateX(0) translateY(0) rotate(45deg);
-        transform: translateX(0) translateY(0) rotate(45deg);
-        opacity: 1;
-      }
-      100% {
-        -webkit-transform: translateX(-500px) translateY(500px) rotate(45deg);
-        transform: translateX(-500px) translateY(500px) rotate(45deg);
-        opacity: 0;
-      }
     }
 
     @keyframes shooting-star {
@@ -74,9 +54,7 @@
       height: 2px;
       background-color: var(--star-color);
       border-radius: 50%;
-      -webkit-animation: twinkle var(--duration, 4s) ease-in-out infinite;
       animation: twinkle var(--duration, 4s) ease-in-out infinite;
-      -webkit-animation-delay: var(--delay, 0s);
       animation-delay: var(--delay, 0s);
     }
 
@@ -85,7 +63,6 @@
       width: 100px;
       height: 1px;
       background: linear-gradient(90deg, white, transparent);
-      -webkit-animation: shooting-star 5s linear infinite;
       animation: shooting-star 5s linear infinite;
       opacity: 0;
     }
@@ -147,7 +124,6 @@
       border-radius: 30px;
       padding: 40px;
       margin: 20px auto;
-      -webkit-backdrop-filter: blur(15px);
       backdrop-filter: blur(15px);
       box-shadow: 
         0 8px 32px rgba(0, 0, 0, 0.1),
@@ -158,7 +134,6 @@
     }
 
     .moon-container:hover {
-      -webkit-transform: translateY(-5px);
       transform: translateY(-5px);
       box-shadow: 
         0 15px 45px rgba(0, 0, 0, 0.15),
@@ -185,12 +160,10 @@
       position: absolute;
       bottom: -40px;
       left: 50%;
-      -webkit-transform: translateX(-50%);
       transform: translateX(-50%);
       color: var(--accent-color);
       font-size: 1rem;
       opacity: 0;
-      -webkit-transition: all 0.3s ease;
       transition: all 0.3s ease;
       white-space: nowrap;
       text-shadow: var(--text-shadow);
@@ -212,7 +185,6 @@
     }
 
     .moon-image-wrapper:hover img {
-      -webkit-transform: scale(1.03) rotate(2deg);
       transform: scale(1.03) rotate(2deg);
       box-shadow: 0 0 80px rgba(142, 154, 175, 0.4);
     }
@@ -223,9 +195,7 @@
       font-size: 1.6rem;
       color: var(--accent-color);
       opacity: 0;
-      -webkit-transform: translateY(20px);
       transform: translateY(20px);
-      -webkit-animation: fadeInUp 0.8s ease forwards;
       animation: fadeInUp 0.8s ease forwards;
       text-shadow: var(--text-shadow);
     }
@@ -235,7 +205,6 @@
       border-radius: 30px;
       padding: 40px 40px 30px;
       margin-top: 40px;
-      -webkit-backdrop-filter: blur(15px);
       backdrop-filter: blur(15px);
       box-shadow: 
         0 8px 32px rgba(0, 0, 0, 0.1),
@@ -245,7 +214,6 @@
       max-width: 500px;
       margin-left: auto;
       margin-right: auto;
-      -webkit-perspective: 1000px;
       perspective: 1000px;
       position: relative;
     }
@@ -260,7 +228,6 @@
       position: absolute;
       bottom: -20px;
       left: 50%;
-      -webkit-transform: translateX(-50%);
       transform: translateX(-50%);
       background: rgba(142, 154, 175, 0.1);
       color: var(--accent-color);
@@ -268,7 +235,6 @@
       border-radius: 20px;
       border: 1px solid rgba(142, 154, 175, 0.2);
       cursor: pointer;
-      -webkit-backdrop-filter: blur(15px);
       backdrop-filter: blur(15px);
       transition: all 0.3s ease;
       font-size: 0.9rem;
@@ -280,18 +246,11 @@
 
     .expand-button:hover {
       background: rgba(142, 154, 175, 0.2);
-      -webkit-transform: translateX(-50%) translateY(-2px);
       transform: translateX(-50%) translateY(-2px);
     }
 
     .expand-button i {
-      -webkit-transition: -webkit-transform 0.3s ease;
       transition: transform 0.3s ease;
-    }
-
-    .expand-button.expanded i {
-      -webkit-transform: rotate(180deg);
-      transform: rotate(180deg);
     }
 
     .age-grid {
@@ -300,16 +259,16 @@
       margin-top: 30px;
       padding: 20px;
       scroll-behavior: smooth;
-      -webkit-transform-style: preserve-3d;
       transform-style: preserve-3d;
-      -webkit-transition: max-height 0.5s ease;
       transition: max-height 0.5s ease;
-      -webkit-perspective: 1000px;
-      perspective: 1000px;
     }
 
     .age-grid.expanded {
       max-height: none;
+    }
+
+    .expand-button.expanded i {
+      transform: rotate(180deg);
     }
 
     /* Custom Scrollbar Styling */
@@ -339,7 +298,6 @@
       background: rgba(142, 154, 175, 0.1);
       padding: 25px;
       border-radius: 20px;
-      -webkit-transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
       transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
       border: 1px solid rgba(142, 154, 175, 0.1);
       -webkit-backdrop-filter: blur(5px);
@@ -351,25 +309,25 @@
       position: relative;
       -webkit-transform-style: preserve-3d;
       transform-style: preserve-3d;
-      -webkit-transform: translate3d(0, 0, 0);
-      transform: translate3d(0, 0, 0);
+      -webkit-transform: translateZ(0) translateY(0);
+      transform: translateZ(0) translateY(0);
       opacity: 0.8;
+      -webkit-filter: brightness(0.8);
       filter: brightness(0.8);
-      -webkit-backface-visibility: hidden;
-      backface-visibility: hidden;
-      will-change: transform, opacity;
     }
 
     .age-card.visible {
       opacity: 1;
+      -webkit-filter: brightness(1);
       filter: brightness(1);
     }
 
     .age-card:hover {
-      -webkit-transform: translate3d(0, -10px, 20px);
-      transform: translate3d(0, -10px, 20px);
+      -webkit-transform: translateZ(20px) translateY(-10px);
+      transform: translateZ(20px) translateY(-10px);
       background: rgba(142, 154, 175, 0.2);
       opacity: 1;
+      -webkit-filter: brightness(1.1);
       filter: brightness(1.1);
     }
 
@@ -406,7 +364,6 @@
       border-radius: 30px;
       text-decoration: none;
       transition: all 0.5s ease;
-      -webkit-backdrop-filter: blur(15px);
       backdrop-filter: blur(15px);
       border: 1px solid rgba(142, 154, 175, 0.2);
       font-size: 1.1rem;
@@ -415,7 +372,6 @@
 
     .back-button:hover {
       background: rgba(142, 154, 175, 0.15);
-      -webkit-transform: translateY(-2px);
       transform: translateY(-2px);
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     }
@@ -443,18 +399,12 @@
       margin: 0 5px;
       background-color: var(--primary-color);
       border-radius: 50%;
-      -webkit-animation: bounce 1.5s ease-in-out infinite;
       animation: bounce 1.5s ease-in-out infinite;
       opacity: 0.7;
     }
 
     .loading span:nth-child(2) { animation-delay: 0.2s; }
     .loading span:nth-child(3) { animation-delay: 0.4s; }
-
-    @-webkit-keyframes bounce {
-      0%, 100% { -webkit-transform: translateY(0); transform: translateY(0); opacity: 0.7; }
-      50% { -webkit-transform: translateY(-15px); transform: translateY(-15px); opacity: 1; }
-    }
 
     @keyframes bounce {
       0%, 100% { transform: translateY(0); opacity: 0.7; }
@@ -468,30 +418,11 @@
       }
     }
 
-    @-webkit-keyframes fadeInUp {
-      to {
-        opacity: 1;
-        -webkit-transform: translateY(0);
-        transform: translateY(0);
-      }
-    }
-
     @keyframes float {
       0%, 100% {
         transform: translateY(0) rotate(0deg);
       }
       50% {
-        transform: translateY(-10px) rotate(1deg);
-      }
-    }
-
-    @-webkit-keyframes float {
-      0%, 100% {
-        -webkit-transform: translateY(0) rotate(0deg);
-        transform: translateY(0) rotate(0deg);
-      }
-      50% {
-        -webkit-transform: translateY(-10px) rotate(1deg);
         transform: translateY(-10px) rotate(1deg);
       }
     }
@@ -602,29 +533,6 @@
       transform: scale(1.1);
     }
 
-    @-webkit-keyframes floatZoro {
-      0% {
-        -webkit-transform: translate(0, 0) rotate(0deg);
-        transform: translate(0, 0) rotate(0deg);
-      }
-      25% {
-        -webkit-transform: translate(20px, -20px) rotate(5deg);
-        transform: translate(20px, -20px) rotate(5deg);
-      }
-      50% {
-        -webkit-transform: translate(0, -40px) rotate(0deg);
-        transform: translate(0, -40px) rotate(0deg);
-      }
-      75% {
-        -webkit-transform: translate(-20px, -20px) rotate(-5deg);
-        transform: translate(-20px, -20px) rotate(-5deg);
-      }
-      100% {
-        -webkit-transform: translate(0, 0) rotate(0deg);
-        transform: translate(0, 0) rotate(0deg);
-      }
-    }
-
     @keyframes floatZoro {
       0% {
         transform: translate(0, 0) rotate(0deg);
@@ -652,19 +560,6 @@
       text-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
     }
 
-    @-webkit-keyframes floatHeart {
-      0% {
-        -webkit-transform: translate(-50%, -50%) scale(0);
-        transform: translate(-50%, -50%) scale(0);
-        opacity: 1;
-      }
-      100% {
-        -webkit-transform: translate(-50%, -200%) scale(1.5);
-        transform: translate(-50%, -200%) scale(1.5);
-        opacity: 0;
-      }
-    }
-
     @keyframes floatHeart {
       0% {
         transform: translate(-50%, -50%) scale(0);
@@ -684,7 +579,6 @@
       color: var(--accent-color);
       padding: 10px 20px;
       border-radius: 20px;
-      -webkit-backdrop-filter: blur(10px);
       backdrop-filter: blur(10px);
       border: 1px solid rgba(142, 154, 175, 0.2);
       font-size: 1.1rem;
@@ -692,7 +586,6 @@
       display: none;  /* Hide initially */
       align-items: center;
       gap: 8px;
-      -webkit-animation: fadeInUp 0.5s ease forwards;
       animation: fadeInUp 0.5s ease forwards;
     }
 
@@ -745,11 +638,6 @@
   </div>
 
   <script>
-    // Safari/iOS detection
-    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent) || 
-                     (/iPad|iPhone|iPod/.test(navigator.platform) || 
-                     (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1));
-
     // Add stars to the background
     function createStars() {
       const starsContainer = document.querySelector('.stars');
@@ -875,13 +763,7 @@
 
         const moonImage = document.getElementById("moonImage");
         moonImage.src = "images1/" + file;
-        
-        // Set the animation with proper Safari prefixing
-        if (isSafari) {
-          moonImage.style.WebkitAnimation = "float 3s ease-in-out infinite";
-        } else {
-          moonImage.style.animation = "float 3s ease-in-out infinite";
-        }
+        moonImage.style.animation = "float 3s ease-in-out infinite";
 
         document.getElementById("phaseName").textContent = `${name}`;
       } catch (err) {
@@ -896,37 +778,25 @@
     // Add scroll reveal animation for cards
     function handleCardVisibility() {
       const cards = document.querySelectorAll('.age-card');
-      
-      // Check if IntersectionObserver is supported
-      if ('IntersectionObserver' in window) {
-        const observer = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('visible');
-            }
-          });
-        }, {
-          threshold: 0.3,
-          rootMargin: '0px 0px -10% 0px' // More forgiving margin for Safari
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
         });
+      }, {
+        threshold: 0.3
+      });
 
-        cards.forEach(card => {
-          observer.observe(card);
-        });
-      } else {
-        // Fallback for browsers without IntersectionObserver support
-        // Simply show all cards
-        cards.forEach(card => {
-          card.classList.add('visible');
-        });
-      }
+      cards.forEach(card => {
+        observer.observe(card);
+      });
     }
 
     // Add expand/collapse functionality
     function setupExpandButton() {
       const expandButton = document.getElementById('expandButton');
       const ageGrid = document.getElementById('moonAgeDetails');
-      const buttonIcon = expandButton.querySelector('i');
       
       expandButton.addEventListener('click', () => {
         ageGrid.classList.toggle('expanded');
@@ -934,16 +804,6 @@
         
         if (ageGrid.classList.contains('expanded')) {
           expandButton.innerHTML = `إخفاء <i class="fas fa-chevron-down"></i>`;
-          // Ensure icon rotates correctly in iOS
-          setTimeout(() => {
-            const newIcon = expandButton.querySelector('i');
-            if (newIcon) {
-              if (isSafari) {
-                newIcon.style.WebkitTransform = 'rotate(180deg)';
-              }
-              newIcon.style.transform = 'rotate(180deg)';
-            }
-          }, 0);
         } else {
           expandButton.innerHTML = `عرض الكل <i class="fas fa-chevron-down"></i>`;
           // Smooth scroll back to the top of age-details when collapsing
@@ -1027,11 +887,7 @@
       // Function to show Zoro
       function showZoro() {
         zoroContainer.style.opacity = '1';
-        if (isSafari) {
-          zoroContainer.style.WebkitAnimation = 'floatZoro 5s ease-in-out infinite';
-        } else {
-          zoroContainer.style.animation = 'floatZoro 5s ease-in-out infinite';
-        }
+        zoroContainer.style.animation = 'floatZoro 5s ease-in-out infinite';
         if (!isClicked) {
           repositionZoro();
         }
@@ -1045,33 +901,8 @@
         }
       }
 
-      // Add touch event listeners for iOS
-      zoroImage.addEventListener('touchstart', function(e) {
-        // Prevent default to avoid scrolling/zooming
-        e.preventDefault();
-        
-        // Trigger the click handler with touch data
-        const touch = e.touches[0];
-        const touchTarget = e.target;
-        
-        // Calculate position within the element
-        const rect = touchTarget.getBoundingClientRect();
-        const offsetX = touch.clientX - rect.left;
-        const offsetY = touch.clientY - rect.top;
-        
-        // Create a simulated event with the touch coordinates
-        const simulatedEvent = {
-          offsetX: offsetX,
-          offsetY: offsetY,
-          touches: e.touches
-        };
-        
-        // Call the click handler with our simulated event
-        clickHandler(simulatedEvent);
-      });
-      
-      // Create separate click handler function
-      function clickHandler(e) {
+      // Create hearts on click
+      zoroImage.addEventListener('click', (e) => {
         clicks++;
         isClicked = true;
         clickCounterSpan.textContent = clicks;
@@ -1082,17 +913,12 @@
           isFirstClick = false;
         }
 
-        // Create heart - adjust for touch events in Safari/iOS
+        // Create heart
         const heart = document.createElement('div');
         heart.className = 'heart';
         heart.innerHTML = '❤️';
-        
-        // Handle different event objects for mouse vs touch
-        const offsetX = e.offsetX || (e.touches && e.touches[0] ? e.touches[0].clientX : 10);
-        const offsetY = e.offsetY || (e.touches && e.touches[0] ? e.touches[0].clientY : 10);
-        
-        heart.style.left = `${offsetX}px`;
-        heart.style.top = `${offsetY}px`;
+        heart.style.left = e.offsetX + 'px';
+        heart.style.top = e.offsetY + 'px';
         zoroContainer.appendChild(heart);
 
         // Remove heart after animation
@@ -1100,10 +926,7 @@
 
         // Keep Zoro visible and floating
         showZoro();
-      }
-      
-      // Replace click handler with our function
-      zoroImage.addEventListener('click', clickHandler);
+      });
 
       // Handle window resize
       window.addEventListener('resize', () => {
