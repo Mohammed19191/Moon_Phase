@@ -11,7 +11,7 @@
       --secondary-color: #EFD3D7;
       --accent-color: #FEEAFA;
       --bg-color: #0B1026;
-      --card-bg: rgba(255, 255, 255, 0.05);
+      --card-bg: rgba(142, 154, 175, 0.1);
       --text-shadow: 0 0 20px rgba(142, 154, 175, 0.4);
       --star-color: rgba(255, 255, 255, 0.8);
     }
@@ -295,28 +295,32 @@
     }
 
     .age-card {
-      background: rgba(142, 154, 175, 0.1);
+      background-color: rgba(142, 154, 175, 0.15);
       padding: 25px;
       border-radius: 20px;
-      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
       border: 1px solid rgba(142, 154, 175, 0.1);
-      -webkit-backdrop-filter: blur(5px);
-      backdrop-filter: blur(5px);
       margin-bottom: 30px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       position: relative;
-      -webkit-transform-style: preserve-3d;
       transform-style: preserve-3d;
-      -webkit-transform: translateZ(0) translateY(0);
       transform: translateZ(0) translateY(0);
       opacity: 0.8;
-      -webkit-filter: brightness(0.8);
       filter: brightness(0.8);
+      transition: all 0.5s ease;
     }
 
-    .age-card.visible {
+    
+@supports ((-webkit-backdrop-filter: blur(5px)) or (backdrop-filter: blur(5px))) {
+  .age-card {
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+  }
+}
+
+
+.age-card.visible {
       opacity: 1;
       -webkit-filter: brightness(1);
       filter: brightness(1);
@@ -450,9 +454,21 @@
       }
 
       .age-card {
-        padding: 20px;
-        margin-bottom: 25px;
-      }
+      background-color: rgba(142, 154, 175, 0.15);
+      padding: 25px;
+      border-radius: 20px;
+      border: 1px solid rgba(142, 154, 175, 0.1);
+      margin-bottom: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      transform-style: preserve-3d;
+      transform: translateZ(0) translateY(0);
+      opacity: 0.8;
+      filter: brightness(0.8);
+      transition: all 0.5s ease;
+    }
 
       .age-card::before {
         top: 3px;
@@ -493,9 +509,21 @@
       }
 
       .age-card {
-        padding: 15px;
-        margin-bottom: 20px;
-      }
+      background-color: rgba(142, 154, 175, 0.15);
+      padding: 25px;
+      border-radius: 20px;
+      border: 1px solid rgba(142, 154, 175, 0.1);
+      margin-bottom: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      transform-style: preserve-3d;
+      transform: translateZ(0) translateY(0);
+      opacity: 0.8;
+      filter: brightness(0.8);
+      transition: all 0.5s ease;
+    }
 
       .age-card::before {
         top: 2px;
