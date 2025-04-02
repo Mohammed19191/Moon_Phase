@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إلى القمر</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #8E9AAF;
+            --secondary-color: #EFD3D7;
+            --accent-color: #FEEAFA;
+            --bg-color: #0B1026;
+            --card-bg: rgba(142, 154, 175, 0.1);
+            --text-shadow: 0 0 20px rgba(142, 154, 175, 0.4);
+            --body-gradient-start: #0B1026;
+            --body-gradient-end: #1A1B36;
+            --nebula-opacity: 0.05;
+        }
+
+        [data-theme="light"] {
+            --primary-color: #FF8C42;
+            --secondary-color: #2C3E50;
+            --accent-color: #FFB74D;
+            --bg-color: #F8F9FA;
+            --card-bg: rgba(255, 140, 66, 0.1);
+            --text-shadow: 0 0 20px rgba(255, 140, 66, 0.3);
+            --body-gradient-start: #FF512F;
+            --body-gradient-end: #F09819;
+            --nebula-opacity: 0.02;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--body-gradient-start) 0%, var(--body-gradient-end) 100%);
+            color: var(--secondary-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            transition: background 0.5s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Navigation Styles */
+        .nav-container {
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 15px 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(142, 154, 175, 0.1);
+        }
+
+        .nav-list {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .nav-item {
+            position: relative;
+        }
+
+        .nav-link {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-size: 1.1rem;
+            padding: 8px 15px;
+            border-radius: 15px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+            background: transparent;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+            border-radius: 15px;
+        }
+
+        .nav-link:hover {
+            transform: translateY(-2px);
+            color: var(--bg-color);
+            box-shadow: 0 5px 15px rgba(142, 154, 175, 0.3);
+        }
+
+        .nav-link:hover::before {
+            opacity: 0.2;
+        }
+
+        .nav-link.active {
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            color: var(--bg-color);
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(142, 154, 175, 0.3);
+        }
+
+        .nav-link i {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-link:hover i {
+            transform: scale(1.1);
+        }
+
+        /* Game Styles */
+        .game-container {
+            width: 100%;
+            height: 650px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(142, 154, 175, 0.1);
+            margin-top: 20px;
+        }
+
+        .game-area {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .zoro {
+            width: 80px;
+            height: 80px;
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-image: url('images1/zoro.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            z-index: 10;
+            filter: drop-shadow(0 0 10px var(--accent-color));
+            transition: transform 0.1s ease;
+        }
+
+        .rocket {
+            width: 40px;
+            height: 40px;
+            position: absolute;
+            background-image: url('images1/rocket.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .score {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: var(--accent-color);
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-shadow: var(--text-shadow);
+            z-index: 15;
+            font-family: monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(142, 154, 175, 0.2);
+            direction: rtl;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .points {
+            color: #FF69B4;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .points i {
+            color: #FF69B4;
+        }
+
+        .time {
+            color: var(--accent-color);
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .time i {
+            color: var(--accent-color);
+        }
+
+        .level {
+            color: var(--accent-color);
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .level i {
+            color: var(--accent-color);
+        }
+
+        .difficulty {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            background: rgba(142, 154, 175, 0.1);
+            color: var(--accent-color);
+            padding: 6px 12px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(142, 154, 175, 0.2);
+            font-size: 0.9rem;
+            z-index: 10;
+            display: none;
+            align-items: center;
+            gap: 6px;
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        .difficulty i {
+            color: var(--accent-color);
+        }
+
+        .difficulty.easy { color: #4ECDC4; }
+        .difficulty.medium { color: #FFB74D; }
+        .difficulty.hard { color: #FF6B6B; }
+
+        .difficulty.easy i { color: #4ECDC4; }
+        .difficulty.medium i { color: #FFB74D; }
+        .difficulty.hard i { color: #FF6B6B; }
+
+        .pause-button {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--accent-color);
+            font-size: 1rem;
+            cursor: pointer;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.3s ease;
+        }
+
+        .pause-button:hover {
+            color: var(--primary-color);
+        }
+
+        .heart {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            z-index: 8;
+            animation: float 2s ease-in-out infinite;
+        }
+
+        .heart svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 0 5px #FF69B4);
+        }
+
+        .heart svg path {
+            fill: #FF69B4;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            z-index: 20;
+            display: none;
+        }
+
+        .start-screen {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 20;
+            display: block;
+            background: none;
+            padding: 0;
+            border-radius: 0;
+        }
+
+        .start-screen h2 {
+            display: none;
+        }
+
+        .start-screen p {
+            display: none;
+        }
+
+        .start-button {
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            color: var(--bg-color);
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.4rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .start-button:hover {
+            transform: scale(1.1);
+        }
+
+        .difficulty-select {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .difficulty-btn {
+            background: var(--card-bg);
+            border: 1px solid rgba(142, 154, 175, 0.2);
+            color: var(--accent-color);
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .difficulty-btn:hover {
+            transform: scale(1.1);
+            background: var(--accent-color);
+            color: var(--bg-color);
+        }
+
+        .difficulty-btn.active {
+            background: var(--accent-color);
+            color: var(--bg-color);
+            border-color: var(--accent-color);
+        }
+
+        .restart-button {
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            color: var(--bg-color);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .restart-button:hover {
+            transform: scale(1.1);
+        }
+
+        .moon {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 150px;
+            background-image: url('images1/bat.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            z-index: 5;
+            filter: drop-shadow(0 0 15px var(--accent-color));
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: 0 0 20px var(--accent-color);
+        }
+
+        .moon::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, rgba(255,255,255,0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .obstacle {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            opacity: 0.8;
+            z-index: 8;
+        }
+
+        .obstacle svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 0 5px var(--accent-color));
+        }
+
+        .obstacle-asteroid svg {
+            filter: drop-shadow(0 0 5px #FF6B6B);
+        }
+
+        .obstacle-satellite svg {
+            filter: drop-shadow(0 0 5px #4ECDC4);
+        }
+
+        .obstacle-ufo svg {
+            filter: drop-shadow(0 0 5px #45B7D1);
+        }
+
+        /* Theme Toggle Button */
+        .theme-toggle {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: var(--card-bg);
+            border: 1px solid rgba(142, 154, 175, 0.2);
+            color: var(--accent-color);
+            padding: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            width: 45px;
+            height: 45px;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .theme-toggle i {
+            position: absolute;
+            transition: all 0.5s ease;
+        }
+
+        .theme-toggle .fa-moon {
+            opacity: 1;
+            transform: rotate(0deg);
+        }
+
+        .theme-toggle .fa-sun {
+            opacity: 0;
+            transform: rotate(180deg);
+        }
+
+        .theme-toggle .fa-cloud {
+            opacity: 0;
+            transform: translateX(-20px) translateY(5px) scale(0.7);
+            color: white;
+        }
+
+        .theme-toggle .fa-cherry-blossom {
+            opacity: 0;
+            transform: translateX(20px) translateY(5px) scale(0.7);
+            color: #FFB6C1;
+        }
+
+        .theme-toggle .sakura-icon {
+            opacity: 0;
+            transform: translateX(20px) translateY(5px) scale(0.7);
+            display: none;
+            width: 35px;
+            height: 35px;
+            background-image: url('images1/sakura.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        [data-theme="light"] .theme-toggle .fa-sun {
+            opacity: 1;
+            transform: rotate(0deg);
+        }
+
+        [data-theme="light"] .theme-toggle .fa-cloud {
+            opacity: 1;
+            transform: translateX(0) translateY(5px) scale(0.7);
+            color: white;
+        }
+
+        [data-theme="sakura"] .theme-toggle .fa-moon {
+            opacity: 0;
+            transform: rotate(180deg);
+        }
+
+        [data-theme="sakura"] .theme-toggle .fa-sun {
+            opacity: 0;
+            transform: rotate(180deg);
+        }
+
+        [data-theme="sakura"] .theme-toggle .fa-cloud {
+            opacity: 0;
+            transform: translateX(-20px) translateY(5px) scale(0.7);
+        }
+
+        [data-theme="sakura"] .theme-toggle .fa-cherry-blossom {
+            opacity: 1;
+            transform: translateX(0) translateY(5px) scale(1.2);
+            color: #FFB6C1;
+        }
+
+        [data-theme="sakura"] .theme-toggle .sakura-icon {
+            opacity: 1;
+            transform: translateX(0) translateY(0) scale(1.2);
+            display: block;
+        }
+
+        /* Sakura Theme Variables */
+        [data-theme="sakura"] {
+            --primary-color: #FFB6C1;
+            --secondary-color: #FFC0CB;
+            --accent-color: #FF69B4;
+            --bg-color: #FFF0F5;
+            --card-bg: rgba(255, 182, 193, 0.1);
+            --text-shadow: 0 0 20px rgba(255, 182, 193, 0.4);
+            --body-gradient-start: #FFF0F5;
+            --body-gradient-end: #FFE4E1;
+            --nebula-opacity: 0.02;
+        }
+
+        /* Sakura Branch */
+        .sakura-branch {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 600px;
+            height: 600px;
+            background-image: url('images1/sakuraBranch.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: top right;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 1;
+            display: none;
+        }
+
+        [data-theme="sakura"] .sakura-branch {
+            display: block;
+            opacity: 0.8;
+        }
+
+        /* Falling Sakura Leaves */
+        .sakura-leaf {
+            position: fixed;
+            width: 30px;
+            height: 30px;
+            background-image: url('images1/sakura.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 1;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        [data-theme="sakura"] .sakura-leaf {
+            display: block;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 1s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .game-container {
+                height: 450px;
+            }
+
+            .zoro {
+                width: 60px;
+                height: 60px;
+            }
+
+            .obstacle {
+                width: 40px;
+                height: 40px;
+            }
+
+            .moon {
+                width: 120px;
+                height: 120px;
+                top: 10px;
+            }
+
+            .score {
+                font-size: 1.2rem;
+                padding: 10px;
+            }
+
+            .points, .level {
+                font-size: 1rem;
+            }
+        }
+
+        /* Cloud Styles */
+        .cloud {
+            position: fixed;
+            background-image: url('images1/cloud.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0.6;
+            pointer-events: none;
+            z-index: 1;
+            display: none;
+            filter: blur(5px);
+        }
+
+        [data-theme="light"] .cloud {
+            display: block;
+        }
+
+        .cloud-1 { top: 5%; left: 5%; width: 300px; height: 150px; }
+        .cloud-2 { top: 15%; right: 10%; width: 250px; height: 125px; }
+        .cloud-3 { top: 25%; left: 15%; width: 280px; height: 140px; }
+        .cloud-4 { top: 35%; right: 20%; width: 320px; height: 160px; }
+        .cloud-5 { top: 45%; left: 25%; width: 270px; height: 135px; }
+        .cloud-6 { top: 55%; right: 15%; width: 290px; height: 145px; }
+        .cloud-7 { top: 65%; left: 20%; width: 310px; height: 155px; }
+        .cloud-8 { top: 75%; right: 25%; width: 260px; height: 130px; }
+        .cloud-9 { top: 85%; left: 10%; width: 340px; height: 170px; }
+        .cloud-10 { top: 10%; right: 30%; width: 280px; height: 140px; }
+
+        .game-stats {
+            position: relative;
+            margin-top: 20px;
+            z-index: 15;
+        }
+
+        .score-display {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .points, .time, .level {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--accent-color);
+            font-size: 1rem;
+        }
+
+        .pause-button {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--accent-color);
+            font-size: 1rem;
+            cursor: pointer;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.3s ease;
+        }
+
+        .pause-button:hover {
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    <div class="cloud cloud-3"></div>
+    <div class="cloud cloud-4"></div>
+    <div class="cloud cloud-5"></div>
+    <div class="cloud cloud-6"></div>
+    <div class="cloud cloud-7"></div>
+    <div class="cloud cloud-8"></div>
+    <div class="cloud cloud-9"></div>
+    <div class="cloud cloud-10"></div>
+
+    <button class="theme-toggle" id="themeToggle">
+        <i class="fas fa-moon"></i>
+        <i class="fas fa-sun"></i>
+        <i class="fas fa-cloud"></i>
+        <div class="sakura-icon"></div>
+    </button>
+
+    <div class="sakura-branch"></div>
+
+    <div class="container">
+        <nav class="nav-container">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        الرئيسية
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="MoonAge.html" class="nav-link">
+                        <i class="fas fa-moon"></i>
+                        عمر القمر
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="ToTheMoon.html" class="nav-link active">
+                        <i class="fas fa-gamepad"></i>
+                        إلى القمر
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <h1>إلى القمر</h1>
+        <div class="game-container">
+            <div class="game-area">
+                <div class="zoro"></div>
+                <div class="moon"></div>
+                <div class="start-screen">
+                    <button class="start-button">ابدأ اللعب</button>
+                </div>
+                <div class="game-over">
+                    <h2>انتهت اللعبة!</h2>
+                    <p>الوقت الكلي: <span id="finalScore">00:00</span></p>
+                    <button class="restart-button">إعادة اللعب</button>
+                </div>
+            </div>
+        </div>
+        <div class="game-stats">
+            <div class="score-display">
+                <div class="points">
+                    <i class="fas fa-heart"></i>
+                    <span id="points">0</span>
+                </div>
+                <div class="time">
+                    <i class="fas fa-clock"></i>
+                    <span id="time">0:00</span>
+                </div>
+                <div class="level">
+                    <span>المستوى</span>
+                    <span id="level">1</span>
+                </div>
+                <button class="pause-button" id="pauseButton">
+                    <i class="fas fa-pause"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+        let currentThemeIndex = 0;
+        const themes = ['dark', 'light', 'sakura'];
+        
+        // Create stars
+        function createStars() {
+            // Remove existing stars first
+            const starsContainer = document.querySelector('.stars-container');
+            if (starsContainer) {
+                starsContainer.remove();
+            }
+
+            // Only create stars in dark mode
+            if (document.body.getAttribute('data-theme') === 'dark') {
+                const starsContainer = document.createElement('div');
+                starsContainer.className = 'stars-container';
+                document.body.appendChild(starsContainer);
+
+                for (let i = 0; i < 200; i++) {
+                    const star = document.createElement('div');
+                    star.className = 'star';
+                    star.style.left = `${Math.random() * 100}%`;
+                    star.style.top = `${Math.random() * 100}%`;
+                    star.style.animationDelay = `${Math.random() * 2}s`;
+                    starsContainer.appendChild(star);
+                }
+            }
+        }
+
+        // Create falling sakura leaves
+        function createSakuraLeaves() {
+            // Remove existing leaves first
+            const leaves = document.querySelectorAll('.sakura-leaf');
+            leaves.forEach(leaf => leaf.remove());
+
+            // Only create leaves in sakura mode
+            if (document.body.getAttribute('data-theme') === 'sakura') {
+                for (let i = 0; i < 20; i++) {
+                    const leaf = document.createElement('div');
+                    leaf.className = 'sakura-leaf';
+                    leaf.style.left = `${Math.random() * 100}%`;
+                    leaf.style.animationDuration = `${Math.random() * 10 + 10}s`;
+                    leaf.style.animationDelay = `${Math.random() * 5}s`;
+                    document.body.appendChild(leaf);
+                }
+            }
+        }
+
+        // Load saved theme from localStorage or use system preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            currentThemeIndex = themes.indexOf(savedTheme);
+            document.body.setAttribute('data-theme', savedTheme);
+            createStars();
+            createSakuraLeaves();
+        } else {
+            document.body.setAttribute('data-theme', prefersDarkScheme.matches ? 'dark' : 'light');
+            createStars();
+            createSakuraLeaves();
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+            const newTheme = themes[currentThemeIndex];
+            document.body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            createStars();
+            createSakuraLeaves();
+        });
+
+        // Game Logic
+        const gameArea = document.querySelector('.game-area');
+        const zoro = document.querySelector('.zoro');
+        const moon = document.querySelector('.moon');
+        const scoreElement = document.getElementById('scoreValue');
+        const pointsElement = document.getElementById('pointsValue');
+        const finalScoreElement = document.getElementById('finalScore');
+        const levelElement = document.getElementById('levelValue');
+        const gameOverScreen = document.querySelector('.game-over');
+        const startScreen = document.querySelector('.start-screen');
+        const startButton = document.querySelector('.start-button');
+        const restartButton = document.querySelector('.restart-button');
+        const pauseButton = document.querySelector('.pause-button');
+
+        let timeElapsed = 0;
+        let points = 0;
+        let currentLevel = 1;
+        let heartsCollected = 0;
+        let isGameOver = false;
+        let isGameStarted = false;
+        let isPaused = false;
+        let zoroPosition = { x: 50, y: 50 };
+        let zoroSpeed = 5;
+        let gameLoop;
+        let obstacleInterval;
+        let heartInterval;
+        let baseObstacleSpeed = 2; // Base speed for level 1
+        let baseObstacleInterval = 3000; // 3 seconds between obstacles
+        let movementLoop;
+
+        // Handle keyboard controls
+        const keys = {
+            ArrowLeft: false,
+            ArrowRight: false,
+            ArrowUp: false,
+            ArrowDown: false
+        };
+
+        window.addEventListener('keydown', (e) => {
+            if (keys.hasOwnProperty(e.key)) {
+                keys[e.key] = true;
+            }
+        });
+
+        window.addEventListener('keyup', (e) => {
+            if (keys.hasOwnProperty(e.key)) {
+                keys[e.key] = false;
+            }
+        });
+
+        // Format time as HH:MM:SS
+        function formatTime(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const remainingSeconds = seconds % 60;
+            return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+        }
+
+        // Calculate game difficulty based on hearts collected
+        function calculateDifficulty() {
+            // Level increases every 5 hearts
+            currentLevel = 1 + Math.floor(heartsCollected / 5);
+            
+            // Speed doubles for each level
+            const speedMultiplier = Math.pow(2, currentLevel - 1);
+            
+            // Calculate speeds for current level
+            const currentSpeed = baseObstacleSpeed * speedMultiplier;
+            
+            // Update level display
+            document.getElementById('level').textContent = currentLevel;
+            
+            return {
+                speed: currentSpeed,
+                interval: baseObstacleInterval
+            };
+        }
+
+        // Create obstacles
+        function createObstacle() {
+            if (!isGameStarted || isGameOver || isPaused) return;
+            
+            // Check if there are too many obstacles on screen
+            const obstacles = document.querySelectorAll('.obstacle');
+            if (obstacles.length >= 3) return; // Limit to 3 obstacles on screen
+            
+            const obstacle = document.createElement('div');
+            obstacle.className = 'obstacle';
+            
+            // Randomly select planet type
+            const planetTypes = ['planet-mercury', 'planet-venus', 'planet-mars', 'planet-jupiter'];
+            const randomType = planetTypes[Math.floor(Math.random() * planetTypes.length)];
+            obstacle.classList.add(randomType);
+            
+            // Create SVG based on planet type
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.setAttribute('viewBox', '0 0 100 100');
+            
+            if (randomType === 'planet-mercury') {
+                svg.innerHTML = `
+                    <circle cx="50" cy="50" r="45" fill="#A0522D"/>
+                    <circle cx="30" cy="30" r="10" fill="#8B4513"/>
+                    <circle cx="70" cy="30" r="8" fill="#8B4513"/>
+                    <circle cx="40" cy="70" r="12" fill="#8B4513"/>
+                `;
+            } else if (randomType === 'planet-venus') {
+                svg.innerHTML = `
+                    <circle cx="50" cy="50" r="45" fill="#FFA500"/>
+                    <circle cx="30" cy="30" r="10" fill="#FFD700"/>
+                    <circle cx="70" cy="30" r="8" fill="#FFD700"/>
+                    <circle cx="40" cy="70" r="12" fill="#FFD700"/>
+                `;
+            } else if (randomType === 'planet-mars') {
+                svg.innerHTML = `
+                    <circle cx="50" cy="50" r="45" fill="#CD5C5C"/>
+                    <circle cx="30" cy="30" r="10" fill="#FF6B6B"/>
+                    <circle cx="70" cy="30" r="8" fill="#FF6B6B"/>
+                    <circle cx="40" cy="70" r="12" fill="#FF6B6B"/>
+                `;
+            } else if (randomType === 'planet-jupiter') {
+                svg.innerHTML = `
+                    <circle cx="50" cy="50" r="45" fill="#DEB887"/>
+                    <circle cx="30" cy="30" r="10" fill="#F4A460"/>
+                    <circle cx="70" cy="30" r="8" fill="#F4A460"/>
+                    <circle cx="40" cy="70" r="12" fill="#F4A460"/>
+                `;
+            }
+            
+            obstacle.appendChild(svg);
+            
+            // Position the obstacle
+            const maxLeft = 80;
+            obstacle.style.left = `${Math.random() * maxLeft + 10}%`;
+            obstacle.style.top = '-60px';
+            gameArea.appendChild(obstacle);
+
+            const difficulty = calculateDifficulty();
+            let obstaclePosition = -60;
+
+            function moveObstacle() {
+                if (!isGameStarted || isGameOver || isPaused) return;
+                obstaclePosition += difficulty.speed;
+                obstacle.style.top = `${obstaclePosition}px`;
+
+                // Check collision with Zoro
+                const zoroRect = zoro.getBoundingClientRect();
+                const obstacleRect = obstacle.getBoundingClientRect();
+                
+                if (
+                    zoroRect.left < obstacleRect.right &&
+                    zoroRect.right > obstacleRect.left &&
+                    zoroRect.top < obstacleRect.bottom &&
+                    zoroRect.bottom > obstacleRect.top
+                ) {
+                    gameOver();
+                }
+
+                // Remove obstacle if it's off screen
+                if (obstaclePosition > gameArea.offsetHeight) {
+                    obstacle.remove();
+                }
+            }
+
+            const obstacleLoop = setInterval(moveObstacle, 16);
+            return obstacleLoop;
+        }
+
+        // Create heart
+        function createHeart() {
+            if (!isGameStarted || isGameOver || isPaused) return;
+            
+            // Check if there are too many hearts on screen
+            const hearts = document.querySelectorAll('.heart');
+            if (hearts.length >= 2) return; // Limit to 2 hearts on screen
+            
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.setAttribute('viewBox', '0 0 100 100');
+            svg.innerHTML = `
+                <path d="M 50 90 C 50 90, 90 60, 90 30 C 90 10, 70 10, 50 30 C 30 10, 10 10, 10 30 C 10 60, 50 90, 50 90" fill="#FF69B4"/>
+            `;
+            
+            heart.appendChild(svg);
+            
+            // Position the heart
+            const maxLeft = 80;
+            heart.style.left = `${Math.random() * maxLeft + 10}%`;
+            heart.style.top = '-30px';
+            gameArea.appendChild(heart);
+
+            let heartPosition = -30;
+            const difficulty = calculateDifficulty();
+
+            function moveHeart() {
+                if (!isGameStarted || isGameOver || isPaused) return;
+                heartPosition += difficulty.speed; // Use the same speed as obstacles
+                heart.style.top = `${heartPosition}px`;
+
+                // Check collision with Zoro
+                const zoroRect = zoro.getBoundingClientRect();
+                const heartRect = heart.getBoundingClientRect();
+                
+                if (
+                    zoroRect.left < heartRect.right &&
+                    zoroRect.right > heartRect.left &&
+                    zoroRect.top < heartRect.bottom &&
+                    zoroRect.bottom > heartRect.top
+                ) {
+                    points++;
+                    heartsCollected++;
+                    document.getElementById('points').textContent = points;
+                    heart.remove();
+
+                    // Update obstacle interval when level changes
+                    if (heartsCollected % 5 === 0) {
+                        clearInterval(obstacleInterval);
+                        const difficulty = calculateDifficulty();
+                        obstacleInterval = setInterval(createObstacle, difficulty.interval);
+                    }
+                }
+
+                // Remove heart if it's off screen
+                if (heartPosition > gameArea.offsetHeight) {
+                    heart.remove();
+                }
+            }
+
+            const heartLoop = setInterval(moveHeart, 16);
+            return heartLoop;
+        }
+
+        // Move Zoro with keyboard
+        function moveZoro() {
+            if (!isGameStarted || isGameOver || isPaused) return;
+            
+            // Calculate movement based on pressed keys
+            let dx = 0;
+            let dy = 0;
+            
+            if (keys.ArrowLeft) dx -= zoroSpeed;
+            if (keys.ArrowRight) dx += zoroSpeed;
+            if (keys.ArrowUp) dy -= zoroSpeed;
+            if (keys.ArrowDown) dy += zoroSpeed;
+            
+            // Normalize diagonal movement
+            if (dx !== 0 && dy !== 0) {
+                const factor = 1 / Math.sqrt(2);
+                dx *= factor;
+                dy *= factor;
+            }
+            
+            // Update position
+            zoroPosition.x = Math.max(0, Math.min(100, zoroPosition.x + dx));
+            zoroPosition.y = Math.max(0, Math.min(100, zoroPosition.y + dy));
+            
+            // Apply position
+            zoro.style.left = `${zoroPosition.x}%`;
+            zoro.style.top = `${zoroPosition.y}%`;
+        }
+
+        // Move Zoro with mouse/touch
+        gameArea.addEventListener('mousemove', (e) => {
+            if (!isGameStarted || isGameOver || isPaused) return;
+            const rect = gameArea.getBoundingClientRect();
+            const x = ((e.clientX - rect.left) / rect.width) * 100;
+            const y = ((e.clientY - rect.top) / rect.height) * 100;
+            zoroPosition.x = x;
+            zoroPosition.y = y;
+            zoro.style.left = `${x}%`;
+            zoro.style.top = `${y}%`;
+        });
+
+        // Touch support
+        gameArea.addEventListener('touchmove', (e) => {
+            if (!isGameStarted || isGameOver || isPaused) return;
+            e.preventDefault();
+            const rect = gameArea.getBoundingClientRect();
+            const x = ((e.touches[0].clientX - rect.left) / rect.width) * 100;
+            const y = ((e.touches[0].clientY - rect.top) / rect.height) * 100;
+            zoroPosition.x = x;
+            zoroPosition.y = y;
+            zoro.style.left = `${x}%`;
+            zoro.style.top = `${y}%`;
+        });
+
+        // Toggle pause
+        function togglePause() {
+            if (!isGameStarted || isGameOver) return;
+            isPaused = !isPaused;
+            const pauseIcon = pauseButton.querySelector('i');
+            pauseIcon.className = isPaused ? 'fas fa-play' : 'fas fa-pause';
+        }
+
+        // Game loop
+        function startGame() {
+            timeElapsed = 0;
+            points = 0;
+            heartsCollected = 0;
+            currentLevel = 1;
+            isGameOver = false;
+            isGameStarted = true;
+            isPaused = false;
+            zoroPosition = { x: 50, y: 50 };
+            zoro.style.left = '50%';
+            zoro.style.top = '50%';
+            
+            // Show score display and reset pause button
+            document.querySelector('.score-display').style.display = 'flex';
+            const pauseIcon = pauseButton.querySelector('i');
+            pauseIcon.className = 'fas fa-pause';
+            
+            // Update initial values
+            document.getElementById('points').textContent = points;
+            document.getElementById('time').textContent = formatTime(timeElapsed);
+            document.getElementById('level').textContent = currentLevel;
+            
+            gameOverScreen.style.display = 'none';
+            startScreen.style.display = 'none';
+            
+            // Clear existing obstacles and hearts
+            const obstacles = document.querySelectorAll('.obstacle');
+            obstacles.forEach(obstacle => obstacle.remove());
+            const hearts = document.querySelectorAll('.heart');
+            hearts.forEach(heart => heart.remove());
+
+            // Start time counter
+            gameLoop = setInterval(() => {
+                if (!isGameStarted || isGameOver || isPaused) return;
+                timeElapsed++;
+                document.getElementById('time').textContent = formatTime(timeElapsed);
+            }, 1000);
+
+            // Start movement loop
+            movementLoop = setInterval(() => {
+                if (!isGameStarted || isGameOver || isPaused) return;
+                moveZoro();
+            }, 16);
+
+            // Create obstacles periodically with initial difficulty
+            const initialDifficulty = calculateDifficulty();
+            obstacleInterval = setInterval(createObstacle, initialDifficulty.interval);
+            
+            // Create hearts periodically
+            heartInterval = setInterval(createHeart, 5000);
+        }
+
+        // Game over
+        function gameOver(won = false) {
+            isGameOver = true;
+            isGameStarted = false;
+            isPaused = false;
+            clearInterval(gameLoop);
+            clearInterval(movementLoop);
+            clearInterval(obstacleInterval);
+            clearInterval(heartInterval);
+            
+            // Hide score display
+            document.querySelector('.score-display').style.display = 'none';
+            
+            document.getElementById('finalScore').textContent = formatTime(timeElapsed);
+            gameOverScreen.style.display = 'block';
+            
+            if (won) {
+                gameOverScreen.querySelector('h2').textContent = 'مبروك! وصلت إلى القمر!';
+            }
+        }
+
+        // Event listeners
+        startButton.addEventListener('click', startGame);
+        restartButton.addEventListener('click', startGame);
+        pauseButton.addEventListener('click', togglePause);
+
+        // Update the game initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            // ... existing code ...
+            
+            // ... rest of existing code ...
+        });
+    </script>
+</body>
+</html> 
