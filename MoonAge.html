@@ -787,6 +787,25 @@
       color: white;
     }
 
+    .theme-toggle .fa-cherry-blossom {
+      opacity: 0;
+      transform: translateX(20px) translateY(5px) scale(0.7);
+      color: #FFB6C1;
+      display: none;
+    }
+
+    .theme-toggle .sakura-icon {
+      opacity: 0;
+      transform: translateX(20px) translateY(5px) scale(0.7);
+      display: none;
+      width: 35px;
+      height: 35px;
+      background-image: url('images1/sakura.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+
     [data-theme="light"] .theme-toggle .fa-moon {
       opacity: 0;
       transform: rotate(180deg);
@@ -801,6 +820,98 @@
       opacity: 1;
       transform: translateX(0) translateY(5px) scale(0.7);
       color: white;
+    }
+
+    [data-theme="sakura"] .theme-toggle .fa-moon {
+      opacity: 0;
+      transform: rotate(180deg);
+    }
+
+    [data-theme="sakura"] .theme-toggle .fa-sun {
+      opacity: 0;
+      transform: rotate(180deg);
+    }
+
+    [data-theme="sakura"] .theme-toggle .fa-cloud {
+      opacity: 0;
+      transform: translateX(-20px) translateY(5px) scale(0.7);
+    }
+
+    [data-theme="sakura"] .theme-toggle .sakura-icon {
+      opacity: 1;
+      transform: translateX(0) translateY(0) scale(1.2);
+      display: block;
+    }
+
+    /* Sakura Theme Variables */
+    [data-theme="sakura"] {
+      --primary-color: #FFB6C1;
+      --secondary-color: #FFC0CB;
+      --accent-color: #FF69B4;
+      --bg-color: #FFF0F5;
+      --card-bg: rgba(255, 182, 193, 0.1);
+      --text-shadow: 0 0 20px rgba(255, 182, 193, 0.4);
+      --body-gradient-start: #FFF0F5;
+      --body-gradient-end: #FFE4E1;
+      --nebula-opacity: 0.02;
+    }
+
+    /* Sakura Branch */
+    .sakura-branch {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 600px;
+      height: 600px;
+      background-image: url('images1/sakuraBranch.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: top right;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 1;
+      display: none;
+    }
+
+    [data-theme="sakura"] .sakura-branch {
+      display: block;
+      opacity: 0.8;
+    }
+
+    /* Falling Sakura Leaves */
+    .sakura-leaf {
+      position: fixed;
+      width: 30px;
+      height: 30px;
+      background-image: url('images1/sakura.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 1;
+      animation: fall linear infinite;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(-100vh) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    [data-theme="sakura"] .sakura-leaf {
+      display: block;
     }
 
     /* Add sunset glow effect */
@@ -830,6 +941,11 @@
 
     [data-theme="light"] .cloud {
       display: block;
+    }
+
+    [data-theme="dark"] .cloud,
+    [data-theme="sakura"] .cloud {
+      display: none;
     }
 
     /* Cloud Positions */
@@ -899,6 +1015,7 @@
     <i class="fas fa-moon"></i>
     <i class="fas fa-sun"></i>
     <i class="fas fa-cloud"></i>
+    <div class="sakura-icon"></div>
   </button>
   <div class="stars"></div>
   <div class="nebula"></div>
@@ -935,6 +1052,12 @@
             عمر القمر
           </a>
         </li>
+        <li class="nav-item">
+          <a href="ToTheMoon.html" class="nav-link">
+            <i class="fas fa-gamepad"></i>
+            إلى القمر
+          </a>
+        </li>
       </ul>
     </nav>
 
@@ -964,6 +1087,8 @@
       </button>
     </div>
   </div>
+
+  <div class="sakura-branch"></div>
 
   <script>
     // Add stars to the background
@@ -1279,26 +1404,73 @@
     // Theme Toggle Functionality
     const themeToggle = document.getElementById('themeToggle');
     const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+    let currentThemeIndex = 0;
+    const themes = ['dark', 'light', 'sakura'];
     
+    // Create stars
+    function createStars() {
+      // Remove existing stars first
+      const starsContainer = document.querySelector('.stars-container');
+      if (starsContainer) {
+        starsContainer.remove();
+      }
+
+      // Only create stars in dark mode
+      if (document.body.getAttribute('data-theme') === 'dark') {
+        const starsContainer = document.createElement('div');
+        starsContainer.className = 'stars-container';
+        document.body.appendChild(starsContainer);
+
+        for (let i = 0; i < 200; i++) {
+          const star = document.createElement('div');
+          star.className = 'star';
+          star.style.left = `${Math.random() * 100}%`;
+          star.style.top = `${Math.random() * 100}%`;
+          star.style.animationDelay = `${Math.random() * 2}s`;
+          starsContainer.appendChild(star);
+        }
+      }
+    }
+
+    // Create falling sakura leaves
+    function createSakuraLeaves() {
+      // Remove existing leaves first
+      const leaves = document.querySelectorAll('.sakura-leaf');
+      leaves.forEach(leaf => leaf.remove());
+
+      // Only create leaves in sakura mode
+      if (document.body.getAttribute('data-theme') === 'sakura') {
+        for (let i = 0; i < 20; i++) {
+          const leaf = document.createElement('div');
+          leaf.className = 'sakura-leaf';
+          leaf.style.left = `${Math.random() * 100}%`;
+          leaf.style.animationDuration = `${Math.random() * 10 + 10}s`;
+          leaf.style.animationDelay = `${Math.random() * 5}s`;
+          document.body.appendChild(leaf);
+        }
+      }
+    }
+
     // Load saved theme from localStorage or use system preference
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme) {
+      currentThemeIndex = themes.indexOf(savedTheme);
       document.body.setAttribute('data-theme', savedTheme);
+      createStars();
+      createSakuraLeaves();
     } else {
       document.body.setAttribute('data-theme', prefersDarkScheme.matches ? 'dark' : 'light');
+      createStars();
+      createSakuraLeaves();
     }
     
     themeToggle.addEventListener('click', () => {
-      const currentTheme = document.body.getAttribute('data-theme');
-      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+      const newTheme = themes[currentThemeIndex];
       document.body.setAttribute('data-theme', newTheme);
-      
-      // Save theme preference to localStorage
       localStorage.setItem('theme', newTheme);
-      
-      // Update stars visibility based on theme
-      const stars = document.querySelector('.stars');
-      stars.style.opacity = newTheme === 'dark' ? '1' : '0.5';
+      createStars();
+      createSakuraLeaves();
     });
 
     // Update moon age every second
