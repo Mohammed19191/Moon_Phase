@@ -872,43 +872,36 @@
     // Initialize stars
     createStars();
 
-    function getMoonImage(phaseName) {
-      const lowerPhase = phaseName.toLowerCase();
-      const phases = {
-        "new": { file: "newMoon.png", name: "محاق (New Moon)" },
-        "waxing crescent": { file: "waxingCrescent.png", name: "هلال متزايد (Waxing Crescent)" },
-        "first quarter": { file: "firstQuarter.png", name: "تربيع أول (First Quarter)" },
-        "waxing gibbous": { file: "waxingGibbous.png", name: "أحدب متزايد (Waxing Gibbous)" },
-        "full": { file: "fullMoon.png", name: "بدر (Full Moon)" },
-        "waning gibbous": { file: "waningGibbous.png", name: "أحدب متناقص (Waning Gibbous)" },
-        "last quarter": { file: "lastQuarter.png", name: "تربيع أخير (Last Quarter)" },
-        "waning crescent": { file: "waningCrescent.png", name: "هلال متناقص (Waning Crescent)" }
-      };
-
-      for (const [key, value] of Object.entries(phases)) {
-        if (lowerPhase.includes(key)) {
-          return value;
-        }
-      }
-      return phases["new"];
+    function calculateMoonPhase(date = new Date()) {
+      const synodicMonth = 29.53058867;
+      const knownNewMoon = new Date('2000-01-06T18:14:00Z');
+      const diff = date - knownNewMoon;
+      const days = diff / (1000 * 60 * 60 * 24);
+      const phase = (days % synodicMonth + synodicMonth) % synodicMonth;
+      return Math.floor((phase / synodicMonth) * 8 + 0.5) % 8;
     }
 
-    async function fetchMoonPhase() {
+    function getMoonImage(phaseIndex) {
+      const phases = [
+        { file: "newMoon.png", name: "محاق (New Moon)" },
+        { file: "waxingCrescent.png", name: "هلال متزايد (Waxing Crescent)" },
+        { file: "firstQuarter.png", name: "تربيع أول (First Quarter)" },
+        { file: "waxingGibbous.png", name: "أحدب متزايد (Waxing Gibbous)" },
+        { file: "fullMoon.png", name: "بدر (Full Moon)" },
+        { file: "waningGibbous.png", name: "أحدب متناقص (Waning Gibbous)" },
+        { file: "lastQuarter.png", name: "تربيع أخير (Last Quarter)" },
+        { file: "waningCrescent.png", name: "هلال متناقص (Waning Crescent)" }
+      ];
+      return phases[phaseIndex] || phases[0];
+    }
+
+    function fetchMoonPhase() {
       const loading = document.querySelector('.loading');
       loading.style.display = 'flex';
 
       try {
-        const nowUnix = Math.floor(Date.now() / 1000);
-        const url = `https://api.farmsense.net/v1/moonphases/?d=${nowUnix}`;
-        const response = await fetch(url);
-        const data = await response.json();
-
-        if (!Array.isArray(data) || !data[0] || !data[0].Phase) {
-          throw new Error("البيانات المستلمة غير متوقعة");
-        }
-
-        const phaseNameFromAPI = data[0].Phase;
-        const { file, name } = getMoonImage(phaseNameFromAPI);
+        const phaseIndex = calculateMoonPhase(new Date());
+        const { file, name } = getMoonImage(phaseIndex);
 
         const moonImage = document.getElementById("moonImage");
         moonImage.src = "images1/" + file;
@@ -917,7 +910,7 @@
         document.getElementById("phaseName").textContent = `${name}`;
       } catch (err) {
         document.getElementById("moonImage").src = "";
-        document.getElementById("phaseName").textContent = "حدث خطأ في جلب بيانات القمر";
+        document.getElementById("phaseName").textContent = "حدث خطأ في حساب بيانات القمر";
         console.error(err);
       } finally {
         loading.style.display = 'none';
