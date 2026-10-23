@@ -43,9 +43,21 @@
       const moonImg = document.getElementById('homeMoon');
       const nameEl = document.getElementById('homeMoonName');
       const metaEl = document.getElementById('homeMoonMeta');
+      // القمر ثلاثي الأبعاد: يحلّ محل الصورة متى جهز، وتبقى الصورة إن تعذّر WebGL
+      let moon3d = null;
+      const box = moonImg.closest('.home-moon');
+      if (window.Moon3D) {
+        Moon3D.mount(document.getElementById('homeMoon3d'), moonInfo().fraction).then(ctrl => {
+          moon3d = ctrl;
+          box.classList.add('is-3d');
+          document.getElementById('moon3dHint').hidden = false;
+          document.addEventListener('viewchange', e => { if (e.detail.view === 'home') ctrl.redraw(); });
+        }).catch(() => { /* تبقى صورة الطور */ });
+      }
       function updateMoon() {
         const m = moonInfo();
         showMoon(moonImg, m);
+        if (moon3d) moon3d.setPhase(m.fraction);
         nameEl.textContent = m.phase.name;
         metaEl.textContent = `عمر القمر ${ar(m.age, 1)} يومًا · الإضاءة نحو ${ar(Math.round(m.illum * 100))}٪`;
       }

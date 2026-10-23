@@ -1,0 +1,86 @@
+/* features.css — القمر ثلاثي الأبعاد، بطاقة المشاركة، قمر ليلة الميلاد. يعتمد رموز ألوان المظاهر القائمة. */
+
+.moon3d[hidden], .moon3d-hint[hidden], .birth-result[hidden], .share-sheet[hidden],
+.share-frame img[hidden], .share-wait[hidden], .share-primary[hidden] { display: none; }
+
+/* ---------- القمر ثلاثي الأبعاد في الرئيسية ---------- */
+.moon3d-link { display: inline-block; position: relative; }
+.moon3d { display: none; width: 250px; height: 250px; max-width: 100%;
+  animation: float 3s ease-in-out infinite;
+  filter: drop-shadow(0 0 26px rgba(239, 211, 215, .32)); }
+.moon3d canvas { display: block; width: 100% !important; height: 100% !important;
+  touch-action: pan-y; cursor: grab; }
+.moon3d canvas:active { cursor: grabbing; }
+.home-moon.is-3d .moon3d { display: block; }
+.home-moon.is-3d #homeMoon { display: none; }
+#view-home:not([hidden]) .is-3d .moon3d { view-transition-name: moon; }
+.moon3d-hint { font-size: .85rem; opacity: .75; }
+@media (max-width: 480px) { .moon3d { width: 200px; height: 200px; } }
+
+/* ---------- زر البطاقة ---------- */
+.share-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 44px; padding: 10px 24px; margin: 28px auto 0;
+  font: inherit; font-size: 1rem; font-weight: 600;
+  color: var(--tab-fg); background-color: var(--glass-fill);
+  background-image: linear-gradient(180deg, var(--glass-shine) 0%, transparent 55%);
+  border: 1px solid var(--glass-edge); border-radius: 999px; cursor: pointer;
+  box-shadow: 0 6px 20px var(--glass-shadow);
+  transition: transform .2s ease, background-color .2s ease;
+}
+.share-btn:hover { transform: translateY(-2px); background-color: var(--lens-fill); }
+.share-btn:focus-visible { outline: 2px solid var(--accent-color); outline-offset: 3px; }
+
+/* ---------- قمر ليلة الميلاد ---------- */
+.birth-moon {
+  max-width: 500px; margin: 64px auto 20px; padding: 32px 28px;
+  background: var(--card-bg); border: 1px solid var(--line); border-radius: 30px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, .1);
+}
+.birth-moon h2 { margin: 0 0 6px; font-size: 1.45rem; color: var(--accent-color); text-shadow: var(--text-shadow); text-wrap: balance; }
+.birth-lede { margin: 0 0 18px; opacity: .85; }
+.birth-field { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; }
+.birth-field label { font-weight: 600; }
+.birth-field input {
+  font: inherit; min-height: 44px; padding: 8px 12px;
+  color: var(--secondary-color); background: transparent;
+  border: 1px solid var(--line); border-radius: 12px;
+}
+[data-theme="dark"] .birth-field input, [data-theme="burgundy"] .birth-field input { color-scheme: dark; }
+.birth-field input:focus-visible { outline: 2px solid var(--accent-color); outline-offset: 2px; }
+.birth-result { display: grid; justify-items: center; gap: 12px; margin-top: 22px; }
+.birth-result img { width: 160px; height: 160px; object-fit: contain;
+  filter: drop-shadow(0 0 20px rgba(239, 211, 215, .3)); }
+.birth-info p { margin: 0 0 6px; line-height: 1.8; }
+.birth-phase { font-size: 1.4rem; font-weight: 700; color: var(--accent-color); }
+.birth-count { font-weight: 600; }
+.birth-info .share-btn { margin-top: 14px; }
+
+/* ---------- نافذة البطاقة ---------- */
+html.sheet-open, html.sheet-open body { overflow: hidden; }
+.share-sheet {
+  position: fixed; inset: 0; z-index: 300; display: grid; place-items: center;
+  padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
+           max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  background: rgba(5, 8, 20, .72); direction: rtl;
+}
+.share-panel {
+  width: 100%; max-width: 400px; max-height: 100%; overflow: auto;
+  padding: 20px; border-radius: 24px; text-align: center;
+  background: var(--bg-color); color: var(--secondary-color);
+  border: 1px solid var(--line); box-shadow: 0 24px 60px rgba(0, 0, 0, .45);
+}
+.share-panel h2 { margin: 0 0 14px; font-size: 1.2rem; color: var(--accent-color); }
+.share-frame { position: relative; width: 100%; aspect-ratio: 4 / 5; border-radius: 14px; overflow: hidden; background: #0B1026; }
+.share-frame img { width: 100%; height: 100%; display: block; }
+.share-wait { position: absolute; inset: 0; display: grid; place-items: center; color: #EFD3D7; }
+.share-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 16px; }
+.share-primary, .share-secondary {
+  min-height: 44px; padding: 10px 20px; border-radius: 999px; font: inherit; font-weight: 600;
+  cursor: pointer; text-decoration: none; display: inline-flex; align-items: center;
+}
+.share-primary { background: var(--tab-active-bg); color: var(--tab-active-fg); border: 1px solid var(--tab-active-bg); }
+.share-secondary { background: transparent; color: var(--secondary-color); border: 1px solid var(--line); }
+a.share-secondary:not([href]) { opacity: .4; pointer-events: none; }
+.share-primary:focus-visible, .share-secondary:focus-visible { outline: 2px solid var(--accent-color); outline-offset: 2px; }
+.share-status { min-height: 1.2em; margin: 10px 0 0; font-size: .9rem; }
