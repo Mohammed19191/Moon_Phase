@@ -139,7 +139,8 @@ a.share-secondary:not([href]) { opacity: .4; pointer-events: none; }
 .lg-lens.is-drag { transition: width .2s ease, top .2s ease, height .2s ease; }   /* تتبع الإصبع فورًا */
 .lg-lens.no-anim { transition: none; }
 .lg-lens-on .lg-root .nav-link.active, .lg-lens-on .lg-root .nav-link[aria-current="page"] { background: transparent !important; box-shadow: none !important; }
-.lg-lens-on .lg-root .nav-container { touch-action: pan-y; user-select: none; -webkit-user-select: none; }
+.lg-lens-on .lg-root .nav-container { user-select: none; -webkit-user-select: none; }
+.lg-lens-on .lg-root .nav-link { touch-action: none; }
 @media (prefers-reduced-motion: reduce) { .lg-lens { transition: none; } }
 .lg-lens-on .lg-root .nav-link { -webkit-user-drag: none; }
 html.lg-capturing .age-grid { overflow: hidden !important; }

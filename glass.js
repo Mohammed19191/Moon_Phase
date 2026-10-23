@@ -198,11 +198,16 @@ if (supports) {
         set({ left, top: r.top + 1, width: right - left, height: r.height - 2 });
         if (!animate) requestAnimationFrame(() => el.classList.remove('no-anim'));
       }
-      // الضغط يكبّر العدسة قليلًا حول مركزها، والسحب يحرّكها أفقيًا داخل الشريط
+      // الضغط يكبّر العدسة قليلًا حول مركزها، والسحب يحرّكها أفقيًا داخل الشريط.
+      // عند الحافتين تتجاوز قليلًا بمقاومة مطاطية (حتى ٢٢px) ثم ترتد عند الإفلات
+      const OVERSHOOT = 22;
       function follow(x) {
         const a = active().getBoundingClientRect(), n = nav.getBoundingClientRect();
         const w = a.width + 18, h = a.height + 14;
-        const left = Math.max(n.left + 2, Math.min(n.right - w - 2, x - w / 2));
+        const min = n.left + 2, max = n.right - w - 2;
+        let left = x - w / 2;
+        if (left < min) left = min - Math.min(OVERSHOOT, (min - left) * 0.35);
+        else if (left > max) left = max + Math.min(OVERSHOOT, (left - max) * 0.35);
         set({ left, top: a.top - 7, width: w, height: h });
       }
       function linkAt(x) {
@@ -214,26 +219,28 @@ if (supports) {
       if (nav) {
         // الروابط لا تُسحب كملفات (السحب الأصلي يقطع حركة العدسة)
         nav.querySelectorAll('a').forEach(a => a.setAttribute('draggable', 'false'));
+        // نتابع إصبعًا واحدًا بمعرّفه، ونمنع المتصفح من اعتبار السحب تمريرًا للصفحة فيقطعه
         nav.addEventListener('pointerdown', e => {
-          if (!el.isConnected || e.button > 0) return;
-          drag = { x0: e.clientX, x: e.clientX, moved: 0 };
+          if (!el.isConnected || !e.isPrimary || e.button > 0 || drag) return;
+          e.preventDefault();
+          drag = { id: e.pointerId, x0: e.clientX, y0: e.clientY, x: e.clientX, moved: 0 };
           el.classList.add('is-pressed');
           follow(e.clientX);
         });
         addEventListener('pointermove', e => {
-          if (!drag) return;
+          if (!drag || e.pointerId !== drag.id) return;
           drag.x = e.clientX;
-          drag.moved = Math.max(drag.moved, Math.abs(e.clientX - drag.x0));
+          drag.moved = Math.max(drag.moved, Math.abs(e.clientX - drag.x0), Math.abs(e.clientY - drag.y0));
           if (drag.moved > 6) el.classList.add('is-drag');
           follow(e.clientX);
         }, { passive: true });
         const end = e => {
-          if (!drag) return;
-          const moved = drag.moved, x = drag.x;
+          if (!drag || e.pointerId !== drag.id) return;
+          const moved = drag.moved, x = drag.x, cancelled = e.type === 'pointercancel';
           drag = null;
           el.classList.remove('is-pressed', 'is-drag');
           if (moved > 6) { el.classList.add('was-drag'); setTimeout(() => el.classList.remove('was-drag'), 0); }
-          if (moved > 6) {
+          if (moved > 6 && !cancelled) {
             const l = linkAt(x);
             if (l && l.getAttribute('aria-current') !== 'page') { location.hash = l.getAttribute('href'); return; }   // التبويب الجديد يعيد وضع العدسة
           }
