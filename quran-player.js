@@ -6,6 +6,8 @@
 
   const BASE = 'https://everyayah.com/data/';
 
+  const SURAH_NAMES = ['الفاتحة','البقرة','آل عمران','النساء','المائدة','الأنعام','الأعراف','الأنفال','التوبة','يونس','هود','يوسف','الرعد','إبراهيم','الحجر','النحل','الإسراء','الكهف','مريم','طه','الأنبياء','الحج','المؤمنون','النور','الفرقان','الشعراء','النمل','القصص','العنكبوت','الروم','لقمان','السجدة','الأحزاب','سبأ','فاطر','يس','الصافات','ص','الزمر','غافر','فصلت','الشورى','الزخرف','الدخان','الجاثية','الأحقاف','محمد','الفتح','الحجرات','ق','الذاريات','الطور','النجم','القمر','الرحمن','الواقعة','الحديد','المجادلة','الحشر','الممتحنة','الصف','الجمعة','المنافقون','التغابن','الطلاق','التحريم','الملك','القلم','الحاقة','المعارج','نوح','الجن','المزمل','المدثر','القيامة','الإنسان','المرسلات','النبأ','النازعات','عبس','التكوير','الانفطار','المطففين','الانشقاق','البروج','الطارق','الأعلى','الغاشية','الفجر','البلد','الشمس','الليل','الضحى','الشرح','التين','العلق','القدر','البينة','الزلزلة','العاديات','القارعة','التكاثر','العصر','الهمزة','الفيل','قريش','الماعون','الكوثر','الكافرون','النصر','المسد','الإخلاص','الفلق','الناس'];
+
   // عدد آيات كل سورة (المصحف المدني، مجموعها ٦٢٣٦) — لمعرفة نهاية السورة عند الإكمال
   const VERSE_COUNT = [7,286,200,176,120,165,206,75,129,109,123,111,43,52,99,128,111,110,98,135,112,78,118,64,77,227,93,88,69,60,34,30,73,54,45,83,182,88,75,85,54,53,89,59,37,35,38,29,18,45,60,49,62,55,78,96,29,22,24,13,14,11,11,18,12,12,30,52,52,44,28,28,20,56,40,31,50,40,46,42,29,19,36,25,22,17,19,26,30,20,15,21,11,8,8,19,5,8,8,11,11,8,3,9,5,4,7,3,6,3,5,4,5,6];
 
@@ -43,7 +45,6 @@
   ];
   const DEFAULT_QARI = 'shuraym';
   const SPEEDS = [1, 1.25, 1.5, 0.75];
-  const SKIP = 5;                                           // ثوانٍ
 
   const store = {
     get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
@@ -63,6 +64,8 @@
     pause: '<svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>',
     spin:  '<svg class="i-spin" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 10 10h-3a7 7 0 1 1-7-7z"/></svg>',
     repeat:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>',
+    prev:  '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 5h2v14h-2zM16 12 6 5v14z"/></svg>',
+    next:  '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h2v14H4zM8 12l10-7v14z"/></svg>',
     volOn: '<svg class="i-vol-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>',
     volOff:'<svg class="i-vol-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M16.5 12A4.5 4.5 0 0 0 14 7.97v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51A8.8 8.8 0 0 0 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06a8.99 8.99 0 0 0 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>'
   };
@@ -80,10 +83,10 @@
       <select class="qp-select" aria-label="اختيار القارئ"></select>
     </label>
     <div class="qp-tools">
-      <button type="button" class="qp-btn qp-back" aria-label="رجوع ٥ ثوانٍ">−٥ ث</button>
-      <button type="button" class="qp-btn qp-fwd" aria-label="تقديم ٥ ثوانٍ">+٥ ث</button>
+      <button type="button" class="qp-btn qp-back" aria-label="الآية السابقة" title="الآية السابقة">${ICONS.prev}</button>
+      <button type="button" class="qp-btn qp-fwd" aria-label="الآية التالية" title="الآية التالية">${ICONS.next}</button>
       <button type="button" class="qp-btn qp-repeat" aria-pressed="false" aria-label="تكرار الآية" title="تكرار الآية">${ICONS.repeat}</button>
-      <button type="button" class="qp-btn qp-cont" aria-pressed="true" aria-label="إكمال تلاوة السورة حتى نهايتها" title="إكمال تلاوة السورة حتى نهايتها">إكمال السورة</button>
+      <button type="button" class="qp-btn qp-cont" aria-pressed="true" aria-label="متابعة التلاوة تلقائيًا إلى الآيات والسور التالية" title="متابعة التلاوة تلقائيًا إلى الآيات والسور التالية">إكمال التلاوة</button>
       <button type="button" class="qp-btn qp-speed" aria-label="سرعة التلاوة" title="سرعة التلاوة">١×</button>
       <div class="qp-vol">
         <button type="button" class="qp-btn qp-mute" aria-label="كتم الصوت" title="كتم الصوت">${ICONS.volOn}${ICONS.volOff}</button>
@@ -204,8 +207,8 @@
       const set = (name, fn) => { try { navigator.mediaSession.setActionHandler(name, fn); } catch (e) { /* غير مدعوم */ } };
       set('play', () => play());
       set('pause', () => audio.pause());
-      set('seekbackward', () => skip(-SKIP));
-      set('seekforward', () => skip(SKIP));
+      set('previoustrack', () => step(-1));
+      set('nexttrack', () => step(1));
     }
 
     /* ---------- التحكم ---------- */
@@ -225,10 +228,26 @@
     }
     function toggle() { (audio.paused || audio.ended) ? play() : audio.pause(); }
 
-    function skip(delta) {
-      if (!hasDuration()) return;
-      audio.currentTime = clamp(audio.currentTime + delta, 0, audio.duration);
-      updateProgress();
+    const baseNote = () => base && !base.complete ? 'تُتلى الآية كاملة، والنص المعروض أعلاه جزء منها.' : '';
+    const where = () => 'سورة ' + SURAH_NAMES[ayah.surah - 1] + ' — الآية ' + ar(ayah.verse) + ' من ' + ar(VERSE_COUNT[ayah.surah - 1]);
+    function syncNav() {
+      const last = ayah ? VERSE_COUNT[ayah.surah - 1] : 0;
+      btnBack.disabled = !ayah || ayah.verse <= 1;
+      btnFwd.disabled = !ayah || ayah.verse >= last;
+    }
+    function step(delta) {                                   // الآية السابقة / التالية داخل السورة
+      if (!ayah) return;
+      const last = VERSE_COUNT[ayah.surah - 1];
+      const v = ayah.verse + delta;
+      if (v < 1 || v > last) return;
+      const wasPlaying = !audio.paused || root.classList.contains('is-loading');
+      const isBase = base && base.surah === ayah.surah && base.verse === v;
+      ayah = { surah: ayah.surah, verse: v, complete: isBase ? base.complete : true };
+      incompleteNote = isBase ? baseNote() : '';
+      unloadSource();
+      syncNav();
+      if (wasPlaying) play();
+      showNote(isBase ? incompleteNote : where(), false);
     }
 
     function onError() {
@@ -240,8 +259,8 @@
     }
 
     btnPlay.addEventListener('click', toggle);
-    btnBack.addEventListener('click', () => skip(-SKIP));
-    btnFwd.addEventListener('click', () => skip(SKIP));
+    btnBack.addEventListener('click', () => step(-1));
+    btnFwd.addEventListener('click', () => step(1));
 
     btnRepeat.addEventListener('click', () => {
       const on = btnRepeat.getAttribute('aria-pressed') !== 'true';
@@ -316,16 +335,18 @@
       setState({}); updateProgress();
       if (!continuous || !ayah || audio.loop) return;
       const last = VERSE_COUNT[ayah.surah - 1];
+      incompleteNote = '';
       if (ayah.verse < last) {                              // الآية التالية في السورة نفسها
         ayah = { surah: ayah.surah, verse: ayah.verse + 1, complete: true };
-        incompleteNote = '';
+        syncNav();
         play();
-        showNote('تُتلى الآية ' + ar(ayah.verse) + ' من ' + ar(last), false);
-      } else {                                              // نهاية السورة: نعود لآية اليوم ونتوقف
-        ayah = Object.assign({}, base);
-        incompleteNote = ayah.complete ? '' : 'تُتلى الآية كاملة، والنص المعروض أعلاه جزء منها.';
-        unloadSource();
-        showNote('انتهت السورة.', false);
+        showNote(where(), false);
+      } else {                                              // انتهت السورة: نبدأ التي بعدها (وبعد الناس الفاتحة)
+        const next = ayah.surah % 114 + 1;
+        ayah = { surah: next, verse: 1, complete: true };
+        syncNav();
+        play();
+        showNote('انتهت السورة، وتبدأ الآن سورة ' + SURAH_NAMES[next - 1] + '.', false);
       }
     });
     audio.addEventListener('error', () => { if (audio.getAttribute('src')) onError(); });
@@ -337,13 +358,14 @@
     /* ---------- واجهة المشغل العامة ---------- */
     function setAyah(entry) {
       const valid = entry && Number.isInteger(entry.surah) && Number.isInteger(entry.verse);
-      if (!valid) { unloadSource(); ayah = null; base = null; root.hidden = true; return; }
+      if (!valid) { unloadSource(); ayah = null; base = null; syncNav(); root.hidden = true; return; }
       if (base && base.surah === entry.surah && base.verse === entry.verse) return;   // التحديث الدوري لا يقطع التلاوة
       base = { surah: entry.surah, verse: entry.verse, complete: entry.complete !== false };
       const changed = true;
       ayah = { surah: entry.surah, verse: entry.verse, complete: entry.complete !== false };
       incompleteNote = ayah.complete ? '' : 'تُتلى الآية كاملة، والنص المعروض أعلاه جزء منها.';
       root.hidden = false;
+      syncNav();
       if (changed) { unloadSource(); showNote('', false); }
       idleNote();
     }

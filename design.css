@@ -280,3 +280,8 @@ h1 { text-shadow: none; }
 .ayah::before { content: none; }
 .qp { display: flex; }
 .qp[hidden] { display: none; }
+
+/* ---------- المشغّل: زرّا الآية السابقة والتالية ---------- */
+.qp-back, .qp-fwd { width: 44px; padding: 0; }
+.qp-btn:disabled { opacity: .38; cursor: default; }
+.qp-btn:disabled:hover { background: var(--qp-btn-bg); }
