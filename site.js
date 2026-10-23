@@ -286,4 +286,9 @@
 
   window.SiteKit = { icon: iconHTML, hydrateIcons, moonInfo, moonSVG, showMoon, PHASES, ar, zoroPet, store };
   setupTheme();
+
+  /* ---------- PWA: عامل الخدمة (يحتاج HTTPS أو localhost) ---------- */
+  if ('serviceWorker' in navigator) {
+    addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => { /* غير مدعوم أو محجوب */ }); });
+  }
 })();
