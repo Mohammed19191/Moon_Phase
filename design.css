@@ -271,3 +271,12 @@ h1 { text-shadow: none; }
   [data-theme="sakura"] .nav-link.active, [data-theme="sakura"] .nav-link[aria-current="page"] { background: #F3E3DC; }
   [data-theme="dark"] .nav-link.active, [data-theme="dark"] .nav-link[aria-current="page"] { background: #343c78; }
 }
+
+/* ---------- طبقة المحتوى بلا زجاج: الزجاج للتنقل فقط (وتفاديًا لأعطال رسم Safari على الجوال) ---------- */
+.ayah-container, .moon-container, .age-card, .age-details {
+  backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+}
+.ayah-container { overflow: visible; }
+.ayah::before { right: 0; top: -26px; }
+.qp { display: flex; }
+.qp[hidden] { display: none; }

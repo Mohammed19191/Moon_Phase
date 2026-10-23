@@ -153,9 +153,9 @@
         applyTheme(next, true);
       });
     }
-    matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-      if (!THEMES.includes(store.get('theme'))) applyTheme(currentTheme(), false);
-    });
+    const mq = matchMedia('(prefers-color-scheme: dark)');
+    const onScheme = () => { if (!THEMES.includes(store.get('theme'))) applyTheme(currentTheme(), false); };
+    if (mq.addEventListener) mq.addEventListener('change', onScheme); else if (mq.addListener) mq.addListener(onScheme);
     addEventListener('storage', e => { if (e.key === 'theme' && THEMES.includes(e.newValue)) applyTheme(e.newValue, false); });
   }
 

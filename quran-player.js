@@ -41,7 +41,7 @@
     { id: 'abbad',     name: 'فارس عباد',                         dir: 'Fares_Abbad_64kbps' },
     { id: 'salamah',   name: 'ياسر سلامة',                        dir: 'Yaser_Salamah_128kbps' }
   ];
-  const DEFAULT_QARI = 'alafasy';
+  const DEFAULT_QARI = 'shuraym';
   const SPEEDS = [1, 1.25, 1.5, 0.75];
   const SKIP = 5;                                           // ثوانٍ
 
