@@ -40,14 +40,26 @@
 .birth-moon h2 { margin: 0 0 6px; font-size: 1.45rem; color: var(--accent-color); text-shadow: var(--text-shadow); text-wrap: balance; }
 .birth-lede { margin: 0 0 18px; opacity: .85; }
 .birth-field { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; }
-.birth-field label { font-weight: 600; }
-.birth-field input {
-  font: inherit; min-height: 44px; padding: 8px 12px;
-  color: var(--secondary-color); background: transparent;
-  border: 1px solid var(--line); border-radius: 12px;
+.birth-label { font-weight: 600; }
+.birth-pick {
+  flex: 0 1 260px; min-width: 0; min-height: 44px; padding: 10px 14px 10px 38px;
+  font: inherit; font-size: 1rem; text-align: right; color: var(--secondary-color);
+  background-color: var(--glass-fill); border: 1px solid var(--line); border-radius: 14px; cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238E9AAF' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: left 12px center; background-size: 16px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-[data-theme="dark"] .birth-field input, [data-theme="burgundy"] .birth-field input { color-scheme: dark; }
-.birth-field input:focus-visible { outline: 2px solid var(--accent-color); outline-offset: 2px; }
+.birth-pick:not(.has-value) { opacity: .8; }
+.birth-pick:hover { background-color: var(--lens-fill); }
+.birth-pick:focus-visible { outline: 2px solid var(--accent-color); outline-offset: 2px; }
+
+/* عجلة التاريخ: ثلاث عجلات (يوم، شهر، سنة) بشريط تحديد واحد، على نمط عجلة القارئ */
+.bdw-labels, .bdw-cols { display: flex; gap: 4px; direction: rtl; }
+.bdw-labels span { flex: 1 1 0; text-align: center; font-size: .8rem; opacity: .7; padding-bottom: 4px; }
+.bdw-col { flex: 1 1 0; min-width: 0; }
+.bdw-labels span:nth-child(2), .bdw-month { flex-grow: 1.5; }
+.bdw .qpw-list { padding-inline: 2px; }
+.bdw .qpw-item { font-variant-numeric: tabular-nums; }
 .birth-result { display: grid; justify-items: center; gap: 12px; margin-top: 22px; }
 .birth-result img { width: 160px; height: 160px; object-fit: contain;
   filter: drop-shadow(0 0 20px rgba(239, 211, 215, .3)); }
@@ -71,7 +83,7 @@ html.sheet-open, html.sheet-open body { overflow: hidden; }
   border: 1px solid var(--line); box-shadow: 0 24px 60px rgba(0, 0, 0, .45);
 }
 .share-panel h2 { margin: 0 0 14px; font-size: 1.2rem; color: var(--accent-color); }
-.share-frame { position: relative; width: 100%; aspect-ratio: 4 / 5; border-radius: 14px; overflow: hidden; background: #0B1026; }
+.share-frame { position: relative; width: 100%; aspect-ratio: 4 / 5; border-radius: 14px; overflow: hidden; background: var(--bg-color); }
 .share-frame img { width: 100%; height: 100%; display: block; }
 .share-wait { position: absolute; inset: 0; display: grid; place-items: center; color: #EFD3D7; }
 .share-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 16px; }

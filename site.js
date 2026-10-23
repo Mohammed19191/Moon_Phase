@@ -142,7 +142,7 @@
     while (k < keys.length - 2 && alt > keys[k + 1][0]) k++;
     const a = keys[k], b = keys[k + 1], t = Math.max(0, Math.min(1, (alt - a[0]) / (b[0] - a[0])));
     const top = mix(a[1], b[1], t), bottom = mix(a[2], b[2], t);
-    return { palette: day ? 'light' : 'dark', top, bg: `linear-gradient(180deg, ${top} 0%, ${bottom} 100%)`,
+    return { palette: day ? 'light' : 'dark', top, bottom, bg: `linear-gradient(180deg, ${top} 0%, ${bottom} 100%)`,
              night: Math.max(0, Math.min(1, (-alt - 3) / 12)) };
   }
 
@@ -329,7 +329,7 @@
     setTimeout(show, 5000);
   }
 
-  window.SiteKit = { icon: iconHTML, hydrateIcons, moonInfo, moonSVG, showMoon, PHASES, ar, zoroPet, store };
+  window.SiteKit = { icon: iconHTML, hydrateIcons, moonInfo, moonSVG, showMoon, PHASES, ar, zoroPet, store, liveSky };
   setupTheme();
 
   /* ---------- PWA: عامل الخدمة (يحتاج HTTPS أو localhost) ---------- */
