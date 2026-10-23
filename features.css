@@ -108,3 +108,24 @@ a.share-secondary:not([href]) { opacity: .4; pointer-events: none; }
 }
 /* البورغندي: نص التبويب المحدد كان داكنًا فوق عدسة داكنة؛ نجعله فاتحًا ليُقرأ */
 [data-theme="burgundy"] .nav-link.active, [data-theme="burgundy"] .nav-link[aria-current="page"] { color: #FFE9EE; }
+
+/* ---------- مجموعات الزجاج داخل البطاقات والأزرار والنوافذ (glass.js) ---------- */
+.lg-group { position: absolute; inset: -48px; z-index: -1; pointer-events: none; }
+.lg-group > .lg-bg { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; }
+.lg-proxy { position: absolute; pointer-events: none; }
+.lg-root > .lg-bg { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; }
+/* المضيف (بطاقة أو زر أو نافذة) والأزرار داخله: الزجاج يرسم خلفيتها بدل CSS.
+   الزر المفعّل (مثل «إكمال التلاوة») يُستثنى فيبقى بلونه حتى تظل حالته واضحة. */
+.lg-host { isolation: isolate; overflow: visible !important; }
+.lg-host, .lg-target:not([aria-pressed="true"]), .lg-host .qp {
+  background-color: transparent !important;
+  backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+  box-shadow: none !important; border-color: transparent !important;
+}
+.lg-host:not(.qp-qari-btn):not(.birth-pick),
+.lg-target:not(.qp-qari-btn):not(.birth-pick):not([aria-pressed="true"]) { background-image: none !important; }
+/* زر التشغيل: أيقونة بلون النص فوق الزجاج */
+.lg-target.qp-play { color: var(--qp-text) !important; }
+.lg-host.qpw-sheet { overflow: visible !important; }
+/* أزرار اللعبة كانت بتدرج ملون ونص داكن؛ فوق الزجاج يصبح النص بلون نص المظهر */
+.lg-host.start-button, .lg-host.restart-button { color: var(--secondary-color) !important; font-weight: 700; }
