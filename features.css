@@ -129,3 +129,17 @@ a.share-secondary:not([href]) { opacity: .4; pointer-events: none; }
 .lg-host.qpw-sheet { overflow: visible !important; }
 /* أزرار اللعبة كانت بتدرج ملون ونص داكن؛ فوق الزجاج يصبح النص بلون نص المظهر */
 .lg-host.start-button, .lg-host.restart-button { color: var(--secondary-color) !important; font-weight: 700; }
+
+/* ---------- عدسة شريط التبويبات (iOS 26): تنزلق بين التبويبات، وتكبر عند الضغط وتتبع الإصبع ---------- */
+.lg-lens {
+  position: fixed; z-index: 21; pointer-events: none !important; border-radius: 999px;
+  transition: left .34s cubic-bezier(.2, .9, .22, 1.08), width .26s cubic-bezier(.2, .9, .22, 1),
+              top .22s ease, height .22s ease;
+}
+.lg-lens.is-drag { transition: width .2s ease, top .2s ease, height .2s ease; }   /* تتبع الإصبع فورًا */
+.lg-lens.no-anim { transition: none; }
+.lg-lens-on .lg-root .nav-link.active, .lg-lens-on .lg-root .nav-link[aria-current="page"] { background: transparent !important; box-shadow: none !important; }
+.lg-lens-on .lg-root .nav-container { touch-action: pan-y; user-select: none; -webkit-user-select: none; }
+@media (prefers-reduced-motion: reduce) { .lg-lens { transition: none; } }
+.lg-lens-on .lg-root .nav-link { -webkit-user-drag: none; }
+html.lg-capturing .age-grid { overflow: hidden !important; }

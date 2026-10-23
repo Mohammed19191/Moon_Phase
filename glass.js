@@ -74,10 +74,13 @@ if (supports) {
     try {
       await loadScript('vendor/html-to-image.js?v=1.11.11');
       const r = app.getBoundingClientRect();
+      // أشرطة التمرير الداخلية تظهر في الصورة كخط أبيض؛ نخفيها لحظة الالتقاط فقط
+      html.classList.add('lg-capturing');
+      const done = () => html.classList.remove('lg-capturing');
       const canvas = await window.htmlToImage.toCanvas(app, {
         pixelRatio: 1, skipFonts: true, cacheBust: false,
         filter: n => !(n instanceof HTMLElement && n.hidden)        // الشاشات المخفية لا تُلتقط
-      });
+      }).finally(done);
       snap = { canvas, top: r.top + scrollY, left: r.left + scrollX, w: r.width, h: r.height };
       front.drawMirror();
     } catch (err) {
@@ -114,7 +117,10 @@ if (supports) {
       button: { blurAmount: 0.3, zRadius: Math.min(18, radius), shadowSpread: 8, shadowOpacity: dark ? 0.28 : 0.15 },
       round:  { blurAmount: 0.3, zRadius: radius * 0.9 },
       sheet:  { blurAmount: 0.65, zRadius: Math.min(28, radius), brightness: dark ? 0.04 : 0.12, shadowOpacity: 0.35, shadowSpread: 22, shadowOffsetY: 8 },
-      band:   { blurAmount: 0.2, zRadius: 12, refraction: 1, shadowOpacity: 0, edgeHighlight: 0.18 }
+      band:   { blurAmount: 0.2, zRadius: 12, refraction: 1, shadowOpacity: 0, edgeHighlight: 0.18 },
+      // عدسة الشريط: قطرة زجاج بلا ضبابية تكبّر أيقونة التبويب واسمه تحتها (على نمط iOS 26)
+      lens:   { blurAmount: 0, zRadius: 14, refraction: 0.3, chromAberration: 0.02, edgeHighlight: 0.22,
+                specular: 0.45, brightness: dark ? 0.06 : 0.04, saturation: 0.1, shadowOpacity: dark ? 0.25 : 0.14, shadowSpread: 10 }
     };
     return JSON.stringify(Object.assign(base, by[kind] || {}));
   }
@@ -141,13 +147,15 @@ if (supports) {
       configure() {
         if (toggle && toggle.parentNode === root) toggle.dataset.config = JSON.stringify(Object.assign(JSON.parse(config(toggle, 'round')), { button: true }));
         if (nav && nav.parentNode === root) nav.dataset.config = config(nav, 'bar');
+        if (lens.el.isConnected) lens.el.dataset.config = config(lens.el, 'lens');
       },
       async start() {
         if (me.instance) return;
         const glass = [];
         if (toggle) { root.appendChild(toggle); glass.push(toggle); }
-        if (nav && phone.matches) { root.appendChild(nav); glass.push(nav); }
+        if (nav && phone.matches) { root.appendChild(nav); glass.push(nav); root.appendChild(lens.el); glass.push(lens.el); }
         body.classList.add('lg-on');
+        if (lens.el.isConnected) { body.classList.add('lg-lens-on'); lens.place(false); }
         me.configure(); me.paint();
         me.instance = await lib.LiquidGlass.init({ root, glassElements: glass });
         capture();
@@ -157,9 +165,89 @@ if (supports) {
         [nav, toggle].forEach(el => { if (el) { el.removeAttribute('data-config'); el.style.removeProperty('position'); } });
         if (toggle && toggle.parentNode === root) toggleHome.after(toggle);
         if (nav && nav.parentNode === root) navHome.after(nav);
-        body.classList.remove('lg-on');
+        lens.el.remove(); lens.el.removeAttribute('data-config');
+        body.classList.remove('lg-on', 'lg-lens-on');
       }
     };
+
+    /* ---------- عدسة التبويبات: تنزلق إلى التبويب المحدد، وتكبر عند الضغط وتتبع الإصبع عند السحب ---------- */
+    const lens = (() => {
+      const el = document.createElement('div');
+      el.className = 'lg-lens';
+      el.setAttribute('aria-hidden', 'true');
+      const links = () => [...nav.querySelectorAll('.nav-link')];
+      const active = () => nav.querySelector('.nav-link[aria-current="page"]') || links()[0];
+      let drag = null;
+      // المكتبة لا تتابع الحركة التي لا تُحدث تغييرًا في الصفحة، فنطلب إعادة رسم العدسة طوال انزلاقها
+      let pumpUntil = 0, pumping = false;
+      function pump() {
+        if (me.instance) me.instance.markChanged(el);
+        if (performance.now() < pumpUntil || drag) requestAnimationFrame(pump); else pumping = false;
+      }
+      function set(r) {
+        Object.assign(el.style, { left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px' });
+        pumpUntil = performance.now() + 450;
+        if (!pumping) { pumping = true; requestAnimationFrame(pump); }
+      }
+      function place(animate) {
+        if (!el.isConnected || drag) return;
+        const a = active(); if (!a) return;
+        el.classList.toggle('no-anim', !animate);
+        const r = a.getBoundingClientRect(), n = nav.getBoundingClientRect(), i = 3;   // داخل حدود الشريط دائمًا
+        const left = Math.max(n.left + i, r.left), right = Math.min(n.right - i, r.right);
+        set({ left, top: r.top + 1, width: right - left, height: r.height - 2 });
+        if (!animate) requestAnimationFrame(() => el.classList.remove('no-anim'));
+      }
+      // الضغط يكبّر العدسة قليلًا حول مركزها، والسحب يحرّكها أفقيًا داخل الشريط
+      function follow(x) {
+        const a = active().getBoundingClientRect(), n = nav.getBoundingClientRect();
+        const w = a.width + 18, h = a.height + 14;
+        const left = Math.max(n.left + 2, Math.min(n.right - w - 2, x - w / 2));
+        set({ left, top: a.top - 7, width: w, height: h });
+      }
+      function linkAt(x) {
+        return links().reduce((best, l) => {
+          const r = l.getBoundingClientRect(), d = Math.abs(r.left + r.width / 2 - x);
+          return !best || d < best.d ? { l, d } : best;
+        }, null).l;
+      }
+      if (nav) {
+        // الروابط لا تُسحب كملفات (السحب الأصلي يقطع حركة العدسة)
+        nav.querySelectorAll('a').forEach(a => a.setAttribute('draggable', 'false'));
+        nav.addEventListener('pointerdown', e => {
+          if (!el.isConnected || e.button > 0) return;
+          drag = { x0: e.clientX, x: e.clientX, moved: 0 };
+          el.classList.add('is-pressed');
+          follow(e.clientX);
+        });
+        addEventListener('pointermove', e => {
+          if (!drag) return;
+          drag.x = e.clientX;
+          drag.moved = Math.max(drag.moved, Math.abs(e.clientX - drag.x0));
+          if (drag.moved > 6) el.classList.add('is-drag');
+          follow(e.clientX);
+        }, { passive: true });
+        const end = e => {
+          if (!drag) return;
+          const moved = drag.moved, x = drag.x;
+          drag = null;
+          el.classList.remove('is-pressed', 'is-drag');
+          if (moved > 6) { el.classList.add('was-drag'); setTimeout(() => el.classList.remove('was-drag'), 0); }
+          if (moved > 6) {
+            const l = linkAt(x);
+            if (l && l.getAttribute('aria-current') !== 'page') { location.hash = l.getAttribute('href'); return; }   // التبويب الجديد يعيد وضع العدسة
+          }
+          place(true);
+        };
+        addEventListener('pointerup', end);
+        addEventListener('pointercancel', end);
+        // السحب لا يُحتسب ضغطة على الرابط الذي بدأ منه
+        nav.addEventListener('click', e => { if (el.classList.contains('was-drag')) e.preventDefault(); }, true);
+      }
+      document.addEventListener('viewchange', () => requestAnimationFrame(() => place(true)));
+      addEventListener('resize', () => place(false));
+      return { el, place };
+    })();
     let raf = 0;
     addEventListener('scroll', () => { if (me.instance && snap && !raf) raf = requestAnimationFrame(() => { raf = 0; me.drawMirror(); }); }, { passive: true });
     return me;
@@ -204,6 +292,12 @@ if (supports) {
     soon() { if (!this.raf) this.raf = requestAnimationFrame(() => { this.raf = 0; this.layout(true); }); }
     layout(mark) {
       if (!this.root) return;
+      // الجذر يمتد ٤٨px حول المضيف ليتسع للظل، لكن لا يتجاوز حافتي الشاشة حتى لا تظهر إزاحة أفقية للصفحة
+      const hr = this.host.getBoundingClientRect(), cw = html.clientWidth;
+      if (!this.opts.mirror) {
+        this.root.style.left = -Math.max(0, Math.min(48, hr.left)) + 'px';
+        this.root.style.right = -Math.max(0, Math.min(48, cw - hr.right)) + 'px';
+      }
       const rr = this.root.getBoundingClientRect();
       this.list.forEach(([el, kind], i) => {
         const p = this.proxies[i], r = el.getBoundingClientRect();
