@@ -82,10 +82,11 @@
       <button type="button" class="qp-play" aria-label="تشغيل التلاوة">${ICONS.play}${ICONS.pause}${ICONS.spin}</button>
       <button type="button" class="qp-btn qp-fwd" aria-label="الآية التالية" title="الآية التالية">${ICONS.next}</button>
     </div>
-    <label class="qp-qari">
-      <span class="qp-qari-label">القارئ</span>
-      <select class="qp-select" aria-label="اختيار القارئ"></select>
-    </label>
+    <div class="qp-qari">
+      <span class="qp-qari-label" id="qpQariLabel">القارئ</span>
+      <button type="button" class="qp-select qp-qari-btn" aria-haspopup="dialog" aria-labelledby="qpQariLabel qpQariName"><span id="qpQariName" class="qp-qari-name"></span></button>
+      <select class="qp-select qp-select-native" hidden aria-hidden="true" tabindex="-1"></select>
+    </div>
     <div class="qp-tools">
       <button type="button" class="qp-btn qp-repeat" aria-pressed="false" aria-label="تكرار الآية" title="تكرار الآية">${ICONS.repeat}</button>
       <button type="button" class="qp-btn qp-cont" aria-pressed="true" aria-label="متابعة التلاوة تلقائيًا إلى الآيات والسور التالية" title="متابعة التلاوة تلقائيًا إلى الآيات والسور التالية">إكمال التلاوة</button>
@@ -107,7 +108,7 @@
 
     const $ = s => root.querySelector(s);
     const btnPlay = $('.qp-play'), seek = $('.qp-seek'), cur = $('.qp-cur'), dur = $('.qp-dur');
-    const select = $('.qp-select'), note = $('.qp-note');
+    const select = $('.qp-select-native'), qariBtn = $('.qp-qari-btn'), qariName = $('.qp-qari-name'), note = $('.qp-note');
     const btnBack = $('.qp-back'), btnFwd = $('.qp-fwd'), btnRepeat = $('.qp-repeat');
     const btnCont = $('.qp-cont'), btnSpeed = $('.qp-speed'), btnMute = $('.qp-mute'), vol = $('.qp-volume');
 
@@ -131,6 +132,128 @@
       select.appendChild(o);
     });
     select.value = qari.id;
+    const syncQariBtn = () => { qariName.textContent = qari.name; };
+    syncQariBtn();
+
+
+    /* ---------- عجلة اختيار القارئ (على نمط منتقي iOS) ---------- */
+    const ITEM = 44, VISIBLE = 5;
+    const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let wheelUi = null;
+    function buildWheel() {
+      const wrap = document.createElement('div');
+      wrap.className = 'qpw';
+      wrap.hidden = true;
+      wrap.innerHTML = `
+        <div class="qpw-backdrop"></div>
+        <div class="qpw-sheet" role="dialog" aria-modal="true" aria-label="اختيار القارئ">
+          <div class="qpw-head">
+            <button type="button" class="qpw-cancel">إلغاء</button>
+            <span class="qpw-title">القارئ</span>
+            <button type="button" class="qpw-done">تم</button>
+          </div>
+          <div class="qpw-stage">
+            <div class="qpw-band" aria-hidden="true"></div>
+            <div class="qpw-wheel" role="listbox" tabindex="0" aria-label="قائمة القراء">
+              <ul class="qpw-list"></ul>
+            </div>
+          </div>
+        </div>`;
+      document.body.appendChild(wrap);
+      const wheel = wrap.querySelector('.qpw-wheel'), list = wrap.querySelector('.qpw-list');
+      wheel.style.height = ITEM * VISIBLE + 'px';
+      list.style.paddingBlock = ITEM * Math.floor(VISIBLE / 2) + 'px';
+      const items = QARIS.map((q, i) => {
+        const li = document.createElement('li');
+        li.className = 'qpw-item'; li.setAttribute('role', 'option'); li.id = 'qpw-opt-' + q.id;
+        li.style.height = ITEM + 'px'; li.textContent = q.name;
+        li.addEventListener('click', () => goTo(i, true));
+        list.appendChild(li);
+        return li;
+      });
+      let sel = 0, ticking = false;
+      const idxFromScroll = () => clamp(Math.round(wheel.scrollTop / ITEM), 0, items.length - 1);
+      function paint() {
+        ticking = false;
+        const c = wheel.scrollTop / ITEM;
+        items.forEach((li, i) => {
+          const d = i - c, a = Math.abs(d);
+          if (a > 3.2) { li.style.opacity = '0'; return; }
+          li.style.opacity = String(Math.max(0.18, 1 - a * 0.32));
+          li.style.transform = `rotateX(${clamp(-d * 24, -75, 75)}deg) scale(${1 - Math.min(a, 3) * 0.05})`;
+        });
+        const n = idxFromScroll();
+        if (n !== sel) { sel = n; mark(); }
+      }
+      function mark() {
+        items.forEach((li, i) => li.setAttribute('aria-selected', String(i === sel)));
+        wheel.setAttribute('aria-activedescendant', items[sel].id);
+      }
+      function goTo(i, smooth) {
+        i = clamp(i, 0, items.length - 1);
+        wheel.scrollTo({ top: i * ITEM, behavior: smooth && !reduceMotion ? 'smooth' : 'auto' });
+        if (!smooth || reduceMotion) { sel = i; mark(); paint(); }
+      }
+      wheel.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(paint); } }, { passive: true });
+
+      // السحب بالفأرة على الحاسوب (اللمس يتولاه التمرير الأصلي)
+      let drag = null;
+      wheel.addEventListener('pointerdown', e => {
+        if (e.pointerType !== 'mouse') return;
+        drag = { y: e.clientY, top: wheel.scrollTop, moved: false };
+        wheel.classList.add('is-drag'); wheel.setPointerCapture(e.pointerId);
+      });
+      wheel.addEventListener('pointermove', e => {
+        if (!drag) return;
+        if (Math.abs(e.clientY - drag.y) > 4) drag.moved = true;
+        wheel.scrollTop = drag.top - (e.clientY - drag.y);
+      });
+      const endDrag = e => {
+        if (!drag) return;
+        const moved = drag.moved; drag = null;
+        wheel.classList.remove('is-drag');
+        if (moved) { goTo(idxFromScroll(), true); return; }
+        const hit = e && e.clientX != null && document.elementFromPoint(e.clientX, e.clientY);   // نقرة بالفأرة بلا سحب
+        const li = hit && hit.closest && hit.closest('.qpw-item');
+        if (li) goTo(items.indexOf(li), true);
+      };
+      wheel.addEventListener('pointerup', endDrag);
+      wheel.addEventListener('pointercancel', endDrag);
+
+      wheel.addEventListener('keydown', e => {
+        const k = { ArrowUp: -1, ArrowDown: 1, PageUp: -3, PageDown: 3 }[e.key];
+        if (k) { e.preventDefault(); goTo(sel + k, true); }
+        else if (e.key === 'Home') { e.preventDefault(); goTo(0, true); }
+        else if (e.key === 'End') { e.preventDefault(); goTo(items.length - 1, true); }
+        else if (e.key === 'Enter') { e.preventDefault(); done(); }
+      });
+      wrap.addEventListener('keydown', e => { if (e.key === 'Escape') { e.preventDefault(); close(); } });
+      wrap.querySelector('.qpw-backdrop').addEventListener('click', () => close());
+      wrap.querySelector('.qpw-cancel').addEventListener('click', () => close());
+      wrap.querySelector('.qpw-done').addEventListener('click', () => done());
+
+      function open() {
+        wrap.hidden = false;
+        document.documentElement.classList.add('qpw-lock');
+        requestAnimationFrame(() => wrap.classList.add('is-open'));
+        const cur = Math.max(0, QARIS.findIndex(q => q.id === qari.id));
+        goTo(cur, false);
+        wheel.focus({ preventScroll: true });
+      }
+      function close() {
+        wrap.classList.remove('is-open');
+        document.documentElement.classList.remove('qpw-lock');
+        setTimeout(() => { wrap.hidden = true; }, reduceMotion ? 0 : 220);
+        qariBtn.focus({ preventScroll: true });
+      }
+      function done() {
+        const q = QARIS[sel];
+        close();
+        if (q && q.id !== qari.id) { select.value = q.id; select.dispatchEvent(new Event('change')); }
+      }
+      return { open };
+    }
+    qariBtn.addEventListener('click', () => { (wheelUi = wheelUi || buildWheel()).open(); });
 
     /* ---------- أدوات ---------- */
     const urlFor = () => ayah ? `${BASE}${qari.dir}/${pad3(ayah.surah)}${pad3(ayah.verse)}.mp3` : '';
@@ -316,6 +439,7 @@
 
     select.addEventListener('change', () => {
       qari = QARIS.find(q => q.id === select.value) || qari;
+      syncQariBtn();
       store.set('qpQari', qari.id);
       const wasPlaying = !audio.paused && !audio.ended;
       showNote('', false);

@@ -248,3 +248,57 @@
   .qp .i-spin { animation-duration: 2.5s; }
   .qp-play, .qp-btn, .qp-select { transition: none; }
 }
+
+/* ===== زر القارئ + عجلة الاختيار (منتقي بنمط iOS) ===== */
+.qp-select-native[hidden] { display: none; }
+.qp-qari-btn { text-align: right; padding-inline: 14px 38px; }
+.qp-qari-name { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+html.qpw-lock { overflow: hidden; }
+.qpw { position: fixed; inset: 0; z-index: 100; direction: rtl; font-family: inherit;
+  --w-bg: rgba(22, 27, 62, 0.88); --w-fg: #F4E4EA; --w-line: rgba(255, 255, 255, 0.35);
+  --w-band: rgba(255, 255, 255, 0.12); --w-btn: #FFB8D9; --w-edge: rgba(255, 255, 255, 0.22); }
+[data-theme="light"] .qpw { --w-bg: rgba(255, 255, 255, 0.9); --w-fg: #1B2530; --w-line: rgba(27, 37, 48, 0.35); --w-band: rgba(27, 37, 48, 0.08); --w-btn: #A63A0C; --w-edge: rgba(255, 255, 255, 0.9); }
+[data-theme="sakura"] .qpw { --w-bg: rgba(255, 255, 255, 0.92); --w-fg: #5E1B3C; --w-line: rgba(94, 27, 60, 0.35); --w-band: rgba(176, 36, 90, 0.10); --w-btn: #B0245A; --w-edge: rgba(255, 255, 255, 0.9); }
+.qpw[hidden] { display: none; }
+.qpw-backdrop { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.4); opacity: 0; transition: opacity 0.22s ease; }
+.qpw.is-open .qpw-backdrop { opacity: 1; }
+
+.qpw-sheet {
+  position: absolute; inset-inline: 12px; bottom: max(12px, env(safe-area-inset-bottom));
+  max-width: 420px; margin-inline: auto;
+  background: var(--w-bg); color: var(--w-fg);
+  border: 1px solid var(--w-edge); border-radius: 28px;
+  backdrop-filter: blur(28px) saturate(1.6); -webkit-backdrop-filter: blur(28px) saturate(1.6);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35), inset 0 1px 0 var(--w-edge);
+  padding: 8px 12px 16px;
+  transform: translateY(24px); opacity: 0; transition: transform 0.22s ease, opacity 0.22s ease;
+}
+.qpw.is-open .qpw-sheet { transform: none; opacity: 1; }
+@media (min-width: 768px) { .qpw-sheet { bottom: auto; top: 50%; margin-top: -170px; } }
+
+.qpw-head { display: flex; align-items: center; justify-content: space-between; min-height: 48px; }
+.qpw-title { font-weight: 700; }
+.qpw-cancel, .qpw-done { min-width: 56px; min-height: 44px; border: 0; background: none; color: var(--w-btn); font: inherit; font-size: 1rem; cursor: pointer; border-radius: 12px; }
+.qpw-done { font-weight: 700; }
+.qpw-cancel:focus-visible, .qpw-done:focus-visible, .qpw-wheel:focus-visible { outline: 3px solid var(--w-btn); outline-offset: 2px; }
+
+.qpw-wheel { position: relative; overflow-y: auto; scroll-snap-type: y mandatory; overscroll-behavior: contain;
+  scrollbar-width: none; perspective: 700px; touch-action: pan-y; cursor: grab; border-radius: 16px;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 28%, #000 72%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0, #000 28%, #000 72%, transparent 100%); }
+.qpw-wheel::-webkit-scrollbar { display: none; }
+.qpw-wheel.is-drag { scroll-snap-type: none; cursor: grabbing; user-select: none; }
+.qpw-list { list-style: none; margin: 0; padding-inline: 8px; }
+.qpw-item { display: flex; align-items: center; justify-content: center; scroll-snap-align: center; scroll-snap-stop: always;
+  font-size: 1.15rem; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  transform-origin: center; will-change: transform, opacity; cursor: pointer; user-select: none; }
+.qpw-item[aria-selected="true"] { font-weight: 700; }
+.qpw-stage { position: relative; }
+.qpw-band { position: absolute; inset-inline: 4px; top: 50%; height: 44px; margin-top: -22px; pointer-events: none;
+  background: var(--w-band); border-block: 1px solid var(--w-line); border-radius: 12px; }
+@media (prefers-reduced-motion: reduce) { .qpw-sheet, .qpw-backdrop { transition: none; } }
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  .qpw-sheet { backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .qpw { --w-bg: #1a2048; } [data-theme="light"] .qpw, [data-theme="sakura"] .qpw { --w-bg: #FFFFFF; }
+}
