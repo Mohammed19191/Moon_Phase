@@ -206,8 +206,12 @@ if (supports) {
         const w = a.width + 18, h = a.height + 14;
         const min = n.left + 2, max = n.right - w - 2;
         let left = x - w / 2;
-        if (left < min) left = min - Math.min(OVERSHOOT, (min - left) * 0.35);
-        else if (left > max) left = max + Math.min(OVERSHOOT, (left - max) * 0.35);
+        const rubber = drag && drag.moved > 6 ? OVERSHOOT : 0;           // التجاوز المطاطي أثناء السحب فقط
+        if (left < min) left = min - Math.min(rubber, (min - left) * 0.35);
+        else if (left > max) left = max + Math.min(rubber, (left - max) * 0.35);
+        // لا تخرج العدسة عن حدود الشاشة أبدًا: خروجها يجعل متصفح الجوال يصغّر الصفحة كلها ثم يعيدها
+        const vw = html.clientWidth;
+        left = Math.max(2, Math.min(vw - w - 2, left));
         set({ left, top: a.top - 7, width: w, height: h });
       }
       function linkAt(x) {

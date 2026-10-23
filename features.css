@@ -144,3 +144,10 @@ a.share-secondary:not([href]) { opacity: .4; pointer-events: none; }
 @media (prefers-reduced-motion: reduce) { .lg-lens { transition: none; } }
 .lg-lens-on .lg-root .nav-link { -webkit-user-drag: none; }
 html.lg-capturing .age-grid { overflow: hidden !important; }
+
+/* شبكة أمان: لا شيء يوسّع الصفحة أفقيًا، فلا يصغّر متصفح الجوال الصفحة ثم يكبّرها.
+   clip لا يجعل body حاوية تمرير (بخلاف hidden)، فيبقى تمرير الصفحة كما هو */
+@supports (overflow: clip) {
+  html { overflow-x: hidden; }
+  body { overflow-x: clip !important; }
+}
