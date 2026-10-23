@@ -2,8 +2,8 @@
 (() => {
   'use strict';
 
-  const THEMES = ['dark', 'light', 'sakura'];
-  const BAR_COLORS = { dark: '#0B1026', light: '#FF6B3D', sakura: '#FFF0F5' };
+  const THEMES = ['dark', 'light', 'sakura', 'burgundy'];
+  const BAR_COLORS = { dark: '#0B1026', light: '#FF6B3D', sakura: '#FFF0F5', burgundy: '#5C0A1F' };
   const $ = (s, r = document) => r.querySelector(s);
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const store = {
@@ -50,7 +50,7 @@
     document.body.prepend(sky);
     if (!reduce) {
       setInterval(() => {
-        if (document.hidden || document.body.dataset.theme !== 'dark') return;
+        if (document.hidden || !['dark', 'burgundy'].includes(document.body.dataset.theme)) return;
         const b = document.createElement('b');
         b.style.top = Math.random() * 50 + '%';
         b.style.right = '0';
@@ -87,6 +87,7 @@
     clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
     pause: '<path d="M8.5 5v14M15.5 5v14"/>',
     play: '<path d="M8 5.5v13l11-6.5z"/>',
+    gem: '<path d="M6.5 3.5h11l4 5.5L12 21 2.5 9z"/><path d="M2.5 9h19M9 3.5 7.5 9 12 21M15 3.5 16.5 9 12 21"/>',
     chevron: '<path d="M6 9l6 6 6-6"/>'
   };
   const iconHTML = (name, cls = '') =>
@@ -104,7 +105,8 @@
   const THEME_INFO = {
     dark:   { icon: 'moon',   name: 'داكن' },
     light:  { icon: 'sun',    name: 'فاتح' },
-    sakura: { icon: 'flower', name: 'ساكورا' }
+    sakura: { icon: 'flower', name: 'ساكورا' },
+    burgundy: { icon: 'gem', name: 'بورغندي' }
   };
 
   /* ---------- شريط التبويب ---------- */

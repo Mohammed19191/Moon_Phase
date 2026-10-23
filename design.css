@@ -338,7 +338,7 @@ h1 { text-shadow: none; }
 }
 .game-area { background: transparent; }
 .moon, .zoro { filter: drop-shadow(0 0 14px var(--game-glow)); }
-.obstacle svg, .obstacle-asteroid svg, .obstacle-satellite svg, .obstacle-ufo svg { filter: drop-shadow(0 0 1.5px var(--game-edge)) drop-shadow(0 2px 4px rgba(0,0,0,.25)); }
+.obstacle-asteroid svg, .obstacle-satellite svg, .obstacle-ufo svg { filter: drop-shadow(0 0 1.5px var(--game-edge)) drop-shadow(0 2px 4px rgba(0,0,0,.25)); }
 .pickup svg { filter: drop-shadow(0 0 4px var(--game-glow)) drop-shadow(0 0 1px var(--game-edge)); }
 .game-over { background: var(--over-bg); color: var(--secondary-color); border: 1px solid var(--game-border); }
 .game-area.paused::after { background: color-mix(in srgb, var(--over-bg) 55%, transparent); color: var(--secondary-color); }
@@ -435,3 +435,78 @@ body { transition: background .6s ease, color .4s ease; }
   .rise-on .view > *, .rise-on .home-moon, .rise-on .ayah-container, .rise-on .moon-container, .rise-on .age-details, .rise-on .game-container, .rise-on .game-stats { animation: none !important; }
   .nav-link:active, .theme-toggle:active, .qp-btn:active, .qp-play:active { transform: none; }
 }
+
+/* =====================================================================
+   المظهر البورغندي — أساسه #5C0A1F. مظهر داكن دافئ: نص وردي عاجي، وتمييز بوردي ذهبي هادئ.
+   (تباين النص الأساسي على الأساس ≈ ٩٫٦:١)
+   ===================================================================== */
+[data-theme="burgundy"] {
+  --primary-color: #E8A3B3;
+  --secondary-color: #F6DDE3;
+  --accent-color: #FFE9EE;
+  --bg-color: #3A0713;
+  --card-bg: rgba(255, 255, 255, 0.07);
+  --text-shadow: 0 0 20px rgba(255, 170, 190, 0.35);
+  --star-color: rgba(255, 233, 238, 0.85);
+  --body-gradient-start: #5C0A1F;
+  --body-gradient-end: #2A0511;
+  --nebula-opacity: 0.05;
+  --tab-bg: rgba(58, 7, 19, 0.7);
+  --tab-fg: #F8E3E8;
+  --tab-active-bg: #F6DDE3;
+  --tab-active-fg: #3A0713;
+  --line: rgba(246, 221, 227, 0.3);
+  --glass-fill: rgba(70, 8, 24, 0.58);
+  --glass-edge: rgba(255, 255, 255, 0.26);
+  --glass-shine: rgba(255, 255, 255, 0.2);
+  --glass-shadow: rgba(0, 0, 0, 0.4);
+  --lens-fill: rgba(255, 255, 255, 0.2);
+  --tab-tint: #FFB8C8;
+  --game-sky: radial-gradient(1.2px 1.2px at 20% 25%, #fff 60%, transparent 61%),
+              radial-gradient(1px 1px at 70% 15%, #fff 60%, transparent 61%),
+              radial-gradient(1.4px 1.4px at 45% 60%, #fff 60%, transparent 61%),
+              radial-gradient(1px 1px at 85% 70%, #fff 60%, transparent 61%),
+              radial-gradient(1px 1px at 10% 80%, #fff 60%, transparent 61%),
+              linear-gradient(180deg, #230410 0%, #5C0A1F 100%);
+  --game-border: rgba(255, 233, 238, 0.2);
+  --game-glow: rgba(255, 233, 238, 0.9);
+  --game-edge: rgba(255, 233, 238, 0.55);
+  --over-bg: rgba(42, 5, 17, 0.92);
+}
+[data-theme="burgundy"] h1 { text-shadow: var(--text-shadow); }
+[data-theme="burgundy"] :focus-visible { outline-color: #FFE9EE; }
+[data-theme="burgundy"] .cloud { display: none; }
+[data-theme="burgundy"] .qp {
+  --qp-text: #F6DDE3; --qp-fg: #FFD0DA; --qp-track: rgba(246, 221, 227, 0.3);
+  --qp-btn-bg: rgba(255, 255, 255, 0.1); --qp-btn-bg-hover: rgba(255, 255, 255, 0.2);
+  --qp-line: rgba(246, 221, 227, 0.28);
+  --qp-play-bg: #F6DDE3; --qp-play-fg: #3A0713;
+  --qp-option-bg: #3A0713; --qp-option-fg: #FFE9EE; --qp-error: #FFB4A9;
+}
+[data-theme="burgundy"] .qpw {
+  --w-bg: rgba(48, 6, 18, 0.9); --w-fg: #FBE6EB; --w-line: rgba(255, 255, 255, 0.35);
+  --w-band: rgba(255, 255, 255, 0.12); --w-btn: #FFB8C8; --w-edge: rgba(255, 255, 255, 0.22);
+}
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  [data-theme="burgundy"] { --card-bg: #3E0816; --tab-bg: #3E0816; }
+  [data-theme="burgundy"] .nav-container, [data-theme="burgundy"] .theme-toggle { background-color: #3E0816; }
+  [data-theme="burgundy"] .nav-link.active, [data-theme="burgundy"] .nav-link[aria-current="page"] { background: #6A1A30; }
+  [data-theme="burgundy"] .qpw { --w-bg: #300612; }
+}
+[data-theme="burgundy"] .score-display, [data-theme="burgundy"] .game-hint {
+  background: rgba(42, 5, 17, 0.92); color: #FFE9EE; border-color: rgba(255, 233, 238, 0.25);
+}
+
+/* ---------- النيازك: صخور واقعية تدور ببطء، ولهب احتكاك خلفها أثناء السقوط ---------- */
+.obstacle { opacity: 1; }
+.obstacle svg.rock { overflow: visible; animation: rock-spin 9s linear infinite; filter: drop-shadow(0 3px 5px rgba(0, 0, 0, .35)); }
+.obstacle .flame {
+  position: absolute; left: 50%; bottom: 62%; width: 62%; height: 150%; transform: translateX(-50%);
+  border-radius: 50% 50% 40% 40% / 70% 70% 30% 30%;
+  background: linear-gradient(to top, rgba(255, 170, 60, .85) 0%, rgba(255, 90, 20, .5) 35%, rgba(255, 60, 10, .15) 70%, transparent 100%);
+  filter: blur(4px); transform-origin: 50% 100%;
+  animation: flame-flicker .18s ease-in-out infinite alternate; pointer-events: none;
+}
+@keyframes rock-spin { to { transform: rotate(360deg); } }
+@keyframes flame-flicker { from { transform: translateX(-50%) scaleY(.88) scaleX(.95); opacity: .85; } to { transform: translateX(-50%) scaleY(1.08) scaleX(1.05); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .obstacle svg.rock { animation: none !important; } .obstacle .flame { animation: none !important; } }

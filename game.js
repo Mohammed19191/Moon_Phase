@@ -5,11 +5,54 @@
         const HEARTS_PER_LEVEL = 5;
         const BASE_SPEED = 125;       // بكسل/ثانية (مثل الأصل: 2 بكسل كل 16 مللي ثانية)
         const ZORO_SPEED = 420;       // بكسل/ثانية عند التحكم بالأسهم أو WASD
-        const NS_PLANETS = [
-            ['planet-mercury', '#A0522D', '#8B4513'], ['planet-venus', '#FFA500', '#FFD700'],
-            ['planet-mars', '#CD5C5C', '#FF6B6B'], ['planet-jupiter', '#DEB887', '#F4A460']
-        ];
         const root = document.getElementById('view-game');
+
+        /* ---- نيزك واقعي: صخرة غير منتظمة بإضاءة من أعلى اليسار، فوهات، وتوهّج احتكاك على الحافة الأمامية ---- */
+        const ROCKS = [
+            ['#B9B2A8', '#7C766E', '#3A3631'],   // حجري رمادي
+            ['#8F8A85', '#56524D', '#25221F'],   // بازلتي داكن
+            ['#C08A63', '#7E5238', '#34211A']    // حديدي صدئ
+        ];
+        let rockId = 0;
+        function rockSVG() {
+            const id = 'rk' + (++rockId), [c1, c2, c3] = ROCKS[Math.floor(Math.random() * ROCKS.length)];
+            const n = 15 + Math.floor(Math.random() * 4), seed = Math.random() * 6.28;
+            const sx = 0.94 + Math.random() * 0.1, sy = 0.9 + Math.random() * 0.08;
+            const P = [];
+            for (let i = 0; i < n; i++) {
+                const a = i / n * Math.PI * 2;
+                const r = 39 + Math.sin(a * 2 + seed) * 3.2 + Math.sin(a * 3 + seed * 1.7) * 2.4 + (Math.random() - 0.5) * 6;
+                P.push([50 + Math.cos(a) * r * sx, 50 + Math.sin(a) * r * sy]);
+            }
+            let d = `M${P[0][0].toFixed(1)} ${P[0][1].toFixed(1)}`;
+            for (let i = 0; i < n; i++) {
+                const p0 = P[(i - 1 + n) % n], p1 = P[i], p2 = P[(i + 1) % n], p3 = P[(i + 2) % n], k = 0.09;
+                d += `C${(p1[0] + (p2[0] - p0[0]) * k).toFixed(1)} ${(p1[1] + (p2[1] - p0[1]) * k).toFixed(1)} ` +
+                     `${(p2[0] - (p3[0] - p1[0]) * k).toFixed(1)} ${(p2[1] - (p3[1] - p1[1]) * k).toFixed(1)} ${p2[0].toFixed(1)} ${p2[1].toFixed(1)}`;
+            }
+            d += 'Z';
+            let craters = '';
+            const nc = 3 + Math.floor(Math.random() * 3);
+            for (let i = 0; i < nc; i++) {
+                const a = Math.random() * 6.28, rr = Math.random() * 25, x = 50 + Math.cos(a) * rr, y = 50 + Math.sin(a) * rr;
+                const rx = 4 + Math.random() * 7, ry = rx * (0.7 + Math.random() * 0.25);
+                craters += `<ellipse cx="${(x + 0.9).toFixed(1)}" cy="${(y + 1.4).toFixed(1)}" rx="${rx.toFixed(1)}" ry="${ry.toFixed(1)}" fill="none" stroke="rgba(255,255,255,.28)" stroke-width="1.2"/>` +
+                           `<ellipse cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="${rx.toFixed(1)}" ry="${ry.toFixed(1)}" fill="rgba(0,0,0,.34)"/>`;
+            }
+            let specks = '';
+            for (let i = 0; i < 9; i++) {
+                const a = Math.random() * 6.28, rr = Math.random() * 36;
+                specks += `<circle cx="${(50 + Math.cos(a) * rr).toFixed(1)}" cy="${(50 + Math.sin(a) * rr).toFixed(1)}" r="${(0.7 + Math.random() * 1.3).toFixed(1)}" fill="rgba(${Math.random() < 0.5 ? '0,0,0,.28' : '255,255,255,.2'})"/>`;
+            }
+            return `<svg class="rock" viewBox="0 0 100 100" aria-hidden="true"><defs>` +
+                `<radialGradient id="${id}b" cx="34%" cy="28%" r="80%"><stop offset="0" stop-color="${c1}"/><stop offset=".55" stop-color="${c2}"/><stop offset="1" stop-color="${c3}"/></radialGradient>` +
+                `<linearGradient id="${id}s" x1="0" y1="0" x2="1" y2="1"><stop offset=".45" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".5"/></linearGradient>` +
+                `<radialGradient id="${id}g" cx="50%" cy="100%" r="60%"><stop offset="0" stop-color="#FFB347" stop-opacity=".75"/><stop offset=".6" stop-color="#FF6A1A" stop-opacity=".25"/><stop offset="1" stop-color="#FF4500" stop-opacity="0"/></radialGradient>` +
+                `<clipPath id="${id}c"><path d="${d}"/></clipPath></defs>` +
+                `<path d="${d}" fill="url(#${id}b)"/><g clip-path="url(#${id}c)">${craters}${specks}` +
+                `<rect width="100" height="100" fill="url(#${id}s)"/><rect width="100" height="100" fill="url(#${id}g)"/></g>` +
+                `<path d="${d}" fill="none" stroke="rgba(0,0,0,.4)" stroke-width="1.2"/></svg>`;
+        }
         const $ = s => root.querySelector(s);
         const area = $('.game-area'), zoro = $('.zoro'), moon = $('.moon');
         const overScreen = $('.game-over'), startScreen = $('.start-screen');
@@ -64,11 +107,11 @@
             const el = document.createElement('div');
             let shrink;
             if (kind === 'obstacle') {
-                const [cls, base, spot] = NS_PLANETS[Math.floor(Math.random() * NS_PLANETS.length)];
-                el.className = 'obstacle ' + cls;
-                el.innerHTML = `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="${base}"/>` +
-                    `<circle cx="30" cy="30" r="10" fill="${spot}"/><circle cx="70" cy="30" r="8" fill="${spot}"/>` +
-                    `<circle cx="40" cy="70" r="12" fill="${spot}"/></svg>`;
+                el.className = 'obstacle';
+                el.innerHTML = '<span class="flame"></span>' + rockSVG();
+                const spin = el.querySelector('svg');
+                spin.style.animationDuration = (5 + Math.random() * 9).toFixed(1) + 's';
+                if (Math.random() < 0.5) spin.style.animationDirection = 'reverse';
                 shrink = 0.12;
             } else {
                 el.className = 'pickup';
@@ -77,6 +120,7 @@
                 shrink = 0;
             }
             area.appendChild(el);
+            if (kind === 'obstacle') { const base = Math.max(el.offsetWidth, 54), sc = 0.85 + Math.random() * 0.5; el.style.width = el.style.height = (base * sc) + 'px'; }
             const w = el.offsetWidth, h = el.offsetHeight;
             const x = W * 0.05 + Math.random() * Math.max(0, W * 0.9 - w);
             el.style.left = x + 'px';
