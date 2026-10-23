@@ -17,7 +17,7 @@
     { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ],
   "shortcuts": [
-    { "name": "عمر القمر", "url": "MoonAge.html", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
-    { "name": "إلى القمر", "url": "ToTheMoon.html", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] }
+    { "name": "عمر القمر", "url": "index.html#/age", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "إلى القمر", "url": "index.html#/game", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] }
   ]
 }

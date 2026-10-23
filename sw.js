@@ -1,9 +1,9 @@
 /* sw.js — عامل الخدمة: يعمل الموقع دون اتصال (ما عدا التلاوة الصوتية فهي من الإنترنت). */
-const VERSION = 'moon-v20261023g';
+const VERSION = 'moon-v20261024a';
 const SHELL = [
   './', 'index.html', 'MoonAge.html', 'ToTheMoon.html',
-  'style.css', 'pet.css', 'quran-player.css', 'design.css',
-  'site.js', 'quran-player.js', 'ayat.json', 'manifest.webmanifest',
+  'style.css', 'pet.css', 'quran-player.css', 'app.css', 'design.css',
+  'site.js', 'quran-player.js', 'home.js', 'age.js', 'game.js', 'app.js', 'ayat.json', 'manifest.webmanifest',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png',
   ...['bat', 'cloud', 'firstQuarter', 'fullMoon', 'lastQuarter', 'newMoon', 'sakura', 'sakuraBranch',
       'waningCrescent', 'waningGibbous', 'waxingCrescent', 'waxingGibbous', 'zoro'].map(n => `images1/${n}.png`)

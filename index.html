@@ -13,352 +13,11 @@
   <meta name="apple-mobile-web-app-title" content="القمر">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%99%3C/text%3E%3C/svg%3E">
-  <link rel="stylesheet" href="style.css?v=20261023d">
-  <link rel="stylesheet" href="pet.css?v=20261023d">
-  <link rel="stylesheet" href="quran-player.css?v=20261023d">
-  <style>
-    :root {
-      --primary-color: #8E9AAF;
-      --secondary-color: #EFD3D7;
-      --accent-color: #FEEAFA;
-      --bg-color: #0B1026;
-      --card-bg: rgba(255, 255, 255, 0.05);
-      --text-shadow: 0 0 20px rgba(142, 154, 175, 0.4);
-      --star-color: rgba(255, 255, 255, 0.8);
-      --body-gradient-start: #0B1026;
-      --body-gradient-end: #1A1B36;
-      --nebula-opacity: 0.05;
-    }
-
-    [data-theme="light"] {
-      --primary-color: #FF8C42;
-      --secondary-color: #2C3E50;
-      --accent-color: #FFB74D;
-      --bg-color: #F8F9FA;
-      --card-bg: rgba(255, 140, 66, 0.1);
-      --text-shadow: 0 0 20px rgba(255, 140, 66, 0.3);
-      --star-color: rgba(44, 62, 80, 0.6);
-      --body-gradient-start: #FF512F;
-      --body-gradient-end: #F09819;
-      --nebula-opacity: 0.02;
-    }
-
-    .nebula {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: 
-        radial-gradient(circle at 20% 30%, rgba(142, 154, 175, var(--nebula-opacity)) 0%, transparent 40%),
-        radial-gradient(circle at 80% 70%, rgba(142, 154, 175, var(--nebula-opacity)) 0%, transparent 40%),
-        radial-gradient(circle at 50% 50%, rgba(142, 154, 175, calc(var(--nebula-opacity) * 0.4)) 0%, transparent 60%);
-      pointer-events: none;
-      z-index: 1;
-      transition: background 0.5s ease;
-    }
-
-    body {
-      background: linear-gradient(135deg, var(--body-gradient-start) 0%, var(--body-gradient-end) 100%);
-      color: var(--secondary-color);
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      text-align: center;
-      min-height: 100vh;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      position: relative;
-      overflow-x: hidden;
-      transition: background 0.5s ease;
-    }
-
-    h1 {
-      color: var(--accent-color);
-      font-size: 2.5rem;
-      margin-bottom: 30px;
-      text-shadow: var(--text-shadow);
-      letter-spacing: 1px;
-    }
-
-    .ayah-container {
-      background: var(--card-bg);
-      backdrop-filter: blur(15px);
-      padding: 40px;
-      border-radius: 30px;
-      box-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.1),
-        inset 0 0 32px rgba(142, 154, 175, 0.1);
-      margin-top: 50px;
-      max-width: 800px;
-      position: relative;
-      overflow: hidden;
-      border: 1px solid rgba(142, 154, 175, 0.1);
-      transition: all 0.5s ease;
-    }
-
-    .ayah-container:hover {
-      box-shadow: 
-        0 15px 45px rgba(0, 0, 0, 0.15),
-        inset 0 0 32px rgba(142, 154, 175, 0.2);
-    }
-
-    .ayah {
-      font-size: 1.6rem;
-      font-weight: 500;
-      color: var(--accent-color);
-      line-height: 2;
-      position: relative;
-      z-index: 1;
-      text-shadow: var(--text-shadow);
-    }
-
-
-    @keyframes float {
-      0%, 100% {
-        transform: translateY(0) rotate(0deg);
-      }
-      50% {
-        transform: translateY(-10px) rotate(1deg);
-      }
-    }
-
-    @media (max-width: 768px) {
-      h1 {
-        font-size: 2rem;
-      }
-
-      .ayah {
-        font-size: 1.3rem;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .container {
-        padding: 10px;
-      }
-
-      h1 {
-        font-size: 1.5rem;
-      }
-
-      .ayah {
-        font-size: 1.2rem;
-      }
-
-      .ayah-container {
-        padding: 30px 20px;
-      }
-    }
-
-    /* Add Zoro styles */
-
-    .heart {
-      position: absolute;
-      font-size: 20px;
-      color: #ff6b6b;
-      pointer-events: none;
-      animation: floatHeart 1s ease-out forwards;
-      text-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
-    }
-
-    /* Navigation Styles */
-
-    .nav-link i {
-      font-size: 1.2rem;
-      transition: transform 0.3s ease;
-    }
-
-    .nav-link:hover i {
-      transform: scale(1.1);
-    }
-
-    @media (max-width: 768px) {
-      .nav-list {
-        gap: 15px;
-      }
-
-      .nav-link {
-        font-size: 1rem;
-        padding: 6px 12px;
-      }
-    }
-
-    /* Theme Toggle Button */
-
-    .theme-toggle i {
-      position: absolute;
-      transition: all 0.5s ease;
-    }
-
-    .theme-toggle .fa-cherry-blossom {
-      opacity: 0;
-      transform: translateX(20px) translateY(5px) scale(0.7);
-      color: #FFB6C1;
-      display: none;
-    }
-
-    .theme-toggle .sakura-icon {
-      opacity: 0;
-      transform: translateX(20px) translateY(5px) scale(0.7);
-      display: none;
-      width: 35px;
-      height: 35px;
-      background-image: url('images1/sakura.png');
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: center;
-    }
-
-    [data-theme="light"] .theme-toggle .fa-moon {
-      opacity: 0;
-      transform: rotate(180deg);
-    }
-
-    [data-theme="light"] .theme-toggle .fa-sun {
-      opacity: 1;
-      transform: rotate(0deg);
-    }
-
-    [data-theme="light"] .theme-toggle .fa-cloud {
-      opacity: 1;
-      transform: translateX(0) translateY(5px) scale(0.7);
-      color: white;
-    }
-
-    [data-theme="sakura"] .theme-toggle .fa-moon {
-      opacity: 0;
-      transform: rotate(180deg);
-    }
-
-    [data-theme="sakura"] .theme-toggle .fa-sun {
-      opacity: 0;
-      transform: rotate(180deg);
-    }
-
-    [data-theme="sakura"] .theme-toggle .fa-cloud {
-      opacity: 0;
-      transform: translateX(-20px) translateY(5px) scale(0.7);
-    }
-
-    [data-theme="sakura"] .theme-toggle .sakura-icon {
-      opacity: 1;
-      transform: translateX(0) translateY(0) scale(1.2);
-      display: block;
-    }
-
-    /* Sakura Theme Variables */
-
-    /* Sakura Branch */
-
-    /* Falling Sakura Leaves */
-
-    /* Add sunset glow effect */
-    [data-theme="light"] .nebula {
-      background: 
-        radial-gradient(circle at 20% 30%, rgba(255, 140, 66, 0.15) 0%, transparent 40%),
-        radial-gradient(circle at 80% 70%, rgba(255, 183, 77, 0.15) 0%, transparent 40%),
-        radial-gradient(circle at 50% 50%, rgba(255, 140, 66, 0.1) 0%, transparent 60%);
-    }
-
-    /* Cloud styles */
-    .cloud {
-      position: fixed;
-      pointer-events: none;
-      z-index: 0;
-      opacity: 0.9;
-      width: 400px;
-      height: 200px;
-      background-image: url('images1/cloud.png');
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: center;
-      filter: blur(3px);
-      -webkit-filter: blur(3px);
-      display: none;
-    }
-
-    [data-theme="light"] .cloud {
-      display: block;
-    }
-
-    [data-theme="dark"] .cloud,
-    [data-theme="sakura"] .cloud {
-      display: none;
-    }
-
-    .cloud-1 {
-      top: 5%;
-      left: 10%;
-      transform: scale(0.8);
-    }
-
-    .cloud-2 {
-      top: 15%;
-      right: 15%;
-      transform: scale(1.2);
-    }
-
-    .cloud-3 {
-      top: 25%;
-      left: 25%;
-      transform: scale(0.9);
-    }
-
-    .cloud-4 {
-      top: 35%;
-      right: 30%;
-      transform: scale(1.1);
-    }
-
-    .cloud-5 {
-      top: 45%;
-      left: 40%;
-      transform: scale(1.0);
-    }
-
-    .cloud-6 {
-      top: 55%;
-      right: 25%;
-      transform: scale(0.7);
-    }
-
-    .cloud-7 {
-      top: 65%;
-      left: 15%;
-      transform: scale(1.3);
-    }
-
-    .cloud-8 {
-      top: 75%;
-      right: 40%;
-      transform: scale(0.8);
-    }
-
-    .cloud-9 {
-      top: 85%;
-      left: 30%;
-      transform: scale(1.1);
-    }
-
-    .cloud-10 {
-      top: 20%;
-      right: 10%;
-      transform: scale(0.9);
-    }
-  
-    /* القمر في الصفحة الرئيسية */
-    .home-moon{margin:10px auto 0;display:flex;flex-direction:column;align-items:center;gap:6px}
-    .home-moon img{width:220px;height:220px;object-fit:contain;animation:float 3s ease-in-out infinite;
-      filter:drop-shadow(0 0 25px rgba(239,211,215,.35));transition:transform .3s}
-    .home-moon a:hover img{transform:scale(1.05)}
-    .home-moon-name{font-size:1.5rem;color:var(--accent-color);text-shadow:var(--text-shadow)}
-    .home-moon-meta{font-size:1rem;opacity:.85}
-    @media (max-width:480px){.home-moon img{width:170px;height:170px}}
-  
-    [data-theme="sakura"] .home-moon-meta { color: var(--accent-color); }
-  </style>
-  <link rel="stylesheet" href="design.css?v=20261023d">
+    <link rel="stylesheet" href="style.css?v=20261024a">
+  <link rel="stylesheet" href="pet.css?v=20261024a">
+  <link rel="stylesheet" href="quran-player.css?v=20261024a">
+  <link rel="stylesheet" href="app.css?v=20261024a">
+  <link rel="stylesheet" href="design.css?v=20261024a">
 </head>
 <body>
 <script>try{var t=localStorage.getItem('theme');if(['dark','light','sakura'].indexOf(t)<0)t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.body.setAttribute('data-theme',t)}catch(e){document.body.setAttribute('data-theme','dark')}</script>
@@ -385,25 +44,17 @@
   <div class="container">
     <nav class="nav-container" aria-label="التنقل الرئيسي">
       <ul class="nav-list">
-        <li class="nav-item">
-          <a href="index.html" class="nav-link active" aria-current="page">
-            <svg class="ic ic-home" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span class="tab-label">الرئيسية</span></a>
-        </li>
-        <li class="nav-item">
-          <a href="MoonAge.html" class="nav-link">
-            <svg class="ic ic-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg><span class="tab-label">عمر القمر</span></a>
-        </li>
-        <li class="nav-item">
-          <a href="ToTheMoon.html" class="nav-link">
-            <svg class="ic ic-gamepad" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 8h10a4 4 0 0 1 4 4v1.5a3 3 0 0 1-5.2 2L14.5 14h-5l-1.3 1.5A3 3 0 0 1 3 13.5V12a4 4 0 0 1 4-4z"/><path d="M7.5 10.2v3.6M5.7 12h3.6M16 11.2h.01M18 12.8h.01"/></svg><span class="tab-label">إلى القمر</span></a>
-        </li>
+        <li class="nav-item"><a href="#/home" class="nav-link" data-view="home"><svg class="ic ic-home" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span class="tab-label">الرئيسية</span></a></li>
+        <li class="nav-item"><a href="#/age" class="nav-link" data-view="age"><svg class="ic ic-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg><span class="tab-label">عمر القمر</span></a></li>
+        <li class="nav-item"><a href="#/game" class="nav-link" data-view="game"><svg class="ic ic-gamepad" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 8h10a4 4 0 0 1 4 4v1.5a3 3 0 0 1-5.2 2L14.5 14h-5l-1.3 1.5A3 3 0 0 1 3 13.5V12a4 4 0 0 1 4-4z"/><path d="M7.5 10.2v3.6M5.7 12h3.6M16 11.2h.01M18 12.8h.01"/></svg><span class="tab-label">إلى القمر</span></a></li>
       </ul>
     </nav>
-
-    <h1>شكل القمر اليوم</h1>
+    <main id="app">
+    <section class="view" id="view-home" data-view="home" aria-labelledby="h-home">
+      <h1 id="h-home" tabindex="-1">شكل القمر اليوم</h1>
 
     <section class="home-moon" aria-live="polite">
-      <a href="MoonAge.html" title="عمر القمر"><img id="homeMoon" alt="شكل القمر اليوم" width="220" height="220"></a>
+      <a href="#/age" title="عمر القمر"><img id="homeMoon" alt="شكل القمر اليوم" width="220" height="220"></a>
       <div class="home-moon-name" id="homeMoonName"></div>
       <div class="home-moon-meta" id="homeMoonMeta"></div>
     </section>
@@ -412,70 +63,77 @@
       <p class="ayah" id="ayah"></p>
       <div id="ayahPlayer"></div>
     </div>
+
+    </section>
+    <section class="view" id="view-age" data-view="age" hidden aria-labelledby="h-age">
+      <h1 id="h-age" tabindex="-1">عمر القمر</h1>
+    
+    <div class="moon-container">
+      <div class="moon-image-wrapper">
+        <a href="#/home" class="moon-link" aria-label="العودة إلى الصفحة الرئيسية">
+          <img id="moonImage" src="" alt="شكل القمر">
+        </a>
+      </div>
+      <div id="phaseName" class="phase-name"></div>
+    </div>
+
+    <div class="age-details">
+      <h2>عمر القمر منذ 23 أبريل 2001</h2>
+      <div class="age-grid" id="moonAgeDetails"></div>
+      <button class="expand-button" id="expandButton">
+        عرض الكل
+        <svg class="ic ic-chevron" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+    </div>
+
+    </section>
+    <section class="view" id="view-game" data-view="game" hidden aria-labelledby="h-game">
+      <h1 id="h-game" tabindex="-1">إلى القمر</h1>
+        <div class="game-container">
+            <div class="game-area">
+                <div class="zoro"></div>
+                <div class="moon"></div>
+                <div class="start-screen">
+                    <button class="start-button">ابدأ اللعب</button>
+                </div>
+                <div class="game-over">
+                    <h2>انتهت اللعبة!</h2>
+                    <p>الوقت الكلي: <span id="finalScore">00:00</span></p>
+                    <button class="restart-button">إعادة اللعب</button>
+                </div>
+            </div>
+        </div>
+        <div class="game-stats">
+            <div class="score-display">
+                <div class="points">
+                    <svg class="ic ic-heart" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 20.5s-8-4.7-8-10.3A4.7 4.7 0 0 1 12 7.6a4.7 4.7 0 0 1 8 2.6c0 5.6-8 10.3-8 10.3z"/></svg>
+                    <span id="points">0</span>
+                </div>
+                <div class="time">
+                    <svg class="ic ic-clock" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                    <span id="time">0:00</span>
+                </div>
+                <div class="level">
+                    <span>المستوى</span>
+                    <span id="level">1</span>
+                </div>
+                <button class="pause-button" id="pauseButton">
+                    <svg class="ic ic-pause" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8.5 5v14M15.5 5v14"/></svg>
+                </button>
+            </div>
+        </div>
+
+    </section>
+    </main>
   </div>
 
   <div class="sakura-branch"></div>
 
-  <script src="site.js?v=20261023d"></script>
-  <script src="quran-player.js?v=20261023d"></script>
-  <script>
-    (() => {
-      const { moonInfo, showMoon, ar, zoroPet } = SiteKit;
-      const FALLBACK = { ayah: 'إِنَّ مَعَ الْعُسْرِ يُسْرًا (الشرح: 6)', surah: 94, verse: 6, complete: true };
-      const ayahEl = document.getElementById('ayah');
-      let ayat = null, shownDay = null, fallbackShown = false;
-      const player = QuranPlayer.mount(document.getElementById('ayahPlayer'));
-
-      // رقم اليوم منذ 1970 — يمرّ على كل الآيات بالتتابع دون تكرار حتى تكتمل الدورة
-      const dayNumber = () => {
-        const d = new Date();
-        return Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 864e5);
-      };
-
-      function showAyah(entry) {
-        ayahEl.style.transition = 'none';
-        ayahEl.style.opacity = '0';
-        ayahEl.textContent = entry.ayah;
-        player.setAyah(entry);
-        requestAnimationFrame(() => requestAnimationFrame(() => {
-          ayahEl.style.transition = 'opacity 1s ease-in-out';
-          ayahEl.style.opacity = '1';
-        }));
-      }
-
-      async function updateAyah() {
-        const day = dayNumber();
-        if (day === shownDay) return;
-        try {
-          if (!ayat) {
-            const res = await fetch('ayat.json');
-            if (!res.ok) throw new Error('HTTP ' + res.status);
-            ayat = await res.json();
-          }
-          showAyah(ayat[day % ayat.length]);
-          shownDay = day;
-        } catch (err) {
-          console.error('تعذر تحميل الآيات:', err);
-          if (!fallbackShown && shownDay === null) { showAyah(FALLBACK); fallbackShown = true; }
-        }
-      }
-
-      const moonImg = document.getElementById('homeMoon');
-      const nameEl = document.getElementById('homeMoonName');
-      const metaEl = document.getElementById('homeMoonMeta');
-      function updateMoon() {
-        const m = moonInfo();
-        showMoon(moonImg, m);
-        nameEl.textContent = m.phase.name;
-        metaEl.textContent = `عمر القمر ${ar(m.age, 1)} يومًا · الإضاءة نحو ${ar(Math.round(m.illum * 100))}٪`;
-      }
-
-      const refresh = () => { updateAyah(); updateMoon(); };
-      refresh();
-      setInterval(refresh, 60000);                       // يلتقط تغيّر اليوم عند منتصف الليل
-      document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh(); });
-      zoroPet();
-    })();
-  </script>
+  <script src="site.js?v=20261024a"></script>
+  <script src="quran-player.js?v=20261024a"></script>
+  <script src="home.js?v=20261024a"></script>
+  <script src="age.js?v=20261024a"></script>
+  <script src="game.js?v=20261024a"></script>
+  <script src="app.js?v=20261024a"></script>
 </body>
 </html>

@@ -339,7 +339,7 @@ h1 { text-shadow: none; }
 .game-area { background: transparent; }
 .moon, .zoro { filter: drop-shadow(0 0 14px var(--game-glow)); }
 .obstacle svg, .obstacle-asteroid svg, .obstacle-satellite svg, .obstacle-ufo svg { filter: drop-shadow(0 0 1.5px var(--game-edge)) drop-shadow(0 2px 4px rgba(0,0,0,.25)); }
-.heart svg { filter: drop-shadow(0 0 4px var(--game-glow)) drop-shadow(0 0 1px var(--game-edge)); }
+.pickup svg { filter: drop-shadow(0 0 4px var(--game-glow)) drop-shadow(0 0 1px var(--game-edge)); }
 .game-over { background: var(--over-bg); color: var(--secondary-color); border: 1px solid var(--game-border); }
 .game-area.paused::after { background: color-mix(in srgb, var(--over-bg) 55%, transparent); color: var(--secondary-color); }
 .moon.ready { animation: moonPulse2 1.2s ease-in-out infinite; }
@@ -383,27 +383,33 @@ h1 { text-shadow: none; }
   :root { --spring: linear(0, 0.22 5%, 0.58 12%, 0.88 20%, 1.03 30%, 1.045 38%, 1.02 48%, 0.996 60%, 1); }
 }
 
-/* ---------- الانتقال بين الصفحات (View Transitions) ---------- */
-@view-transition { navigation: auto; }
-::view-transition-old(root) { animation: vt-out var(--t-base) var(--ease-ios) both; }
-::view-transition-new(root) { animation: vt-in .45s var(--ease-ios) both; }
-@keyframes vt-out { to { opacity: 0; transform: scale(.985); } }
-@keyframes vt-in { from { opacity: 0; transform: translateY(14px) scale(1.008); } }
+/* ---------- الانتقال بين الشاشات (View Transitions) — الاتجاه يتبع ترتيب التبويبات (RTL) ---------- */
+html.vt-fwd::view-transition-old(root) { animation: vt-out-fwd .32s var(--ease-ios) both; }
+html.vt-fwd::view-transition-new(root) { animation: vt-in-fwd .5s var(--ease-ios) both; }
+html.vt-back::view-transition-old(root) { animation: vt-out-back .32s var(--ease-ios) both; }
+html.vt-back::view-transition-new(root) { animation: vt-in-back .5s var(--ease-ios) both; }
+@keyframes vt-out-fwd { to { opacity: 0; transform: translateX(36px) scale(.985); } }
+@keyframes vt-in-fwd { from { opacity: 0; transform: translateX(-36px) scale(.985); } }
+@keyframes vt-out-back { to { opacity: 0; transform: translateX(-36px) scale(.985); } }
+@keyframes vt-in-back { from { opacity: 0; transform: translateX(36px) scale(.985); } }
 .nav-container { view-transition-name: tabbar; }
 .theme-toggle { view-transition-name: themebtn; }
 .nav-link[aria-current="page"] { view-transition-name: tablens; }
+/* القمر عنصر مشترك: يتحوّل بين الرئيسية وعمر القمر */
+#view-home:not([hidden]) #homeMoon, #view-age:not([hidden]) #moonImage { view-transition-name: moon; }
 ::view-transition-group(tabbar), ::view-transition-group(themebtn) { animation-duration: 0s; }
-::view-transition-group(tablens) { animation-duration: .5s; animation-timing-function: var(--ease-ios); }
+::view-transition-group(tablens), ::view-transition-group(moon) { animation-duration: .55s; animation-timing-function: var(--ease-ios); }
 ::view-transition-old(tablens), ::view-transition-new(tablens) { height: 100%; }
+.view { width: 100%; }
+.view > h1:focus { outline: none; }
 
 /* ---------- ظهور المحتوى عند فتح الصفحة (تتابع خفيف) ---------- */
 @keyframes rise { from { opacity: 0; transform: translateY(12px); } }
-.container > h1, .home-moon, .ayah-container, .moon-container, .age-details, .game-container, .game-stats {
-  animation: rise .5s var(--ease-ios) backwards;
-}
-.container > h1 { animation-delay: .04s; }
-.home-moon, .moon-container, .game-container { animation-delay: .10s; }
-.ayah-container, .age-details, .game-stats { animation-delay: .18s; }
+.rise-on .view > h1, .rise-on .home-moon, .rise-on .ayah-container, .rise-on .moon-container, .rise-on .age-details,
+.rise-on .game-container, .rise-on .game-stats { animation: rise .5s var(--ease-ios) backwards; }
+.rise-on .view > h1 { animation-delay: .04s; }
+.rise-on .home-moon, .rise-on .moon-container, .rise-on .game-container { animation-delay: .10s; }
+.rise-on .ayah-container, .rise-on .age-details, .rise-on .game-stats { animation-delay: .18s; }
 
 /* ---------- ردّ الفعل عند الضغط: انكماش سريع ثم عودة نابضة ---------- */
 .nav-link, .theme-toggle, .qp-btn, .qp-play, .start-button, .restart-button, .pause-button, .expand-button, .qpw-done, .qpw-cancel {
@@ -426,6 +432,6 @@ body { transition: background .6s ease, color .4s ease; }
 /* ---------- تقليل الحركة: لا انتقالات ولا تتابع ---------- */
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
-  .container > *, .home-moon, .ayah-container, .moon-container, .age-details, .game-container, .game-stats { animation: none !important; }
+  .rise-on .view > *, .rise-on .home-moon, .rise-on .ayah-container, .rise-on .moon-container, .rise-on .age-details, .rise-on .game-container, .rise-on .game-stats { animation: none !important; }
   .nav-link:active, .theme-toggle:active, .qp-btn:active, .qp-play:active { transform: none; }
 }
