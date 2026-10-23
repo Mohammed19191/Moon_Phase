@@ -96,3 +96,15 @@ html.sheet-open, html.sheet-open body { overflow: hidden; }
 a.share-secondary:not([href]) { opacity: .4; pointer-events: none; }
 .share-primary:focus-visible, .share-secondary:focus-visible { outline: 2px solid var(--accent-color); outline-offset: 2px; }
 .share-status { min-height: 1.2em; margin: 10px 0 0; font-size: .9rem; }
+
+/* ---------- الزجاج السائل (glass.js) ---------- */
+.lg-root { position: fixed; inset: 0; z-index: 20; pointer-events: none; }
+.lg-root > * { pointer-events: auto; }
+.lg-root > .lg-sky { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; }
+.lg-on .lg-root > .nav-container, .lg-on .lg-root > .theme-toggle {
+  background: transparent !important; background-image: none !important;
+  backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+  border-color: transparent !important; box-shadow: none !important; overflow: visible !important;
+}
+/* البورغندي: نص التبويب المحدد كان داكنًا فوق عدسة داكنة؛ نجعله فاتحًا ليُقرأ */
+[data-theme="burgundy"] .nav-link.active, [data-theme="burgundy"] .nav-link[aria-current="page"] { color: #FFE9EE; }
