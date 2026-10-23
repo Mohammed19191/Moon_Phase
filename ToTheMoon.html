@@ -7,7 +7,6 @@
   <meta name="description" content="لعبة إلى القمر: اجمع القلوب وتفادَ الكواكب حتى تصل إلى القمر">
   <meta name="theme-color" content="#0B1026">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%99%3C/text%3E%3C/svg%3E">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <style>
         :root {
@@ -566,6 +565,7 @@
             color:var(--accent-color);line-height:1.7;font-size:1rem}
         .best-line{margin:10px 0 16px;opacity:.85;font-size:.9rem}
   </style>
+  <link rel="stylesheet" href="design.css">
 </head>
 <body>
 <script>try{var t=localStorage.getItem('theme');if(['dark','light','sakura'].indexOf(t)<0)t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.body.setAttribute('data-theme',t)}catch(e){document.body.setAttribute('data-theme','dark')}</script>
@@ -804,7 +804,7 @@
         area.addEventListener('pointermove', follow);
         area.addEventListener('pointerdown', follow);
 
-        const pauseIcon = cls => { pauseBtn.querySelector('i').className = 'fas ' + cls; };
+        const pauseIcon = cls => { pauseBtn.querySelector('.ic').replaceWith(new DOMParser().parseFromString(SiteKit.icon(cls.replace('fa-','')), 'text/html').body.firstChild); };
         function pause() {
             if (state !== 'playing') return;
             state = 'paused'; keys.clear();

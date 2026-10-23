@@ -7,9 +7,9 @@
   <meta name="description" content="شكل القمر اليوم وآية اليوم">
   <meta name="theme-color" content="#0B1026">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%99%3C/text%3E%3C/svg%3E">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="pet.css">
+  <link rel="stylesheet" href="quran-player.css">
   <style>
     :root {
       --primary-color: #8E9AAF;
@@ -147,6 +147,10 @@
 
       .ayah {
         font-size: 1.2rem;
+      }
+
+      .ayah-container {
+        padding: 30px 20px;
       }
     }
 
@@ -357,6 +361,7 @@
   
     [data-theme="sakura"] .home-moon-meta { color: var(--accent-color); }
   </style>
+  <link rel="stylesheet" href="design.css">
 </head>
 <body>
 <script>try{var t=localStorage.getItem('theme');if(['dark','light','sakura'].indexOf(t)<0)t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.body.setAttribute('data-theme',t)}catch(e){document.body.setAttribute('data-theme','dark')}</script>
@@ -419,18 +424,21 @@
 
     <div class="ayah-container">
       <p class="ayah" id="ayah"></p>
+      <div id="ayahPlayer"></div>
     </div>
   </div>
 
   <div class="sakura-branch"></div>
 
   <script src="site.js"></script>
+  <script src="quran-player.js"></script>
   <script>
     (() => {
       const { moonInfo, showMoon, ar, zoroPet } = SiteKit;
-      const FALLBACK = 'إِنَّ مَعَ الْعُسْرِ يُسْرًا (الشرح: 6)';
+      const FALLBACK = { ayah: 'إِنَّ مَعَ الْعُسْرِ يُسْرًا (الشرح: 6)', surah: 94, verse: 6, complete: true };
       const ayahEl = document.getElementById('ayah');
       let ayat = null, shownDay = null, fallbackShown = false;
+      const player = QuranPlayer.mount(document.getElementById('ayahPlayer'));
 
       // رقم اليوم منذ 1970 — يمرّ على كل الآيات بالتتابع دون تكرار حتى تكتمل الدورة
       const dayNumber = () => {
@@ -438,10 +446,11 @@
         return Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 864e5);
       };
 
-      function showAyah(text) {
+      function showAyah(entry) {
         ayahEl.style.transition = 'none';
         ayahEl.style.opacity = '0';
-        ayahEl.textContent = text;
+        ayahEl.textContent = entry.ayah;
+        player.setAyah(entry);
         requestAnimationFrame(() => requestAnimationFrame(() => {
           ayahEl.style.transition = 'opacity 1s ease-in-out';
           ayahEl.style.opacity = '1';
@@ -457,7 +466,7 @@
             if (!res.ok) throw new Error('HTTP ' + res.status);
             ayat = await res.json();
           }
-          showAyah(ayat[day % ayat.length].ayah);
+          showAyah(ayat[day % ayat.length]);
           shownDay = day;
         } catch (err) {
           console.error('تعذر تحميل الآيات:', err);

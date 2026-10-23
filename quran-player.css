@@ -1,0 +1,250 @@
+/* quran-player.css — مشغل تلاوة الآية (يتبع الثيمات الثلاثة عبر متغيرات الموقع) */
+
+.qp {
+  --qp-text: var(--secondary-color);
+  --qp-fg: var(--accent-color);
+  --qp-track: rgba(142, 154, 175, 0.35);
+  --qp-btn-bg: rgba(142, 154, 175, 0.14);
+  --qp-btn-bg-hover: rgba(142, 154, 175, 0.26);
+  --qp-line: rgba(142, 154, 175, 0.22);
+  --qp-play-bg: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+  --qp-play-fg: var(--bg-color);
+  --qp-option-bg: #1A1B36;
+  --qp-option-fg: #FEEAFA;
+  --qp-error: #FFB4A9;
+
+  position: relative;
+  z-index: 1;
+  direction: rtl;
+  text-align: right;
+  margin-top: 26px;
+  padding-top: 22px;
+  border-top: 1px solid var(--qp-line);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  color: var(--qp-text);
+  color-scheme: dark;
+}
+
+[data-theme="light"] .qp {
+  --qp-text: #2C3E50;
+  --qp-fg: #2C3E50;
+  --qp-track: rgba(44, 62, 80, 0.28);
+  --qp-btn-bg: rgba(255, 255, 255, 0.28);
+  --qp-btn-bg-hover: rgba(255, 255, 255, 0.5);
+  --qp-line: rgba(44, 62, 80, 0.25);
+  --qp-play-bg: #2C3E50;
+  --qp-play-fg: #FFE6C2;
+  --qp-option-bg: #FFF3E0;
+  --qp-option-fg: #2C3E50;
+  --qp-error: #7A1F12;
+  color-scheme: light;
+}
+
+[data-theme="sakura"] .qp {
+  --qp-text: #8E2C5A;
+  --qp-fg: #E0457F;
+  --qp-track: rgba(224, 69, 127, 0.22);
+  --qp-btn-bg: rgba(255, 182, 193, 0.28);
+  --qp-btn-bg-hover: rgba(255, 182, 193, 0.5);
+  --qp-line: rgba(224, 69, 127, 0.22);
+  --qp-play-bg: linear-gradient(45deg, #FFB6C1, #FF69B4);
+  --qp-play-fg: #FFFFFF;
+  --qp-option-bg: #FFF0F5;
+  --qp-option-fg: #8E2C5A;
+  --qp-error: #A3162E;
+  color-scheme: light;
+}
+
+.qp[hidden] { display: none; }
+.qp { min-width: 0; max-width: 100%; }
+
+/* ---- الصف الرئيسي: زر التشغيل + شريط التقدم ---- */
+.qp-main {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.qp-play {
+  flex: 0 0 auto;
+  width: 56px;
+  height: 56px;
+  border: none;
+  border-radius: 50%;
+  background: var(--qp-play-bg);
+  color: var(--qp-play-fg);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.qp-play:hover { transform: scale(1.06); box-shadow: 0 8px 26px rgba(0, 0, 0, 0.3); }
+.qp-play:active { transform: scale(0.97); }
+.qp-play svg { width: 26px; height: 26px; fill: currentColor; }
+.qp-play .i-pause, .qp-play .i-spin { display: none; }
+.qp.is-playing .qp-play .i-play { display: none; }
+.qp.is-playing .qp-play .i-pause { display: block; }
+.qp.is-loading .qp-play .i-play,
+.qp.is-loading .qp-play .i-pause { display: none; }
+.qp.is-loading .qp-play .i-spin { display: block; }
+.qp .i-spin { animation: qp-spin 0.9s linear infinite; }
+@keyframes qp-spin { to { transform: rotate(-360deg); } }
+
+.qp-seekwrap { flex: 1 1 auto; min-width: 0; }
+
+.qp-seek,
+.qp-volume {
+  --p: 0%;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 8px;
+  margin: 8px 0;
+  border-radius: 8px;
+  outline: none;
+  cursor: pointer;
+  background: linear-gradient(to left, var(--qp-fg) var(--p), var(--qp-track) var(--p));
+}
+.qp-seek:disabled { cursor: default; opacity: 0.55; }
+
+.qp-seek::-webkit-slider-thumb,
+.qp-volume::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--qp-fg);
+  border: 2px solid var(--qp-play-fg);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.35);
+}
+.qp-seek::-moz-range-thumb,
+.qp-volume::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--qp-fg);
+  border: 2px solid var(--qp-play-fg);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.35);
+}
+.qp-seek::-moz-range-track,
+.qp-volume::-moz-range-track { background: transparent; }
+
+.qp-times {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  opacity: 0.9;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- اختيار القارئ ---- */
+.qp-qari {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.qp-qari-label { flex: 0 0 auto; font-size: 0.95rem; opacity: 0.9; }
+.qp-select {
+  flex: 1 1 0%;
+  width: 0;                      /* عرضه الداخلي = أطول اسم قارئ؛ نصفّره حتى لا يوسّع البطاقة على الجوال */
+  min-width: 0;
+  text-overflow: ellipsis;
+  font: inherit;
+  font-size: 1rem;
+  color: var(--qp-text);
+  background-color: var(--qp-btn-bg);
+  border: 1px solid var(--qp-line);
+  border-radius: 14px;
+  padding: 10px 14px 10px 38px;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238E9AAF' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: left 12px center;
+  background-size: 16px;
+  transition: background-color 0.2s ease;
+}
+.qp-select:hover { background-color: var(--qp-btn-bg-hover); }
+.qp-select option { background: var(--qp-option-bg); color: var(--qp-option-fg); }
+
+/* ---- أزرار التحكم ---- */
+.qp-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.qp-btn {
+  min-width: 44px;
+  height: 44px;
+  padding: 0 12px;
+  border: 1px solid var(--qp-line);
+  border-radius: 14px;
+  background: var(--qp-btn-bg);
+  color: var(--qp-text);
+  font: inherit;
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+.qp-btn:hover { background: var(--qp-btn-bg-hover); }
+.qp-btn:active { transform: scale(0.95); }
+.qp-btn svg { width: 22px; height: 22px; fill: currentColor; flex: 0 0 auto; }
+.qp-btn[aria-pressed="true"] {
+  background: var(--qp-fg);
+  color: var(--qp-play-fg);
+  border-color: transparent;
+}
+.qp-speed { min-width: 58px; font-variant-numeric: tabular-nums; }
+
+.qp-vol {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-inline-start: auto;
+  min-width: 0;
+}
+.qp-volume { width: 96px; margin: 0; }
+.qp .i-vol-off { display: none; }
+.qp.is-muted .i-vol-on { display: none; }
+.qp.is-muted .i-vol-off { display: block; }
+
+.qp-play:focus-visible,
+.qp-btn:focus-visible,
+.qp-select:focus-visible,
+.qp-seek:focus-visible,
+.qp-volume:focus-visible {
+  outline: 2px solid var(--qp-fg);
+  outline-offset: 3px;
+}
+
+/* ---- ملاحظات وحالة ---- */
+.qp-note {
+  margin: 0;
+  min-height: 1.3em;
+  font-size: 0.92rem;
+  line-height: 1.7;
+  opacity: 0.9;
+}
+.qp-note.is-error { color: var(--qp-error); opacity: 1; font-weight: 600; }
+
+@media (max-width: 480px) {
+  .qp { gap: 14px; }
+  .qp-play { width: 52px; height: 52px; }
+  .qp-vol { display: none; }                 /* الصوت يُضبط من الجهاز على الجوال */
+  .qp-tools { gap: 8px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .qp .i-spin { animation-duration: 2.5s; }
+  .qp-play, .qp-btn, .qp-select { transition: none; }
+}

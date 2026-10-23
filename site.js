@@ -3,7 +3,7 @@
   'use strict';
 
   const THEMES = ['dark', 'light', 'sakura'];
-  const BAR_COLORS = { dark: '#0B1026', light: '#FF512F', sakura: '#FFF0F5' };
+  const BAR_COLORS = { dark: '#0B1026', light: '#FF6B3D', sakura: '#FFF0F5' };
   const $ = (s, r = document) => r.querySelector(s);
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const store = {
@@ -74,6 +74,51 @@
     }
   }
 
+
+  /* ---------- الأيقونات (SVG مضمّنة بدل Font Awesome: لا اعتماد على شبكة خارجية) ---------- */
+  const ICON_PATHS = {
+    home: '<path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+    moon: '<path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/>',
+    gamepad: '<path d="M7 8h10a4 4 0 0 1 4 4v1.5a3 3 0 0 1-5.2 2L14.5 14h-5l-1.3 1.5A3 3 0 0 1 3 13.5V12a4 4 0 0 1 4-4z"/><path d="M7.5 10.2v3.6M5.7 12h3.6M16 11.2h.01M18 12.8h.01"/>',
+    sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/>',
+    cloud: '<path d="M7.5 18.5h9a4 4 0 0 0 .5-7.97 5.5 5.5 0 0 0-10.5 1.2 3.5 3.5 0 0 0 1 6.77z"/>',
+    flower: '<circle cx="12" cy="6.6" r="3.1"/><circle cx="17.1" cy="10.3" r="3.1"/><circle cx="15.2" cy="16.3" r="3.1"/><circle cx="8.8" cy="16.3" r="3.1"/><circle cx="6.9" cy="10.3" r="3.1"/>',
+    heart: '<path d="M12 20.5s-8-4.7-8-10.3A4.7 4.7 0 0 1 12 7.6a4.7 4.7 0 0 1 8 2.6c0 5.6-8 10.3-8 10.3z"/>',
+    clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+    pause: '<path d="M8.5 5v14M15.5 5v14"/>',
+    play: '<path d="M8 5.5v13l11-6.5z"/>',
+    chevron: '<path d="M6 9l6 6 6-6"/>'
+  };
+  const iconHTML = (name, cls = '') =>
+    `<svg class="ic ic-${name} ${cls}" viewBox="0 0 24 24" aria-hidden="true" focusable="false">${ICON_PATHS[name] || ''}</svg>`;
+  const iconEl = name => { const t = document.createElement('template'); t.innerHTML = iconHTML(name); return t.content.firstChild; };
+  const FA_MAP = { 'fa-home': 'home', 'fa-moon': 'moon', 'fa-gamepad': 'gamepad', 'fa-heart': 'heart',
+    'fa-clock': 'clock', 'fa-pause': 'pause', 'fa-play': 'play', 'fa-chevron-down': 'chevron' };
+  function hydrateIcons(root = document) {
+    root.querySelectorAll('i.fas').forEach(i => {
+      const key = [...i.classList].find(c => FA_MAP[c]);
+      if (key) i.replaceWith(iconEl(FA_MAP[key]));
+    });
+  }
+
+  const THEME_INFO = {
+    dark:   { icon: 'moon',   name: 'داكن' },
+    light:  { icon: 'sun',    name: 'فاتح' },
+    sakura: { icon: 'flower', name: 'ساكورا' }
+  };
+
+  /* ---------- شريط التبويب ---------- */
+  function setupNav() {
+    const nav = $('.nav-container');
+    if (!nav) return;
+    nav.setAttribute('aria-label', 'التنقل الرئيسي');
+    nav.querySelectorAll('.nav-link').forEach(a => {
+      if (a.classList.contains('active')) a.setAttribute('aria-current', 'page');
+      const text = [...a.childNodes].filter(n => n.nodeType === 3 && n.textContent.trim());
+      text.forEach(n => { const s = document.createElement('span'); s.className = 'tab-label'; s.textContent = n.textContent.trim(); n.replaceWith(s); });
+    });
+  }
+
   /* ---------- المظهر ---------- */
   function currentTheme() {
     const t = store.get('theme');
@@ -87,19 +132,30 @@
     let meta = $('meta[name="theme-color"]');
     if (meta) meta.setAttribute('content', BAR_COLORS[theme]);
     buildLeaves();
+    const btn = $('#themeToggle');
+    if (btn) {
+      const info = THEME_INFO[theme];
+      btn.innerHTML = iconHTML(info.icon);
+      btn.setAttribute('aria-label', 'المظهر الحالي: ' + info.name + '. اضغط للتبديل');
+      btn.title = 'المظهر: ' + info.name;
+    }
   }
 
   function setupTheme() {
     buildSky();
+    hydrateIcons();
+    setupNav();
     applyTheme(currentTheme(), false);
     const btn = $('#themeToggle');
     if (btn) {
-      btn.setAttribute('aria-label', 'تغيير المظهر');
       btn.addEventListener('click', () => {
         const next = THEMES[(THEMES.indexOf(document.body.dataset.theme) + 1) % THEMES.length];
         applyTheme(next, true);
       });
     }
+    matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+      if (!THEMES.includes(store.get('theme'))) applyTheme(currentTheme(), false);
+    });
     addEventListener('storage', e => { if (e.key === 'theme' && THEMES.includes(e.newValue)) applyTheme(e.newValue, false); });
   }
 
@@ -123,14 +179,14 @@
   }
 
   const PHASES = {
-    'new':             { file: 'newMoon.png',        name: 'محاق (New Moon)' },
-    'waxing crescent': { file: 'waxingCrescent.png', name: 'هلال متزايد (Waxing Crescent)' },
-    'first quarter':   { file: 'firstQuarter.png',   name: 'تربيع أول (First Quarter)' },
-    'waxing gibbous':  { file: 'waxingGibbous.png',  name: 'أحدب متزايد (Waxing Gibbous)' },
-    'full':            { file: 'fullMoon.png',       name: 'بدر (Full Moon)' },
-    'waning gibbous':  { file: 'waningGibbous.png',  name: 'أحدب متناقص (Waning Gibbous)' },
-    'last quarter':    { file: 'lastQuarter.png',    name: 'تربيع أخير (Last Quarter)' },
-    'waning crescent': { file: 'waningCrescent.png', name: 'هلال متناقص (Waning Crescent)' }
+    'new':             { file: 'newMoon.png',        name: 'محاق' },
+    'waxing crescent': { file: 'waxingCrescent.png', name: 'هلال متزايد' },
+    'first quarter':   { file: 'firstQuarter.png',   name: 'تربيع أول' },
+    'waxing gibbous':  { file: 'waxingGibbous.png',  name: 'أحدب متزايد' },
+    'full':            { file: 'fullMoon.png',       name: 'بدر' },
+    'waning gibbous':  { file: 'waningGibbous.png',  name: 'أحدب متناقص' },
+    'last quarter':    { file: 'lastQuarter.png',    name: 'تربيع أخير' },
+    'waning crescent': { file: 'waningCrescent.png', name: 'هلال متناقص' }
   };
   const ORDER = ['new', 'waxing crescent', 'first quarter', 'waxing gibbous', 'full',
     'waning gibbous', 'last quarter', 'waning crescent'];
@@ -178,7 +234,7 @@
     const box = $('.zoro-container'), img = $('.zoro-image');
     if (!box || !img) return;
     const counter = $('.click-counter'), span = $('#zoroClicks');
-    const AVOID = 'a,button,h1,.nav-container,.moon-container,.age-details,.ayah-container,.home-moon';
+    const AVOID = 'a,button,h1,.nav-container,.moon-container,.age-details,.ayah-container,.qp,.home-moon';
     const SIZE = 80, PAD = 20;
     let clicks = parseInt(store.get('zoroClicks'), 10) || 0;
     let clicked = false;
@@ -228,6 +284,6 @@
     setTimeout(show, 5000);
   }
 
-  window.SiteKit = { moonInfo, moonSVG, showMoon, PHASES, ar, zoroPet, store };
+  window.SiteKit = { icon: iconHTML, hydrateIcons, moonInfo, moonSVG, showMoon, PHASES, ar, zoroPet, store };
   setupTheme();
 })();

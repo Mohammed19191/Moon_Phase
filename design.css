@@ -1,0 +1,273 @@
+/* design.css — طبقة التصميم المشتركة. تُحمَّل آخرًا فتحسم ما قبلها.
+   المبادئ: تباين مقيس (٤٫٥:١ للنص، ٣:١ للكبير)، أهداف لمس ≥ ٤٤، شريط تبويب، احترام تفضيلات النظام. */
+
+/* ---------- رموز الألوان لكل مظهر ----------
+   الداكن: كما هو (يجتاز). الفاتح والساكورا: أُعيدت معايرتهما بعد القياس. */
+[data-theme="light"] {
+  --primary-color: #A63A0C;      /* برتقالي محروق: للزخرفة والحدود والتعبئة مع نص أبيض */
+  --secondary-color: #1B2530;    /* حبر: النص الأساسي */
+  --accent-color: #1B2530;       /* العناوين */
+  --bg-color: #FFFFFF;
+  --card-bg: rgba(255, 255, 255, 0.78);
+  --text-shadow: none;
+  --body-gradient-start: #FF6B3D;
+  --body-gradient-end: #FFB347;
+  --tab-bg: rgba(255, 255, 255, 0.82);
+  --tab-fg: #1B2530;
+  --tab-active-bg: #1B2530;
+  --tab-active-fg: #FFFFFF;
+  --line: rgba(27, 37, 48, 0.28);
+}
+[data-theme="sakura"] {
+  --primary-color: #C2255C;
+  --secondary-color: #5E1B3C;
+  --accent-color: #7A1744;
+  --bg-color: #FFF0F5;
+  --card-bg: rgba(255, 255, 255, 0.72);
+  --text-shadow: none;
+  --body-gradient-start: #FFF0F5;
+  --body-gradient-end: #FFE0E6;
+  --tab-bg: rgba(255, 255, 255, 0.85);
+  --tab-fg: #5E1B3C;
+  --tab-active-bg: #B0245A;
+  --tab-active-fg: #FFFFFF;
+  --line: rgba(94, 27, 60, 0.28);
+}
+:root, [data-theme="dark"] {
+  --tab-bg: rgba(18, 22, 48, 0.82);
+  --tab-fg: #EFD3D7;
+  --tab-active-bg: #EFD3D7;
+  --tab-active-fg: #0B1026;
+  --line: rgba(239, 211, 215, 0.3);
+}
+
+body { color: var(--secondary-color); }
+h1 { text-shadow: none; }
+[data-theme="dark"] h1 { text-shadow: var(--text-shadow); }
+
+/* ---------- الأيقونات ---------- */
+.ic { width: 1.25em; height: 1.25em; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8;
+      stroke-linecap: round; stroke-linejoin: round; vertical-align: -0.2em; }
+.ic-flower, .ic-play { fill: currentColor; }
+.ic-flower { fill-opacity: .25; }
+
+/* ---------- زر المظهر: ٤٤×٤٤ ---------- */
+.theme-toggle {
+  width: 44px; height: 44px; padding: 0;
+  top: max(12px, env(safe-area-inset-top)); left: 12px;
+  background: var(--tab-bg); color: var(--tab-fg);
+  border: 1px solid var(--line);
+  font-size: 1.35rem;
+}
+.theme-toggle .ic { width: 1em; height: 1em; }
+
+/* ---------- شريط التبويب ----------
+   الهاتف: عائم أسفل الشاشة. الأجهزة الأعرض: أعلى الصفحة. */
+.nav-container {
+  background: var(--tab-bg);
+  border: 1px solid var(--line);
+  padding: 6px;
+  border-radius: 999px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, .12);
+  width: fit-content;
+  max-width: 100%;
+  margin: 8px auto 28px;
+}
+.nav-list { flex-wrap: nowrap; gap: 4px; }
+.nav-link {
+  color: var(--tab-fg);
+  min-height: 44px; min-width: 44px;
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-size: 1rem;
+  font-weight: 500;
+  gap: 8px;
+  overflow: visible;
+  transition: background-color .2s ease, color .2s ease;
+}
+.nav-link::before { display: none; }
+.nav-link:hover { transform: none; box-shadow: none; color: var(--tab-fg); }
+@media (hover: hover) { .nav-link:not([aria-current]):hover { background: color-mix(in srgb, var(--tab-fg) 14%, transparent); } }
+.nav-link.active, .nav-link[aria-current="page"] {
+  background: var(--tab-active-bg);
+  color: var(--tab-active-fg);
+  font-weight: 700;
+  box-shadow: none;
+}
+.nav-link[aria-current="page"] .ic { fill: currentColor; fill-opacity: .2; }
+
+@media (max-width: 640px) {
+  body { padding-bottom: calc(96px + env(safe-area-inset-bottom)) !important; }
+  .nav-container {
+    position: fixed; z-index: 20;
+    inset-inline: 12px; bottom: max(12px, env(safe-area-inset-bottom));
+    width: auto; margin: 0;
+    backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+    border-radius: 28px;
+  }
+  .nav-list { gap: 2px; }
+  .nav-item { flex: 1 1 0; min-width: 0; }
+  .nav-link {
+    flex-direction: column; justify-content: center; gap: 2px;
+    min-height: 56px; padding: 6px 4px;
+    border-radius: 22px; font-size: .8125rem; line-height: 1.2;
+  }
+  .nav-link .ic { width: 24px; height: 24px; }
+  .tab-label { white-space: nowrap; }
+}
+
+/* ---------- التركيز بلوحة المفاتيح ---------- */
+:focus-visible { outline: 3px solid var(--primary-color); outline-offset: 3px; }
+[data-theme="dark"] :focus-visible { outline-color: #FEEAFA; }
+.nav-link:focus-visible { outline-offset: 0; }
+.theme-toggle:focus-visible { outline-color: var(--tab-fg); }
+
+/* ---------- المشغّل: أهداف لمس وتباين ---------- */
+.qp-seek, .qp-volume {
+  height: 36px; margin: 4px 0; border-radius: 0;
+  background: linear-gradient(to left, var(--qp-fg) var(--p), var(--qp-track) var(--p)) center / 100% 8px no-repeat;
+}
+.qp-seek::-webkit-slider-thumb, .qp-volume::-webkit-slider-thumb { width: 24px; height: 24px; }
+.qp-seek::-moz-range-thumb, .qp-volume::-moz-range-thumb { width: 20px; height: 20px; }
+.qp-select { min-height: 44px; }
+[data-theme="light"] .qp {
+  --qp-text: #1B2530; --qp-fg: #A63A0C; --qp-track: rgba(27, 37, 48, .22);
+  --qp-btn-bg: rgba(27, 37, 48, .08); --qp-btn-bg-hover: rgba(27, 37, 48, .16);
+  --qp-line: rgba(27, 37, 48, .35);
+  --qp-play-bg: #1B2530; --qp-play-fg: #FFFFFF; --qp-option-bg: #FFFFFF; --qp-option-fg: #1B2530;
+  --qp-error: #8A1A0C;
+}
+[data-theme="sakura"] .qp {
+  --qp-text: #5E1B3C; --qp-fg: #B0245A; --qp-track: rgba(94, 27, 60, .22);
+  --qp-btn-bg: rgba(94, 27, 60, .08); --qp-btn-bg-hover: rgba(94, 27, 60, .16);
+  --qp-line: rgba(94, 27, 60, .35);
+  --qp-play-bg: #B0245A; --qp-play-fg: #FFFFFF; --qp-option-bg: #FFF0F5; --qp-option-fg: #5E1B3C;
+  --qp-error: #8A1A2C;
+}
+
+/* ---------- تفضيلات النظام ---------- */
+@media (prefers-reduced-transparency: reduce) {
+  .nav-container, .theme-toggle, .ayah-container { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+  [data-theme="dark"] { --card-bg: #151a38; --tab-bg: #151a38; }
+  [data-theme="light"], [data-theme="sakura"] { --card-bg: #FFFFFF; --tab-bg: #FFFFFF; }
+}
+@media (prefers-contrast: more) {
+  .nav-container, .theme-toggle { border-width: 2px; border-color: currentColor; }
+  .ayah-container { border: 2px solid var(--line); }
+}
+@media (hover: none) {
+  .theme-toggle:hover { transform: none; box-shadow: none; }
+}
+
+/* ---------- اللعبة: لوحات داكنة ثابتة فوق ساحة متغيّرة الخلفية ---------- */
+.score-display, .game-hint {
+  background: rgba(11, 16, 38, 0.92);
+  color: #FEEAFA;
+  border: 1px solid rgba(254, 234, 250, 0.25);
+}
+.score-display .time, .score-display .level, .score-display span, .game-hint { color: #FEEAFA; }
+.score-display .points, .score-display .points .ic { color: #FFA8D1; }
+.score-display .ic { color: #FEEAFA; }
+.pause-button { width: 44px; height: 44px; padding: 0; justify-content: center; border-radius: 50%; color: #FEEAFA; }
+.pause-button .ic { width: 22px; height: 22px; }
+.pause-button:focus-visible { outline-color: #FEEAFA; }
+.best-line { opacity: 1; }
+
+/* ---------- عمر القمر ---------- */
+.expand-button { min-height: 44px; }
+.expand-button .ic { transition: transform .3s ease; }
+.expand-button.expanded .ic { transform: rotate(180deg); }
+.age-card .value { text-shadow: none; }
+[data-theme="sakura"] .age-card .value { color: var(--accent-color); }
+
+/* ---------- المشغّل: الشريط بارتفاع هدف اللمس ---------- */
+.qp-seek, .qp-volume { height: 44px; margin: 0; }
+
+/* ---------- الساكورا: الغصن لا يغطي المحتوى على الهاتف ---------- */
+@media (max-width: 640px) {
+  [data-theme="sakura"] .sakura-branch { width: 240px; height: 240px; opacity: .55; }
+}
+
+/* ---------- لا تمدّد أفقي على الشاشات الضيقة (٣٢٠px) ---------- */
+.container { width: 100%; min-width: 0; padding-inline: 12px; }
+@media (min-width: 641px) { .container { padding-inline: 20px; } }
+
+/* ---------- توسيط بطاقة الآية والمشغّل ---------- */
+.ayah-container { width: 100%; max-width: 800px; margin-inline: auto; }
+
+/* ---------- Liquid Glass لشريط التنقل (الطبقة الوظيفية فقط) ----------
+   نوع «Regular»: ضبابية ٢٨px، تشبّع ١٫٦، تعبئة شفافة بنسبة ~٥٥–٦٥٪، حدّ لامع رفيع، وبريق علوي.
+   التبويب المحدد «عدسة» زجاجية أفتح، وأيقونته فقط تأخذ لون التمييز. */
+[data-theme="dark"], :root {
+  --glass-fill: rgba(28, 34, 72, 0.58);
+  --glass-edge: rgba(255, 255, 255, 0.28);
+  --glass-shine: rgba(255, 255, 255, 0.22);
+  --glass-shadow: rgba(0, 0, 0, 0.35);
+  --lens-fill: rgba(255, 255, 255, 0.20);
+  --tab-fg: #F4E4EA;
+  --tab-active-fg: #FFFFFF;
+  --tab-tint: #FFB8D9;
+}
+[data-theme="light"] {
+  --glass-fill: rgba(255, 255, 255, 0.56);
+  --glass-edge: rgba(255, 255, 255, 0.85);
+  --glass-shine: rgba(255, 255, 255, 0.7);
+  --glass-shadow: rgba(120, 40, 0, 0.28);
+  --lens-fill: rgba(255, 255, 255, 0.78);
+  --tab-fg: #1B2530;
+  --tab-active-fg: #1B2530;
+  --tab-tint: #A63A0C;
+}
+[data-theme="sakura"] {
+  --glass-fill: rgba(255, 255, 255, 0.6);
+  --glass-edge: rgba(255, 255, 255, 0.9);
+  --glass-shine: rgba(255, 255, 255, 0.75);
+  --glass-shadow: rgba(150, 30, 80, 0.25);
+  --lens-fill: rgba(255, 255, 255, 0.85);
+  --tab-fg: #5E1B3C;
+  --tab-active-fg: #5E1B3C;
+  --tab-tint: #B0245A;
+}
+
+.nav-container, .theme-toggle {
+  background-color: var(--glass-fill);
+  background-image: linear-gradient(180deg, var(--glass-shine) 0%, transparent 48%);
+  backdrop-filter: blur(28px) saturate(1.6);
+  -webkit-backdrop-filter: blur(28px) saturate(1.6);
+  border: 1px solid var(--glass-edge);
+  box-shadow:
+    inset 0 1px 0 var(--glass-shine),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.10),
+    0 12px 32px var(--glass-shadow),
+    0 2px 6px rgba(0, 0, 0, 0.12);
+  color: var(--tab-fg);
+}
+.nav-container { overflow: hidden; }
+
+.nav-link { position: relative; z-index: 0; }
+.nav-link.active, .nav-link[aria-current="page"] {
+  background: var(--lens-fill);
+  color: var(--tab-active-fg);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.12),
+    0 4px 14px rgba(0, 0, 0, 0.14);
+}
+.nav-link[aria-current="page"] .ic { color: var(--tab-tint); fill: currentColor; fill-opacity: .22; }
+@media (hover: hover) {
+  .nav-link:not([aria-current]):hover { background: color-mix(in srgb, var(--tab-fg) 10%, transparent); }
+}
+.nav-link:active { transform: scale(.96); transition: transform .12s ease; }
+
+/* بدائل الشفافية والتباين: خلفية صلبة بلا ضبابية */
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  .nav-container, .theme-toggle {
+    background-image: none; backdrop-filter: none; -webkit-backdrop-filter: none;
+  }
+  [data-theme="dark"] .nav-container, [data-theme="dark"] .theme-toggle { background-color: #1a2048; }
+  [data-theme="light"] .nav-container, [data-theme="light"] .theme-toggle,
+  [data-theme="sakura"] .nav-container, [data-theme="sakura"] .theme-toggle { background-color: #FFFFFF; }
+  [data-theme="light"] .nav-link.active, [data-theme="light"] .nav-link[aria-current="page"],
+  [data-theme="sakura"] .nav-link.active, [data-theme="sakura"] .nav-link[aria-current="page"] { background: #F3E3DC; }
+  [data-theme="dark"] .nav-link.active, [data-theme="dark"] .nav-link[aria-current="page"] { background: #343c78; }
+}

@@ -7,7 +7,6 @@
   <meta name="description" content="عمر القمر وطوره الحالي">
   <meta name="theme-color" content="#0B1026">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%99%3C/text%3E%3C/svg%3E">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="pet.css">
   <style>
@@ -683,6 +682,7 @@
       .age-card .label { font-size: 1rem; margin-left: 8px; }
     }
   </style>
+  <link rel="stylesheet" href="design.css">
 </head>
 <body>
 <script>try{var t=localStorage.getItem('theme');if(['dark','light','sakura'].indexOf(t)<0)t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.body.setAttribute('data-theme',t)}catch(e){document.body.setAttribute('data-theme','dark')}</script>
@@ -739,7 +739,7 @@
     
     <div class="moon-container">
       <div class="moon-image-wrapper">
-        <a href="index.html" class="moon-link">
+        <a href="index.html" class="moon-link" aria-label="العودة إلى الصفحة الرئيسية">
           <img id="moonImage" src="" alt="شكل القمر">
         </a>
       </div>
@@ -817,7 +817,7 @@
         const open = grid.classList.toggle('expanded');
         btn.classList.toggle('expanded', open);
         btn.setAttribute('aria-expanded', String(open));
-        btn.innerHTML = (open ? 'إخفاء' : 'عرض الكل') + ' <i class="fas fa-chevron-down"></i>';
+        btn.innerHTML = (open ? 'إخفاء' : 'عرض الكل') + ' ' + SiteKit.icon('chevron');
         if (!open) document.querySelector('.age-details').scrollIntoView({ behavior: 'smooth' });
       });
 
