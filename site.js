@@ -289,6 +289,12 @@
 
   /* ---------- PWA: عامل الخدمة (يحتاج HTTPS أو localhost) ---------- */
   if ('serviceWorker' in navigator) {
-    addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => { /* غير مدعوم أو محجوب */ }); });
+    // عند تفعيل نسخة جديدة من عامل الخدمة تُعاد الصفحة مرة واحدة لتأخذ آخر الملفات
+    const hadController = !!navigator.serviceWorker.controller;
+    let reloaded = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (hadController && !reloaded) { reloaded = true; location.reload(); }
+    });
+    addEventListener('load', () => { navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).catch(() => { /* غير مدعوم أو محجوب */ }); });
   }
 })();

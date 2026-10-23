@@ -285,3 +285,84 @@ h1 { text-shadow: none; }
 .qp-back, .qp-fwd { width: 44px; padding: 0; }
 .qp-btn:disabled { opacity: .38; cursor: default; }
 .qp-btn:disabled:hover { background: var(--qp-btn-bg); }
+
+/* ---------- عمر القمر: تلميح «العودة للصفحة الرئيسية» داخل الصورة فلا يتداخل مع سطر العمر ---------- */
+.moon-link::after {
+  bottom: 18px; top: auto;
+  padding: 6px 16px;
+  border-radius: 999px;
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-edge);
+  backdrop-filter: blur(16px) saturate(1.5);
+  -webkit-backdrop-filter: blur(16px) saturate(1.5);
+  color: var(--tab-fg);
+  font-size: .9rem; font-weight: 600;
+  text-shadow: none;
+  pointer-events: none;
+  z-index: 2;
+}
+.moon-link:hover::after, .moon-link:focus-visible::after { opacity: 1; bottom: 18px; }
+
+/* ---------- اللعبة: ساحة تتبع المظهر (ليل / نهار / ساكورا) ---------- */
+:root, [data-theme="dark"] {
+  --game-sky: radial-gradient(1.2px 1.2px at 20% 25%, #fff 60%, transparent 61%),
+              radial-gradient(1px 1px at 70% 15%, #fff 60%, transparent 61%),
+              radial-gradient(1.4px 1.4px at 45% 60%, #fff 60%, transparent 61%),
+              radial-gradient(1px 1px at 85% 70%, #fff 60%, transparent 61%),
+              radial-gradient(1px 1px at 10% 80%, #fff 60%, transparent 61%),
+              linear-gradient(180deg, #070B1E 0%, #14173A 100%);
+  --game-border: rgba(254, 234, 250, 0.18);
+  --game-glow: rgba(254, 234, 250, 0.9);
+  --game-edge: rgba(254, 234, 250, 0.55);
+  --over-bg: rgba(11, 16, 38, 0.9);
+}
+[data-theme="light"] {
+  --game-sky: linear-gradient(180deg, #7FB8F2 0%, #BFDDF7 55%, #FFE3BD 100%);
+  --game-border: rgba(27, 37, 48, 0.25);
+  --game-glow: rgba(255, 255, 255, 0.95);
+  --game-edge: rgba(27, 37, 48, 0.55);
+  --over-bg: rgba(255, 255, 255, 0.92);
+}
+[data-theme="sakura"] {
+  --game-sky: linear-gradient(180deg, #FFC7DC 0%, #FFDDE8 55%, #FFF3F7 100%);
+  --game-border: rgba(94, 27, 60, 0.25);
+  --game-glow: rgba(255, 255, 255, 0.95);
+  --game-edge: rgba(94, 27, 60, 0.5);
+  --over-bg: rgba(255, 255, 255, 0.92);
+}
+.game-container {
+  background: var(--game-sky);
+  border: 1px solid var(--game-border);
+  backdrop-filter: none; -webkit-backdrop-filter: none;
+  transition: background .5s ease, border-color .5s ease;
+}
+.game-area { background: transparent; }
+.moon, .zoro { filter: drop-shadow(0 0 14px var(--game-glow)); }
+.obstacle svg, .obstacle-asteroid svg, .obstacle-satellite svg, .obstacle-ufo svg { filter: drop-shadow(0 0 1.5px var(--game-edge)) drop-shadow(0 2px 4px rgba(0,0,0,.25)); }
+.heart svg { filter: drop-shadow(0 0 4px var(--game-glow)) drop-shadow(0 0 1px var(--game-edge)); }
+.game-over { background: var(--over-bg); color: var(--secondary-color); border: 1px solid var(--game-border); }
+.game-area.paused::after { background: color-mix(in srgb, var(--over-bg) 55%, transparent); color: var(--secondary-color); }
+.moon.ready { animation: moonPulse2 1.2s ease-in-out infinite; }
+@keyframes moonPulse2 { 0%,100% { box-shadow: 0 0 20px var(--game-glow); } 50% { box-shadow: 0 0 55px 12px var(--game-glow); } }
+
+/* ---------- لوحة الإحصاءات والتلميح تحت اللعبة: تتبع المظهر ---------- */
+[data-theme="dark"] .score-display, [data-theme="dark"] .game-hint {
+  background: rgba(11, 16, 38, 0.92); color: #FEEAFA; border-color: rgba(254, 234, 250, 0.25);
+}
+[data-theme="light"] .score-display, [data-theme="light"] .game-hint,
+[data-theme="sakura"] .score-display, [data-theme="sakura"] .game-hint {
+  background: var(--glass-fill); color: var(--secondary-color); border-color: var(--glass-edge);
+  box-shadow: inset 0 1px 0 var(--glass-shine), 0 6px 20px var(--glass-shadow);
+}
+[data-theme="light"] .score-display .time, [data-theme="light"] .score-display .level, [data-theme="light"] .score-display span, [data-theme="light"] .score-display .ic,
+[data-theme="sakura"] .score-display .time, [data-theme="sakura"] .score-display .level, [data-theme="sakura"] .score-display span, [data-theme="sakura"] .score-display .ic { color: var(--secondary-color); }
+[data-theme="light"] .score-display .points, [data-theme="light"] .score-display .points .ic { color: #A8123F; }
+[data-theme="sakura"] .score-display .points, [data-theme="sakura"] .score-display .points .ic { color: #B0245A; }
+[data-theme="light"] .pause-button, [data-theme="sakura"] .pause-button { color: var(--secondary-color); }
+[data-theme="light"] .pause-button:focus-visible, [data-theme="sakura"] .pause-button:focus-visible { outline-color: var(--secondary-color); }
+.game-hint, .score-display { transition: background .5s ease, color .5s ease; }
+
+/* ---------- المشغّل: صف التحكم الرئيسي (السابقة · تشغيل/إيقاف · التالية) ---------- */
+.qp-transport { display: flex; justify-content: center; align-items: center; gap: 20px; }
+.qp-transport .qp-back, .qp-transport .qp-fwd { width: 48px; height: 48px; border-radius: 50%; }
+.qp-tools { justify-content: center; }

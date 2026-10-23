@@ -1,5 +1,5 @@
 /* sw.js — عامل الخدمة: يعمل الموقع دون اتصال (ما عدا التلاوة الصوتية فهي من الإنترنت). */
-const VERSION = 'moon-v20261023c';
+const VERSION = 'moon-v20261023d';
 const SHELL = [
   './', 'index.html', 'MoonAge.html', 'ToTheMoon.html',
   'style.css', 'pet.css', 'quran-player.css', 'design.css',
@@ -23,20 +23,9 @@ self.addEventListener('fetch', e => {
   const url = new URL(req.url);
   if (req.method !== 'GET' || url.origin !== location.origin) return;   // الصوت وغيره من مواقع أخرى: مباشرةً من الشبكة
 
-  const isPage = req.mode === 'navigate' || url.pathname.endsWith('.html') || url.pathname.endsWith('/') || url.pathname.endsWith('ayat.json');
-  if (isPage) {
-    // الشبكة أولًا (لتصل التحديثات)، ثم النسخة المخزّنة عند انقطاع الاتصال
-    e.respondWith(fetch(req).then(res => {
-      const copy = res.clone(); caches.open(VERSION).then(c => c.put(req, copy)); return res;
-    }).catch(() => caches.match(req, { ignoreSearch: true }).then(r => r || caches.match('index.html'))));
-    return;
-  }
-  // بقية الملفات: المخزّن أولًا مع تحديث في الخلفية
-  e.respondWith(caches.match(req, { ignoreSearch: true }).then(hit => {
-    const net = fetch(req).then(res => {
-      if (res.ok) { const copy = res.clone(); caches.open(VERSION).then(c => c.put(req, copy)); }
-      return res;
-    }).catch(() => hit);
-    return hit || net;
-  }));
+  // كل ملفات الموقع: الشبكة أولًا (فتصل التحديثات فورًا)، ثم المخزّن عند انقطاع الاتصال فقط
+  e.respondWith(fetch(req).then(res => {
+    if (res.ok) { const copy = res.clone(); caches.open(VERSION).then(c => c.put(req, copy)); }
+    return res;
+  }).catch(() => caches.match(req, { ignoreSearch: true }).then(r => r || (req.mode === 'navigate' ? caches.match('index.html') : Response.error()))));
 });

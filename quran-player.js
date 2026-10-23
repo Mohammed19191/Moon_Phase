@@ -72,19 +72,21 @@
 
   const TEMPLATE = `
     <div class="qp-main">
-      <button type="button" class="qp-play" aria-label="تشغيل التلاوة">${ICONS.play}${ICONS.pause}${ICONS.spin}</button>
       <div class="qp-seekwrap">
         <input type="range" class="qp-seek" min="0" max="1000" step="1" value="0" disabled aria-label="موضع التلاوة">
         <div class="qp-times" aria-hidden="true"><span class="qp-cur">٠:٠٠</span><span class="qp-dur">٠:٠٠</span></div>
       </div>
+    </div>
+    <div class="qp-transport">
+      <button type="button" class="qp-btn qp-back" aria-label="الآية السابقة" title="الآية السابقة">${ICONS.prev}</button>
+      <button type="button" class="qp-play" aria-label="تشغيل التلاوة">${ICONS.play}${ICONS.pause}${ICONS.spin}</button>
+      <button type="button" class="qp-btn qp-fwd" aria-label="الآية التالية" title="الآية التالية">${ICONS.next}</button>
     </div>
     <label class="qp-qari">
       <span class="qp-qari-label">القارئ</span>
       <select class="qp-select" aria-label="اختيار القارئ"></select>
     </label>
     <div class="qp-tools">
-      <button type="button" class="qp-btn qp-back" aria-label="الآية السابقة" title="الآية السابقة">${ICONS.prev}</button>
-      <button type="button" class="qp-btn qp-fwd" aria-label="الآية التالية" title="الآية التالية">${ICONS.next}</button>
       <button type="button" class="qp-btn qp-repeat" aria-pressed="false" aria-label="تكرار الآية" title="تكرار الآية">${ICONS.repeat}</button>
       <button type="button" class="qp-btn qp-cont" aria-pressed="true" aria-label="متابعة التلاوة تلقائيًا إلى الآيات والسور التالية" title="متابعة التلاوة تلقائيًا إلى الآيات والسور التالية">إكمال التلاوة</button>
       <button type="button" class="qp-btn qp-speed" aria-label="سرعة التلاوة" title="سرعة التلاوة">١×</button>
