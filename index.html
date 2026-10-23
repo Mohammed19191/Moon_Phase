@@ -4,7 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>شكل القمر اليوم</title>
+  <meta name="description" content="شكل القمر اليوم وآية اليوم">
+  <meta name="theme-color" content="#0B1026">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%99%3C/text%3E%3C/svg%3E">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="pet.css">
   <style>
     :root {
       --primary-color: #8E9AAF;
@@ -30,63 +35,6 @@
       --body-gradient-start: #FF512F;
       --body-gradient-end: #F09819;
       --nebula-opacity: 0.02;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    @keyframes twinkle {
-      0%, 100% { opacity: 0.2; }
-      50% { opacity: 1; }
-    }
-
-    @keyframes shooting-star {
-      0% {
-        transform: translateX(0) translateY(0) rotate(45deg);
-        opacity: 1;
-      }
-      100% {
-        transform: translateX(-500px) translateY(500px) rotate(45deg);
-        opacity: 0;
-      }
-    }
-
-    .stars {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 0;
-      opacity: 1;
-      transition: opacity 0.5s ease;
-    }
-
-    [data-theme="light"] .stars {
-      opacity: 0;
-    }
-
-    .star {
-      position: absolute;
-      width: 2px;
-      height: 2px;
-      background-color: var(--star-color);
-      border-radius: 50%;
-      animation: twinkle var(--duration, 4s) ease-in-out infinite;
-      animation-delay: var(--delay, 0s);
-    }
-
-    .shooting-star {
-      position: absolute;
-      width: 100px;
-      height: 1px;
-      background: linear-gradient(90deg, white, transparent);
-      animation: shooting-star 5s linear infinite;
-      opacity: 0;
     }
 
     .nebula {
@@ -119,74 +67,12 @@
       transition: background 0.5s ease;
     }
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
-      position: relative;
-      z-index: 2;
-    }
-
     h1 {
       color: var(--accent-color);
       font-size: 2.5rem;
       margin-bottom: 30px;
       text-shadow: var(--text-shadow);
       letter-spacing: 1px;
-    }
-
-    .moon-container {
-      background: var(--card-bg);
-      border-radius: 30px;
-      padding: 40px;
-      margin: 20px auto;
-      backdrop-filter: blur(15px);
-      box-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.1),
-        inset 0 0 32px rgba(142, 154, 175, 0.1);
-      transition: transform 0.5s ease, box-shadow 0.5s ease;
-      max-width: 500px;
-      border: 1px solid rgba(142, 154, 175, 0.1);
-    }
-
-    .moon-container:hover {
-      transform: translateY(-5px);
-      box-shadow: 
-        0 15px 45px rgba(0, 0, 0, 0.15),
-        inset 0 0 32px rgba(142, 154, 175, 0.2);
-    }
-
-    .moon-image-wrapper {
-      position: relative;
-      width: 400px;
-      height: 400px;
-      margin: 0 auto;
-      cursor: pointer;
-      transition: all 0.5s ease;
-    }
-
-    img {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      transition: all 0.8s ease;
-      object-fit: cover;
-      filter: brightness(1.1);
-    }
-
-    .moon-image-wrapper:hover img {
-      transform: scale(1.03) rotate(2deg);
-    }
-
-    .phase-name {
-      display: none;
-      margin-top: 25px;
-      font-size: 1.6rem;
-      color: var(--accent-color);
-      opacity: 0;
-      transform: translateY(20px);
-      animation: fadeInUp 0.8s ease forwards;
-      text-shadow: var(--text-shadow);
     }
 
     .ayah-container {
@@ -231,13 +117,6 @@
       right: -20px;
     }
 
-    @keyframes fadeInUp {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
     @keyframes float {
       0%, 100% {
         transform: translateY(0) rotate(0deg);
@@ -247,38 +126,7 @@
       }
     }
 
-    .loading {
-      display: none;
-      justify-content: center;
-      align-items: center;
-      margin: 20px 0;
-      gap: 8px;
-    }
-
-    .loading span {
-      width: 8px;
-      height: 8px;
-      margin: 0 5px;
-      background-color: var(--primary-color);
-      border-radius: 50%;
-      animation: bounce 1.5s ease-in-out infinite;
-      opacity: 0.7;
-    }
-
-    .loading span:nth-child(2) { animation-delay: 0.2s; }
-    .loading span:nth-child(3) { animation-delay: 0.4s; }
-
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); opacity: 0.7; }
-      50% { transform: translateY(-15px); opacity: 1; }
-    }
-
     @media (max-width: 768px) {
-      .moon-image-wrapper {
-        width: 300px;
-        height: 300px;
-      }
-
       h1 {
         font-size: 2rem;
       }
@@ -289,11 +137,6 @@
     }
 
     @media (max-width: 480px) {
-      .moon-image-wrapper {
-        width: 250px;
-        height: 250px;
-      }
-
       .container {
         padding: 10px;
       }
@@ -308,47 +151,6 @@
     }
 
     /* Add Zoro styles */
-    .zoro-container {
-      position: fixed;
-      width: 80px;
-      height: 80px;
-      pointer-events: none;
-      z-index: 2;
-      opacity: 0;
-      transition: opacity 0.5s ease;
-    }
-
-    .zoro-image {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      cursor: pointer;
-      pointer-events: auto;
-      filter: drop-shadow(0 0 10px rgba(142, 154, 175, 0.3));
-      transition: transform 0.3s ease;
-    }
-
-    .zoro-image:hover {
-      transform: scale(1.1);
-    }
-
-    @keyframes floatZoro {
-      0% {
-        transform: translate(0, 0) rotate(0deg);
-      }
-      25% {
-        transform: translate(20px, -20px) rotate(5deg);
-      }
-      50% {
-        transform: translate(0, -40px) rotate(0deg);
-      }
-      75% {
-        transform: translate(-20px, -20px) rotate(-5deg);
-      }
-      100% {
-        transform: translate(0, 0) rotate(0deg);
-      }
-    }
 
     .heart {
       position: absolute;
@@ -359,108 +161,7 @@
       text-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
     }
 
-    @keyframes floatHeart {
-      0% {
-        transform: translate(-50%, -50%) scale(0);
-        opacity: 1;
-      }
-      100% {
-        transform: translate(-50%, -200%) scale(1.5);
-        opacity: 0;
-      }
-    }
-
-    .click-counter {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: rgba(142, 154, 175, 0.1);
-      color: var(--accent-color);
-      padding: 10px 20px;
-      border-radius: 20px;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(142, 154, 175, 0.2);
-      font-size: 1.1rem;
-      z-index: 10;
-      display: none;
-      align-items: center;
-      gap: 8px;
-      animation: fadeInUp 0.5s ease forwards;
-    }
-
-    .click-counter i {
-      color: #ff6b6b;
-    }
-
     /* Navigation Styles */
-    .nav-container {
-      background: var(--card-bg);
-      backdrop-filter: blur(15px);
-      -webkit-backdrop-filter: blur(15px);
-      border-radius: 20px;
-      padding: 15px 30px;
-      margin-bottom: 30px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-      border: 1px solid rgba(142, 154, 175, 0.1);
-    }
-
-    .nav-list {
-      list-style: none;
-      display: flex;
-      justify-content: center;
-      gap: 30px;
-      flex-wrap: wrap;
-    }
-
-    .nav-item {
-      position: relative;
-    }
-
-    .nav-link {
-      color: var(--accent-color);
-      text-decoration: none;
-      font-size: 1.1rem;
-      padding: 8px 15px;
-      border-radius: 15px;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      position: relative;
-      overflow: hidden;
-      background: transparent;
-    }
-
-    .nav-link::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      z-index: -1;
-      border-radius: 15px;
-    }
-
-    .nav-link:hover {
-      transform: translateY(-2px);
-      color: var(--bg-color);
-      box-shadow: 0 5px 15px rgba(142, 154, 175, 0.3);
-    }
-
-    .nav-link:hover::before {
-      opacity: 0.2;
-    }
-
-    .nav-link.active {
-      background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
-      color: var(--bg-color);
-      font-weight: bold;
-      box-shadow: 0 5px 15px rgba(142, 154, 175, 0.3);
-    }
 
     .nav-link i {
       font-size: 1.2rem;
@@ -483,51 +184,10 @@
     }
 
     /* Theme Toggle Button */
-    .theme-toggle {
-      position: fixed;
-      top: 10px;
-      left: 10px;
-      background: var(--card-bg);
-      border: 1px solid rgba(142, 154, 175, 0.2);
-      color: var(--accent-color);
-      padding: 12px;
-      border-radius: 50%;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      backdrop-filter: blur(10px);
-      z-index: 10;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      width: 45px;
-      height: 45px;
-    }
-
-    .theme-toggle:hover {
-      transform: scale(1.1);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    }
 
     .theme-toggle i {
       position: absolute;
       transition: all 0.5s ease;
-    }
-
-    .theme-toggle .fa-moon {
-      opacity: 1;
-      transform: rotate(0deg);
-    }
-
-    .theme-toggle .fa-sun {
-      opacity: 0;
-      transform: rotate(180deg);
-    }
-
-    .theme-toggle .fa-cloud {
-      opacity: 0;
-      transform: translateX(-20px) translateY(5px) scale(0.7);
-      color: white;
     }
 
     .theme-toggle .fa-cherry-blossom {
@@ -587,75 +247,10 @@
     }
 
     /* Sakura Theme Variables */
-    [data-theme="sakura"] {
-      --primary-color: #FFB6C1;
-      --secondary-color: #FFC0CB;
-      --accent-color: #FF69B4;
-      --bg-color: #FFF0F5;
-      --card-bg: rgba(255, 182, 193, 0.1);
-      --text-shadow: 0 0 20px rgba(255, 182, 193, 0.4);
-      --body-gradient-start: #FFF0F5;
-      --body-gradient-end: #FFE4E1;
-      --nebula-opacity: 0.02;
-    }
 
     /* Sakura Branch */
-    .sakura-branch {
-      position: fixed;
-      top: 0;
-      right: 0;
-      width: 600px;
-      height: 600px;
-      background-image: url('images1/sakuraBranch.png');
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: top right;
-      opacity: 0;
-      pointer-events: none;
-      z-index: 1;
-      display: none;
-    }
-
-    [data-theme="sakura"] .sakura-branch {
-      display: block;
-      opacity: 0.8;
-    }
 
     /* Falling Sakura Leaves */
-    .sakura-leaf {
-      position: fixed;
-      width: 30px;
-      height: 30px;
-      background-image: url('images1/sakura.png');
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: center;
-      opacity: 0;
-      pointer-events: none;
-      z-index: 1;
-      animation: fall linear infinite;
-    }
-
-    @keyframes fall {
-      0% {
-        transform: translateY(-100vh) rotate(0deg);
-        opacity: 0;
-      }
-      10% {
-        opacity: 1;
-      }
-      90% {
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(100vh) rotate(360deg);
-        opacity: 0;
-      }
-    }
-
-    [data-theme="sakura"] .sakura-leaf {
-      display: block;
-    }
 
     /* Add sunset glow effect */
     [data-theme="light"] .nebula {
@@ -750,9 +345,21 @@
       right: 10%;
       transform: scale(0.9);
     }
+  
+    /* القمر في الصفحة الرئيسية */
+    .home-moon{margin:10px auto 0;display:flex;flex-direction:column;align-items:center;gap:6px}
+    .home-moon img{width:220px;height:220px;object-fit:contain;animation:float 3s ease-in-out infinite;
+      filter:drop-shadow(0 0 25px rgba(239,211,215,.35));transition:transform .3s}
+    .home-moon a:hover img{transform:scale(1.05)}
+    .home-moon-name{font-size:1.5rem;color:var(--accent-color);text-shadow:var(--text-shadow)}
+    .home-moon-meta{font-size:1rem;opacity:.85}
+    @media (max-width:480px){.home-moon img{width:170px;height:170px}}
+  
+    [data-theme="sakura"] .home-moon-meta { color: var(--accent-color); }
   </style>
 </head>
 <body>
+<script>try{var t=localStorage.getItem('theme');if(['dark','light','sakura'].indexOf(t)<0)t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.body.setAttribute('data-theme',t)}catch(e){document.body.setAttribute('data-theme','dark')}</script>
   <button class="theme-toggle" id="themeToggle">
     <i class="fas fa-moon"></i>
     <i class="fas fa-sun"></i>
@@ -769,7 +376,6 @@
   <div class="cloud cloud-8"></div>
   <div class="cloud cloud-9"></div>
   <div class="cloud cloud-10"></div>
-  <div class="stars"></div>
   <div class="nebula"></div>
   <div class="zoro-container">
     <img src="images1/zoro.png" alt="Zoro" class="zoro-image">
@@ -804,19 +410,12 @@
     </nav>
 
     <h1>شكل القمر اليوم</h1>
-    
-    <div class="moon-container">
-      <a href="MoonAge.html" class="moon-image-wrapper">
-        <img id="moonImage" src="" alt="شكل القمر">
-      </a>
-      <div id="phaseName" class="phase-name"></div>
-    </div>
 
-    <div class="loading">
-      <span></span>
-      <span></span>
-      <span></span>
-    </div>
+    <section class="home-moon" aria-live="polite">
+      <a href="MoonAge.html" title="عمر القمر"><img id="homeMoon" alt="شكل القمر اليوم" width="220" height="220"></a>
+      <div class="home-moon-name" id="homeMoonName"></div>
+      <div class="home-moon-meta" id="homeMoonMeta"></div>
+    </section>
 
     <div class="ayah-container">
       <p class="ayah" id="ayah"></p>
@@ -825,373 +424,63 @@
 
   <div class="sakura-branch"></div>
 
+  <script src="site.js"></script>
   <script>
-    // Add stars to the background
-    function createStars() {
-      const starsContainer = document.querySelector('.stars');
-      const numberOfStars = 200;
-      
-      for (let i = 0; i < numberOfStars; i++) {
-        const star = document.createElement('div');
-        star.className = 'star';
-        
-        // Random position
-        star.style.left = `${Math.random() * 100}%`;
-        star.style.top = `${Math.random() * 100}%`;
-        
-        // Random size
-        const size = Math.random() * 2;
-        star.style.width = `${size}px`;
-        star.style.height = `${size}px`;
-        
-        // Random animation duration and delay
-        star.style.setProperty('--duration', `${2 + Math.random() * 3}s`);
-        star.style.setProperty('--delay', `${Math.random() * 2}s`);
-        
-        starsContainer.appendChild(star);
-      }
+    (() => {
+      const { moonInfo, showMoon, ar, zoroPet } = SiteKit;
+      const FALLBACK = 'إِنَّ مَعَ الْعُسْرِ يُسْرًا (الشرح: 6)';
+      const ayahEl = document.getElementById('ayah');
+      let ayat = null, shownDay = null, fallbackShown = false;
 
-      // Add shooting stars
-      setInterval(() => {
-        const shootingStar = document.createElement('div');
-        shootingStar.className = 'shooting-star';
-        
-        // Random position at the top-right of the screen
-        shootingStar.style.top = `${Math.random() * 50}%`;
-        shootingStar.style.right = '0';
-        
-        starsContainer.appendChild(shootingStar);
-        
-        // Remove shooting star after animation
-        setTimeout(() => {
-          shootingStar.remove();
-        }, 5000);
-      }, 8000);
-    }
-
-    // Initialize stars
-    createStars();
-
-    function getMoonImage(phaseName) {
-      const lowerPhase = phaseName.toLowerCase();
-      const phases = {
-        "new": { file: "newMoon.png", name: "محاق (New Moon)" },
-        "waxing crescent": { file: "waxingCrescent.png", name: "هلال متزايد (Waxing Crescent)" },
-        "first quarter": { file: "firstQuarter.png", name: "تربيع أول (First Quarter)" },
-        "waxing gibbous": { file: "waxingGibbous.png", name: "أحدب متزايد (Waxing Gibbous)" },
-        "full": { file: "fullMoon.png", name: "بدر (Full Moon)" },
-        "waning gibbous": { file: "waningGibbous.png", name: "أحدب متناقص (Waning Gibbous)" },
-        "last quarter": { file: "lastQuarter.png", name: "تربيع أخير (Last Quarter)" },
-        "waning crescent": { file: "waningCrescent.png", name: "هلال متناقص (Waning Crescent)" }
+      // رقم اليوم منذ 1970 — يمرّ على كل الآيات بالتتابع دون تكرار حتى تكتمل الدورة
+      const dayNumber = () => {
+        const d = new Date();
+        return Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 864e5);
       };
 
-      for (const [key, value] of Object.entries(phases)) {
-        if (lowerPhase.includes(key)) {
-          return value;
-        }
+      function showAyah(text) {
+        ayahEl.style.transition = 'none';
+        ayahEl.style.opacity = '0';
+        ayahEl.textContent = text;
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          ayahEl.style.transition = 'opacity 1s ease-in-out';
+          ayahEl.style.opacity = '1';
+        }));
       }
-      return phases["new"];
-    }
 
-    async function fetchMoonPhase() {
-      const loading = document.querySelector('.loading');
-      loading.style.display = 'flex';
-
-      try {
-        const nowUnix = Math.floor(Date.now() / 1000);
-        const url = `https://api.farmsense.net/v1/moonphases/?d=${nowUnix}`;
-        const response = await fetch(url);
-        const data = await response.json();
-
-        if (!Array.isArray(data) || !data[0] || !data[0].Phase) {
-          throw new Error("البيانات المستلمة غير متوقعة");
-        }
-
-        const phaseNameFromAPI = data[0].Phase;
-        const { file, name } = getMoonImage(phaseNameFromAPI);
-
-        const moonImage = document.getElementById("moonImage");
-        moonImage.src = "images1/" + file;
-        moonImage.style.animation = "float 3s ease-in-out infinite";
-
-        document.getElementById("phaseName").textContent = `${name}`;
-      } catch (err) {
-        document.getElementById("moonImage").src = "";
-        document.getElementById("phaseName").textContent = "حدث خطأ في جلب بيانات القمر";
-        console.error(err);
-      } finally {
-        loading.style.display = 'none';
-      }
-    }
-
-    async function loadAyah() {
-      try {
-        const response = await fetch('ayat.json');
-        const ayat = await response.json();
-        const today = new Date().getDate();
-        const ayahOfDay = ayat[today % ayat.length].ayah;
-        
-        const ayahElement = document.getElementById("ayah");
-        ayahElement.textContent = ayahOfDay;
-        ayahElement.style.opacity = "0";
-        
-        setTimeout(() => {
-          ayahElement.style.transition = "opacity 1s ease-in-out";
-          ayahElement.style.opacity = "1";
-        }, 100);
-      } catch (error) {
-        console.error("حدث خطأ أثناء تحميل الآيات:", error);
-      }
-    }
-
-    // Initialize
-    fetchMoonPhase();
-    loadAyah();
-
-    // Refresh moon phase every hour
-    setInterval(fetchMoonPhase, 3600000);
-
-    // Zoro Animation and Interaction
-    function setupZoro() {
-      const zoroContainer = document.querySelector('.zoro-container');
-      const zoroImage = document.querySelector('.zoro-image');
-      const clickCounter = document.querySelector('.click-counter');
-      const clickCounterSpan = document.getElementById('zoroClicks');
-      let clicks = 0;
-      let isFirstClick = true;
-      let isClicked = false;
-
-      // Function to check if a position overlaps with clickable elements
-      function isPositionSafe(x, y) {
-        // Get dimensions of Zoro
-        const zoroWidth = 80;
-        const zoroHeight = 80;
-
-        // Get positions and dimensions of clickable elements
-        const clickableElements = document.querySelectorAll('a, button');
-        const padding = 20;
-
-        // Check if Zoro would overlap with any element (including padding)
-        for (const element of clickableElements) {
-          const rect = element.getBoundingClientRect();
-          if (!(x + zoroWidth + padding < rect.left ||
-                x - padding > rect.right ||
-                y + zoroHeight + padding < rect.top ||
-                y - padding > rect.bottom)) {
-            return false;
+      async function updateAyah() {
+        const day = dayNumber();
+        if (day === shownDay) return;
+        try {
+          if (!ayat) {
+            const res = await fetch('ayat.json');
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            ayat = await res.json();
           }
-        }
-
-        return true;
-      }
-
-      // Function to get a safe random position
-      function getSafePosition() {
-        const maxX = window.innerWidth - 100;
-        const maxY = window.innerHeight - 100;
-        let attempts = 0;
-        let x, y;
-
-        // Try to find a safe position, max 50 attempts
-        do {
-          x = Math.random() * maxX;
-          y = Math.random() * maxY;
-          attempts++;
-        } while (!isPositionSafe(x, y) && attempts < 50);
-
-        // If no safe position found after 50 attempts, use default safe zones
-        if (attempts >= 50) {
-          // Default to right side of the screen, middle height
-          x = maxX - 100;
-          y = window.innerHeight / 2;
-        }
-
-        return { x, y };
-      }
-
-      // Function to randomly position Zoro
-      function repositionZoro() {
-        const { x, y } = getSafePosition();
-        zoroContainer.style.left = x + 'px';
-        zoroContainer.style.top = y + 'px';
-      }
-
-      // Function to show Zoro
-      function showZoro() {
-        zoroContainer.style.opacity = '1';
-        zoroContainer.style.animation = 'floatZoro 5s ease-in-out infinite';
-        if (!isClicked) {
-          repositionZoro();
+          showAyah(ayat[day % ayat.length].ayah);
+          shownDay = day;
+        } catch (err) {
+          console.error('تعذر تحميل الآيات:', err);
+          if (!fallbackShown && shownDay === null) { showAyah(FALLBACK); fallbackShown = true; }
         }
       }
 
-      // Function to hide Zoro
-      function hideZoro() {
-        if (!isClicked) {
-          zoroContainer.style.opacity = '0';
-          zoroContainer.style.animation = 'none';
-        }
+      const moonImg = document.getElementById('homeMoon');
+      const nameEl = document.getElementById('homeMoonName');
+      const metaEl = document.getElementById('homeMoonMeta');
+      function updateMoon() {
+        const m = moonInfo();
+        showMoon(moonImg, m);
+        nameEl.textContent = m.phase.name;
+        metaEl.textContent = `عمر القمر ${ar(m.age, 1)} يومًا · الإضاءة نحو ${ar(Math.round(m.illum * 100))}٪`;
       }
 
-      // Create hearts on click
-      zoroImage.addEventListener('click', (e) => {
-        clicks++;
-        isClicked = true;
-        clickCounterSpan.textContent = clicks;
-        
-        // Show counter on first click
-        if (isFirstClick) {
-          clickCounter.style.display = 'flex';
-          isFirstClick = false;
-        }
-
-        // Create heart
-        const heart = document.createElement('div');
-        heart.className = 'heart';
-        heart.innerHTML = '❤️';
-        heart.style.left = e.offsetX + 'px';
-        heart.style.top = e.offsetY + 'px';
-        zoroContainer.appendChild(heart);
-
-        // Remove heart after animation
-        setTimeout(() => heart.remove(), 1000);
-
-        // Keep Zoro visible and floating
-        showZoro();
-      });
-
-      // Handle window resize
-      window.addEventListener('resize', () => {
-        if (!isClicked) {
-          repositionZoro();
-        }
-      });
-
-      // Initial setup - Show Zoro after 5 seconds
-      setTimeout(() => {
-        showZoro();
-      }, 5000);
-    }
-
-    // Initialize all
-    createStars();
-    setupZoro();
-
-    // Theme Toggle Functionality
-    const themeToggle = document.getElementById('themeToggle');
-    const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
-    let currentThemeIndex = 0;
-    const themes = ['dark', 'light', 'sakura'];
-    
-    // Create stars
-    function createStars() {
-      // Remove existing stars first
-      const starsContainer = document.querySelector('.stars-container');
-      if (starsContainer) {
-        starsContainer.remove();
-      }
-
-      // Only create stars in dark mode
-      if (document.body.getAttribute('data-theme') === 'dark') {
-        const starsContainer = document.createElement('div');
-        starsContainer.className = 'stars-container';
-        document.body.appendChild(starsContainer);
-
-        for (let i = 0; i < 200; i++) {
-          const star = document.createElement('div');
-          star.className = 'star';
-          star.style.left = `${Math.random() * 100}%`;
-          star.style.top = `${Math.random() * 100}%`;
-          star.style.animationDelay = `${Math.random() * 2}s`;
-          starsContainer.appendChild(star);
-        }
-      }
-    }
-
-    // Create falling sakura leaves
-    function createSakuraLeaves() {
-      // Remove existing leaves first
-      const leaves = document.querySelectorAll('.sakura-leaf');
-      leaves.forEach(leaf => leaf.remove());
-
-      // Only create leaves in sakura mode
-      if (document.body.getAttribute('data-theme') === 'sakura') {
-        for (let i = 0; i < 20; i++) {
-          const leaf = document.createElement('div');
-          leaf.className = 'sakura-leaf';
-          leaf.style.left = `${Math.random() * 100}%`;
-          leaf.style.animationDuration = `${Math.random() * 10 + 10}s`;
-          leaf.style.animationDelay = `${Math.random() * 5}s`;
-          document.body.appendChild(leaf);
-        }
-      }
-    }
-
-    // Load saved theme from localStorage or use system preference
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-      currentThemeIndex = themes.indexOf(savedTheme);
-      document.body.setAttribute('data-theme', savedTheme);
-      createStars();
-      createSakuraLeaves();
-    } else {
-      document.body.setAttribute('data-theme', prefersDarkScheme.matches ? 'dark' : 'light');
-      createStars();
-      createSakuraLeaves();
-    }
-    
-    themeToggle.addEventListener('click', () => {
-      currentThemeIndex = (currentThemeIndex + 1) % themes.length;
-      const newTheme = themes[currentThemeIndex];
-      document.body.setAttribute('data-theme', newTheme);
-      localStorage.setItem('theme', newTheme);
-      createStars();
-      createSakuraLeaves();
-    });
-
-    let currentAyahIndex = 0;
-
-    function displayRandomAyah() {
-        fetch('ayat.json')
-            .then(response => response.json())
-            .then(data => {
-                const ayat = data.ayat;
-                const aya = ayat[currentAyahIndex];
-                
-                const ayaElement = document.createElement('div');
-                ayaElement.className = 'aya';
-                ayaElement.textContent = aya.ayah;
-                
-                const ayatContainer = document.querySelector('.ayat-container');
-                ayatContainer.innerHTML = '';
-                ayatContainer.appendChild(ayaElement);
-                
-                // Move to next aya, or back to beginning if at the end
-                currentAyahIndex = (currentAyahIndex + 1) % ayat.length;
-            })
-            .catch(error => console.error('Error loading ayat:', error));
-    }
-
-    // Initial display
-    displayRandomAyah();
-
-    // Update aya once per day at midnight
-    function scheduleNextAyah() {
-        const now = new Date();
-        const tomorrow = new Date(now);
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        tomorrow.setHours(0, 0, 0, 0);
-        
-        const timeUntilMidnight = tomorrow - now;
-        
-        setTimeout(() => {
-            displayRandomAyah();
-            scheduleNextAyah(); // Schedule the next day's update
-        }, timeUntilMidnight);
-    }
-
-    // Start scheduling
-    scheduleNextAyah();
+      const refresh = () => { updateAyah(); updateMoon(); };
+      refresh();
+      setInterval(refresh, 60000);                       // يلتقط تغيّر اليوم عند منتصف الليل
+      document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh(); });
+      zoroPet();
+    })();
   </script>
 </body>
 </html>
