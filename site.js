@@ -224,14 +224,14 @@
   }
 
   const PHASES = {
-    'new':             { file: 'newMoon.png',        name: 'محاق' },
-    'waxing crescent': { file: 'waxingCrescent.png', name: 'هلال متزايد' },
-    'first quarter':   { file: 'firstQuarter.png',   name: 'تربيع أول' },
-    'waxing gibbous':  { file: 'waxingGibbous.png',  name: 'أحدب متزايد' },
-    'full':            { file: 'fullMoon.png',       name: 'بدر' },
-    'waning gibbous':  { file: 'waningGibbous.png',  name: 'أحدب متناقص' },
-    'last quarter':    { file: 'lastQuarter.png',    name: 'تربيع أخير' },
-    'waning crescent': { file: 'waningCrescent.png', name: 'هلال متناقص' }
+    'new':             { file: 'newMoon.webp',        name: 'محاق' },
+    'waxing crescent': { file: 'waxingCrescent.webp', name: 'هلال متزايد' },
+    'first quarter':   { file: 'firstQuarter.webp',   name: 'تربيع أول' },
+    'waxing gibbous':  { file: 'waxingGibbous.webp',  name: 'أحدب متزايد' },
+    'full':            { file: 'fullMoon.webp',       name: 'بدر' },
+    'waning gibbous':  { file: 'waningGibbous.webp',  name: 'أحدب متناقص' },
+    'last quarter':    { file: 'lastQuarter.webp',    name: 'تربيع أخير' },
+    'waning crescent': { file: 'waningCrescent.webp', name: 'هلال متناقص' }
   };
   const ORDER = ['new', 'waxing crescent', 'first quarter', 'waxing gibbous', 'full',
     'waning gibbous', 'last quarter', 'waning crescent'];
@@ -277,36 +277,69 @@
   /* ---------- زورو الطائر ---------- */
   function zoroPet() {
     const box = $('.zoro-container'), img = $('.zoro-image');
-    if (!box || !img) return;
+    if (!box || !img || box.dataset.pet) return;          // تستدعيه شاشتان: يُهيّأ مرة واحدة فقط
+    box.dataset.pet = '1';
     const counter = $('.click-counter'), span = $('#zoroClicks');
-    const AVOID = 'a,button,h1,.nav-container,.moon-container,.age-details,.ayah-container,.qp,.home-moon,.birth-moon,.share-btn';
-    const SIZE = 80, PAD = 20;
+    // لا يغطي زورو نصًا ولا زرًا ولا القمر؛ ويجوز أن يطير فوق المساحات الفارغة من البطاقات.
+    // عناصر التحكم تُتجنّب بإطارها، والنصوص بحدود كلماتها فقط.
+    const BOXES = 'a,button,input,select,.nav-container,.theme-toggle,.click-counter,#homeMoon,#moonImage,.moon3d,.qp-seek,.age-card,#birthMoonImg';
+    const TEXTS = 'h1,h2,p,label,.home-moon-name,.home-moon-meta,.moon3d-hint,.phase-name,.phase-meta,.qp-times,.qp-qari-label,.qp-note';
+    const range = document.createRange();
+    const rects = () => [
+      ...[...document.querySelectorAll(BOXES)].map(el => el.getBoundingClientRect()),
+      ...[...document.querySelectorAll(TEXTS)].map(el => { range.selectNodeContents(el); return range.getBoundingClientRect(); })
+    ];
+    const GAP = 6;
+    const dims = () => { const cs = getComputedStyle(box);
+      return { S: box.offsetWidth || 80, X: parseFloat(cs.getPropertyValue('--zx')) || 20, Y: parseFloat(cs.getPropertyValue('--zy')) || 40 }; };
     let clicks = parseInt(store.get('zoroClicks'), 10) || 0;
-    let clicked = false;
+    let clicked = false, shown = false, pos = null;
 
     if (clicks > 0) { span.textContent = clicks; counter.style.display = 'flex'; }
     img.addEventListener('error', () => box.remove());
 
-    const isSafe = (x, y) => [...document.querySelectorAll(AVOID)].every(el => {
-      const r = el.getBoundingClientRect();
+    // يحسب مجال حركة الطفو كاملًا (٢٠px جانبيًا و٤٠px للأعلى) حتى لا يلامس زورو أي نص أثناء طيرانه
+    const isSafe = (x, y) => { const { S, X, Y } = dims(); return rects().every(r => {
       if (!r.width || !r.height) return true;
-      return x + SIZE + PAD < r.left || x - PAD > r.right || y + SIZE + PAD < r.top || y - PAD > r.bottom;
-    });
+      const L = x - X - GAP, R = x + S + X + GAP, T = y - Y - GAP, B = y + S + GAP;
+      return R < r.left || L > r.right || B < r.top || T > r.bottom;
+    }); };
 
     function reposition() {
-      const maxX = Math.max(0, innerWidth - 100), maxY = Math.max(0, innerHeight - 100);
-      let x, y, tries = 0;
-      do { x = Math.random() * maxX; y = Math.random() * maxY; tries++; } while (!isSafe(x, y) && tries < 50);
-      if (tries >= 50) { x = Math.max(0, maxX - 100); y = innerHeight / 2; }
-      box.style.left = x + 'px';
-      box.style.top = y + 'px';
+      const { S, X, Y } = dims();
+      const minX = X + 4, maxX = Math.max(minX, innerWidth - S - X - 4);
+      const minY = Y + 8, maxY = Math.max(minY, innerHeight - S - 8);
+      for (let i = 0; i < 200; i++) {
+        const x = minX + Math.random() * (maxX - minX), y = minY + Math.random() * (maxY - minY);
+        if (isSafe(x, y)) {
+          pos = { x, y };
+          box.style.left = x + 'px'; box.style.top = y + 'px';
+          box.style.opacity = shown ? '1' : box.style.opacity;
+          return true;
+        }
+      }
+      pos = null;
+      box.style.opacity = '0';                            // لا مكان خاليًا: يختفي بدل أن يغطي المحتوى
+      return false;
     }
 
     function show() {
+      shown = true;
       box.style.opacity = '1';
       if (!reduce) box.style.animation = 'floatZoro 5s ease-in-out infinite';
-      if (!clicked) reposition();
+      if (!clicked || !pos) reposition();
     }
+
+    // المحتوى يتحرك تحته (التمرير، تبديل الشاشة، عناصر تظهر لاحقًا): إن صار فوق شيء ينتقل إلى مكان خالٍ
+    function guard() {
+      if (!shown || document.hidden) return;
+      if (!pos || !isSafe(pos.x, pos.y)) reposition();
+    }
+    let gt;
+    const soon = () => { clearTimeout(gt); gt = setTimeout(guard, 160); };
+    addEventListener('scroll', soon, { passive: true });
+    document.addEventListener('viewchange', soon);
+    setInterval(guard, 3000);
 
     img.addEventListener('click', e => {
       clicks++;
@@ -324,8 +357,7 @@
       show();
     });
 
-    let t;
-    addEventListener('resize', () => { clearTimeout(t); t = setTimeout(() => { if (!clicked) reposition(); }, 200); });
+    addEventListener('resize', soon);
     setTimeout(show, 5000);
   }
 

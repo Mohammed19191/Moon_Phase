@@ -127,7 +127,7 @@
   right: 0;
   width: 600px;
   height: 600px;
-  background-image: url('images1/sakuraBranch.png');
+  background-image: url('images1/sakuraBranch.webp');
   background-size: contain;
   background-repeat: no-repeat;
   background-position: top right;
@@ -144,7 +144,7 @@
   position: fixed;
   width: 30px;
   height: 30px;
-  background-image: url('images1/sakura.png');
+  background-image: url('images1/sakura.webp');
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;

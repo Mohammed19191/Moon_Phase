@@ -7,9 +7,10 @@
   }
 }
 .zoro-container {
+  --zs: 80px; --zx: 20px; --zy: 40px;      /* الحجم ومدى الطفو (يقرؤها site.js ليتجنب المحتوى) */
   position: fixed;
-  width: 80px;
-  height: 80px;
+  width: var(--zs);
+  height: var(--zs);
   pointer-events: none;
   z-index: 2;
   opacity: 0;
@@ -27,18 +28,20 @@
 .zoro-image:hover {
   transform: scale(1.1);
 }
+/* على الجوال: زورو أصغر وطفوه أقصر، فيجد مكانًا خاليًا بجانب القمر دون أن يغطي شيئًا */
+@media (max-width: 600px) { .zoro-container { --zs: 60px; --zx: 8px; --zy: 16px; } }
 @keyframes floatZoro {
   0% {
       transform: translate(0, 0) rotate(0deg);
   }
   25% {
-      transform: translate(20px, -20px) rotate(5deg);
+      transform: translate(var(--zx), calc(var(--zy) / -2)) rotate(5deg);
   }
   50% {
-      transform: translate(0, -40px) rotate(0deg);
+      transform: translate(0, calc(var(--zy) * -1)) rotate(0deg);
   }
   75% {
-      transform: translate(-20px, -20px) rotate(-5deg);
+      transform: translate(calc(var(--zx) * -1), calc(var(--zy) / -2)) rotate(-5deg);
   }
   100% {
       transform: translate(0, 0) rotate(0deg);

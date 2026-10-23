@@ -1,5 +1,5 @@
 /* sw.js — عامل الخدمة: يعمل الموقع دون اتصال (ما عدا التلاوة الصوتية فهي من الإنترنت). */
-const VERSION = 'moon-v20261024f';
+const VERSION = 'moon-v20261024g';
 const SHELL = [
   './', 'index.html', 'MoonAge.html', 'ToTheMoon.html',
   'style.css', 'pet.css', 'quran-player.css', 'app.css', 'design.css',
@@ -7,7 +7,7 @@ const SHELL = [
   'features.css', 'moon3d.js', 'share.js', 'vendor/three.min.js', 'tex/moon.jpg', 'tex/moon-bump.jpg', 'fonts/amiri-quran.woff2',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png',
   ...['bat', 'cloud', 'firstQuarter', 'fullMoon', 'lastQuarter', 'newMoon', 'sakura', 'sakuraBranch',
-      'waningCrescent', 'waningGibbous', 'waxingCrescent', 'waxingGibbous', 'zoro'].map(n => `images1/${n}.png`)
+      'waningCrescent', 'waningGibbous', 'waxingCrescent', 'waxingGibbous', 'zoro'].map(n => `images1/${n}.webp`)
 ];
 
 self.addEventListener('install', e => {

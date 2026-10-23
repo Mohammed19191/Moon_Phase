@@ -94,13 +94,13 @@
       }
     }
     if (P.decor === 'clouds') {
-      const cloud = await loadImg('images1/cloud.png');
+      const cloud = await loadImg('images1/cloud.webp');
       if (cloud) [[-120, 170, 520, .75], [640, 300, 560, .7], [-60, 1180, 600, .55], [700, 1080, 480, .5]].forEach(([cx, cy, cw, a]) => {
         x.globalAlpha = a; x.drawImage(cloud, cx, cy, cw, cw * cloud.height / cloud.width);
       });
       x.globalAlpha = 1;
     } else if (P.decor === 'sakura') {
-      const [branch, petal] = await Promise.all([loadImg('images1/sakuraBranch.png'), loadImg('images1/sakura.png')]);
+      const [branch, petal] = await Promise.all([loadImg('images1/sakuraBranch.webp'), loadImg('images1/sakura.webp')]);
       if (branch) { x.globalAlpha = .55; x.drawImage(branch, W - 430, -30, 460, 460 * branch.height / branch.width); }
       if (petal) for (let n = 0; n < 14; n++) {
         const s2 = 22 + R() * 26; x.globalAlpha = .35 + R() * .4;

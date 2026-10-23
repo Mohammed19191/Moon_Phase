@@ -130,7 +130,7 @@
       opacity: 0.9;
       width: 400px;
       height: 200px;
-      background-image: url('images1/cloud.png');
+      background-image: url('images1/cloud.webp');
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
@@ -710,7 +710,7 @@
             bottom: 50px;
             left: 50%;
             transform: translateX(-50%);
-            background-image: url('images1/zoro.png');
+            background-image: url('images1/zoro.webp');
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
@@ -954,7 +954,7 @@
             transform: translateX(-50%);
             width: 150px;
             height: 150px;
-            background-image: url('images1/bat.png');
+            background-image: url('images1/bat.webp');
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;

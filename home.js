@@ -1,7 +1,7 @@
 /* home.js — الشاشة الرئيسية: شكل القمر وآية اليوم */
 (() => {
       const { moonInfo, showMoon, ar, zoroPet } = SiteKit;
-      const FALLBACK = { ayah: 'إِنَّ مَعَ الْعُسْرِ يُسْرًا (الشرح: 6)', surah: 94, verse: 6, complete: true };
+      const FALLBACK = { ayah: 'إِنَّ مَعَ الْعُسْرِ يُسْرًا (الشرح: ٦)', surah: 94, verse: 6, complete: true };
       const ayahEl = document.getElementById('ayah');
       let ayat = null, shownDay = null, fallbackShown = false;
       const player = QuranPlayer.mount(document.getElementById('ayahPlayer'));
