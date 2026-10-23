@@ -277,6 +277,6 @@ h1 { text-shadow: none; }
   backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
 }
 .ayah-container { overflow: visible; }
-.ayah::before { right: 0; top: -26px; }
+.ayah::before { content: none; }
 .qp { display: flex; }
 .qp[hidden] { display: none; }
