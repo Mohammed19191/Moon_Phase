@@ -366,3 +366,66 @@ h1 { text-shadow: none; }
 .qp-transport { display: flex; justify-content: center; align-items: center; gap: 20px; }
 .qp-transport .qp-back, .qp-transport .qp-fwd { width: 48px; height: 48px; border-radius: 50%; }
 .qp-tools { justify-content: center; }
+
+/* =====================================================================
+   الحركة (Motion) على طريقة Apple: قصيرة، هادفة، قابلة للإلغاء، وتحترم «تقليل الحركة».
+   - منحنى iOS للوحات: cubic-bezier(.32,.72,0,1) — يبدأ سريعًا ثم يستقر برفق.
+   - نابض خفيف عند ترك الضغط على الأزرار.
+   - لا حركة إضافية على ما يتكرر كثيرًا (التشغيل، التمرير، اللعب).
+   ===================================================================== */
+:root {
+  --ease-ios: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --spring: cubic-bezier(0.34, 1.3, 0.64, 1);
+  --t-fast: .18s; --t-base: .35s; --t-slow: .6s;
+}
+@supports (transition-timing-function: linear(0, 1)) {
+  :root { --spring: linear(0, 0.22 5%, 0.58 12%, 0.88 20%, 1.03 30%, 1.045 38%, 1.02 48%, 0.996 60%, 1); }
+}
+
+/* ---------- الانتقال بين الصفحات (View Transitions) ---------- */
+@view-transition { navigation: auto; }
+::view-transition-old(root) { animation: vt-out var(--t-base) var(--ease-ios) both; }
+::view-transition-new(root) { animation: vt-in .45s var(--ease-ios) both; }
+@keyframes vt-out { to { opacity: 0; transform: scale(.985); } }
+@keyframes vt-in { from { opacity: 0; transform: translateY(14px) scale(1.008); } }
+.nav-container { view-transition-name: tabbar; }
+.theme-toggle { view-transition-name: themebtn; }
+.nav-link[aria-current="page"] { view-transition-name: tablens; }
+::view-transition-group(tabbar), ::view-transition-group(themebtn) { animation-duration: 0s; }
+::view-transition-group(tablens) { animation-duration: .5s; animation-timing-function: var(--ease-ios); }
+::view-transition-old(tablens), ::view-transition-new(tablens) { height: 100%; }
+
+/* ---------- ظهور المحتوى عند فتح الصفحة (تتابع خفيف) ---------- */
+@keyframes rise { from { opacity: 0; transform: translateY(12px); } }
+.container > h1, .home-moon, .ayah-container, .moon-container, .age-details, .game-container, .game-stats {
+  animation: rise .5s var(--ease-ios) backwards;
+}
+.container > h1 { animation-delay: .04s; }
+.home-moon, .moon-container, .game-container { animation-delay: .10s; }
+.ayah-container, .age-details, .game-stats { animation-delay: .18s; }
+
+/* ---------- ردّ الفعل عند الضغط: انكماش سريع ثم عودة نابضة ---------- */
+.nav-link, .theme-toggle, .qp-btn, .qp-play, .start-button, .restart-button, .pause-button, .expand-button, .qpw-done, .qpw-cancel {
+  transition: transform .45s var(--spring), background-color var(--t-base) ease, color var(--t-base) ease, box-shadow var(--t-base) ease, opacity var(--t-base) ease;
+}
+.nav-link:active, .theme-toggle:active, .qp-btn:active, .qp-play:active, .start-button:active,
+.restart-button:active, .pause-button:active, .expand-button:active { transform: scale(.94); transition-duration: .12s; }
+.pause-button:active { transform: translateY(-50%) scale(.94); }
+.expand-button:active { transform: translateX(-50%) scale(.96); }
+
+/* ---------- تبدّل المظهر: ألوان تنتقل بنعومة ---------- */
+body { transition: background .6s ease, color .4s ease; }
+
+/* ---------- لوحة اختيار القارئ: حركة اللوحات في iOS ---------- */
+.qpw-sheet { transform: translateY(40px) scale(.97); transition: transform .5s var(--ease-ios), opacity .25s ease; }
+.qpw.is-open .qpw-sheet { transform: none; }
+.qpw-backdrop { transition: opacity .35s ease; }
+.qpw-wheel { scroll-behavior: auto; }
+
+/* ---------- تقليل الحركة: لا انتقالات ولا تتابع ---------- */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+  .container > *, .home-moon, .ayah-container, .moon-container, .age-details, .game-container, .game-stats { animation: none !important; }
+  .nav-link:active, .theme-toggle:active, .qp-btn:active, .qp-play:active { transform: none; }
+}

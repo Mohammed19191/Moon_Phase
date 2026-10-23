@@ -21,8 +21,8 @@
     .sky b{position:absolute;width:100px;height:1px;background:linear-gradient(90deg,#fff,transparent);
       opacity:0;animation:sky-shoot 5s linear forwards}
     @keyframes sky-twinkle{0%,100%{opacity:.2}50%{opacity:1}}
-    @keyframes sky-shoot{0%{transform:translate(0,0) rotate(45deg);opacity:1}
-      100%{transform:translate(-500px,500px) rotate(45deg);opacity:0}}
+    @keyframes sky-shoot{0%{transform:translate(0,0) rotate(-45deg);opacity:1}
+      100%{transform:translate(-500px,500px) rotate(-45deg);opacity:0}}
     .theme-toggle:focus-visible,.nav-link:focus-visible,.zoro-image:focus-visible{outline:2px solid var(--accent-color);outline-offset:3px}
     @media (prefers-reduced-motion:reduce){
       *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;
@@ -114,6 +114,10 @@
     nav.setAttribute('aria-label', 'التنقل الرئيسي');
     nav.querySelectorAll('.nav-link').forEach(a => {
       if (a.classList.contains('active')) a.setAttribute('aria-current', 'page');
+      // الضغط على التبويب الحالي لا يعيد تحميل الصفحة: يعيدك إلى أعلاها (كما في iOS)
+      a.addEventListener('click', e => {
+        if (a.getAttribute('aria-current') === 'page') { e.preventDefault(); scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); }
+      });
       const text = [...a.childNodes].filter(n => n.nodeType === 3 && n.textContent.trim());
       text.forEach(n => { const s = document.createElement('span'); s.className = 'tab-label'; s.textContent = n.textContent.trim(); n.replaceWith(s); });
     });
@@ -150,7 +154,9 @@
     if (btn) {
       btn.addEventListener('click', () => {
         const next = THEMES[(THEMES.indexOf(document.body.dataset.theme) + 1) % THEMES.length];
-        applyTheme(next, true);
+        // تبدّل المظهر بتلاشٍ متقاطع ناعم (View Transitions) حيث يُدعم، وإلا فمباشرةً
+        if (document.startViewTransition && !reduce) document.startViewTransition(() => applyTheme(next, true));
+        else applyTheme(next, true);
       });
     }
     const mq = matchMedia('(prefers-color-scheme: dark)');
