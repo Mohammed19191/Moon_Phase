@@ -64,7 +64,8 @@
         let active = false;           // الشاشة ظاهرة الآن؟
         let state = 'idle';           // idle | playing | paused | over
         let W = 0, H = 0, zw = 80, zh = 80, cx = 0, cy = 0;
-        let time = 0, shownSec = -1, points = 0, level = 1;
+        let time = 0, shownSec = -1, points = 0, got = 0, level = 1;
+        const goalOf = L => Math.min(20, GOAL + 2 * (L - 1));   // كل مستوى يحتاج قلبين إضافيين حتى 20
         let obsTimer = 0, heartTimer = 0, last = 0, raf = 0;
         let things = [];              // العوائق والقلوب الساقطة: {el, kind, x, y, w, h, shrink}
         const keys = new Set();
@@ -130,11 +131,9 @@
         const count = kind => things.reduce((n, t) => n + (t.kind === kind), 0);
 
         function collect() {
-            points++;
-            level = 1 + Math.floor(points / HEARTS_PER_LEVEL);
-            elPoints.textContent = points + '/' + GOAL;
-            elLevel.textContent = level;
-            if (points >= GOAL) moon.classList.add('ready');
+            points++; got++;
+            elPoints.textContent = got + '/' + goalOf(level);
+            if (got >= goalOf(level)) moon.classList.add('ready');
         }
 
         /* ---- حلقة اللعب (تعتمد على الزمن الفعلي لا على سرعة الشاشة) ---- */
@@ -150,10 +149,10 @@
                 setZoro(cx + dx / n * ZORO_SPEED * dt, cy + dy / n * ZORO_SPEED * dt);
             }
 
-            const speed = BASE_SPEED * (1 + 0.2 * (level - 1));
-            const interval = Math.max(1500, 3000 - 400 * (level - 1));
+            const speed = BASE_SPEED * (1 + 0.15 * Math.min(level - 1, 8));
+            const interval = Math.max(1100, 3000 - 350 * (level - 1));
             obsTimer += dt * 1000; heartTimer += dt * 1000;
-            if (obsTimer >= interval) { obsTimer = 0; if (count('obstacle') < Math.min(6, 2 + level)) spawn('obstacle'); }
+            if (obsTimer >= interval) { obsTimer = 0; if (count('obstacle') < Math.min(8, 2 + level)) spawn('obstacle'); }
             if (heartTimer >= 5000) { heartTimer = 0; if (count('heart') < 2) spawn('heart'); }
 
             const z = box(cx - zw / 2, cy - zh / 2, zw, zh, 0.2);
@@ -167,10 +166,27 @@
                 t.el.remove(); things.splice(i, 1); collect();
             }
 
-            if (points >= GOAL) {
+            if (got >= goalOf(level)) {
                 const a = area.getBoundingClientRect(), m = moon.getBoundingClientRect();
-                if (hit(z, box(m.left - a.left, m.top - a.top, m.width, m.height, 0.2))) end(true);
+                if (hit(z, box(m.left - a.left, m.top - a.top, m.width, m.height, 0.2))) nextLevel();
             }
+        }
+
+        const toast = document.createElement('div');
+        toast.className = 'level-toast';
+        area.appendChild(toast);
+        function nextLevel() {
+            level++; got = 0;
+            area.querySelectorAll('.obstacle,.pickup').forEach(el => el.remove());
+            things = [];
+            obsTimer = 0; heartTimer = 2000;
+            moon.classList.remove('ready');
+            elLevel.textContent = level;
+            elPoints.textContent = '0/' + goalOf(level);
+            hint.textContent = `المستوى ${level}: اجمع ${goalOf(level)} ${goalOf(level) <= 10 ? 'قلوب' : 'قلبًا'} ثم المس القمر 🌙`;
+            setZoro(W / 2, H - 50 - zh / 2);
+            toast.textContent = 'المستوى ' + level;
+            toast.classList.remove('show'); void toast.offsetWidth; toast.classList.add('show');
         }
 
         function frame(now) {
@@ -222,13 +238,14 @@
             cancelAnimationFrame(raf);
             area.querySelectorAll('.obstacle,.pickup').forEach(el => el.remove());
             things = [];
-            time = 0; shownSec = -1; points = 0; level = 1;
+            time = 0; shownSec = -1; points = 0; got = 0; level = 1;
+            hint.textContent = `اجمع ${GOAL} قلوب ثم المس القمر 🌙`;
             obsTimer = 1500; heartTimer = 3000;                 // أول عائق بعد 1.5 ثانية وأول قلب بعد ثانيتين
             moon.classList.remove('ready'); area.classList.remove('paused');
             measure();
             setZoro(W / 2, H - 50 - zh / 2);
             hud.style.display = 'flex';
-            elPoints.textContent = '0/' + GOAL; elTime.textContent = '0:00'; elLevel.textContent = 1;
+            elPoints.textContent = '0/' + goalOf(1); elTime.textContent = '0:00'; elLevel.textContent = 1;
             pauseIcon('fa-pause');
             startScreen.style.display = 'none'; overScreen.style.display = 'none';
             state = 'playing'; last = performance.now();
@@ -242,9 +259,9 @@
             hud.style.display = 'none';
             const best = Math.max(points, parseInt(store.get('ttm_best'), 10) || 0);
             store.set('ttm_best', best);
-            overScreen.querySelector('h2').textContent = won ? 'مبروك! وصلت إلى القمر!' : 'انتهت اللعبة!';
+            overScreen.querySelector('h2').textContent = level > 1 ? `انتهت اللعبة! بلغت المستوى ${level}` : 'انتهت اللعبة!';
             elFinal.textContent = fmt(Math.floor(time));
-            bestLine.textContent = `القلوب: ${points} — أفضل نتيجة: ${best}`;
+            bestLine.textContent = `القلوب: ${points} · المستوى: ${level} — أفضل نتيجة: ${best}`;
             overScreen.style.display = 'block';
         }
 

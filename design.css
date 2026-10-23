@@ -510,3 +510,9 @@ body { transition: background .6s ease, color .4s ease; }
 @keyframes rock-spin { to { transform: rotate(360deg); } }
 @keyframes flame-flicker { from { transform: translateX(-50%) scaleY(.88) scaleX(.95); opacity: .85; } to { transform: translateX(-50%) scaleY(1.08) scaleX(1.05); opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .obstacle svg.rock { animation: none !important; } .obstacle .flame { animation: none !important; } }
+
+/* ---------- إشعار المستوى الجديد ---------- */
+.level-toast { position: absolute; inset-inline: 0; top: 42%; text-align: center; font-size: 2rem; font-weight: 700; color: #fff; pointer-events: none; opacity: 0; z-index: 20; text-shadow: 0 2px 14px rgba(0,0,0,.45); }
+.level-toast.show { animation: lvl-pop 1.4s var(--ease-ios, cubic-bezier(.2,.8,.2,1)) both; }
+@keyframes lvl-pop { 0% { opacity: 0; transform: scale(.7); } 20% { opacity: 1; transform: scale(1.05); } 70% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(1.1); } }
+@media (prefers-reduced-motion: reduce) { .level-toast.show { animation: lvl-fade 1.4s both; } @keyframes lvl-fade { 0%,100% { opacity: 0; } 15%,80% { opacity: 1; } } }
