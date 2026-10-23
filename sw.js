@@ -1,10 +1,10 @@
 /* sw.js — عامل الخدمة: يعمل الموقع دون اتصال (ما عدا التلاوة الصوتية فهي من الإنترنت). */
-const VERSION = 'moon-v20261024h';
+const VERSION = 'moon-v20261024i';
 const SHELL = [
   './', 'index.html', 'MoonAge.html', 'ToTheMoon.html',
   'style.css', 'pet.css', 'quran-player.css', 'app.css', 'design.css',
   'site.js', 'quran-player.js', 'home.js', 'age.js', 'game.js', 'app.js', 'ayat.json', 'manifest.webmanifest',
-  'features.css', 'moon3d.js', 'share.js', 'vendor/three.min.js', 'tex/moon.jpg', 'tex/moon-bump.jpg', 'fonts/amiri-quran.woff2', 'glass.js', 'vendor/liquidglass.js',
+  'features.css', 'moon3d.js', 'share.js', 'vendor/three.min.js', 'tex/moon.jpg', 'tex/moon-bump.jpg', 'fonts/amiri-quran.woff2', 'glass.js', 'vendor/liquidglass.js', 'vendor/html-to-image.js',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png',
   ...['bat', 'cloud', 'firstQuarter', 'fullMoon', 'lastQuarter', 'newMoon', 'sakura', 'sakuraBranch',
       'waningCrescent', 'waningGibbous', 'waxingCrescent', 'waxingGibbous', 'zoro'].map(n => `images1/${n}.webp`)
