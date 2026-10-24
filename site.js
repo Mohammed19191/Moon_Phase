@@ -196,13 +196,22 @@
         put(layer.querySelector('.goo-btn'), btn.getBoundingClientRect(), '50%');
         return layer;
       }
-      const swap = next => {
-        if (document.startViewTransition && !reduce) {
-          const t = document.startViewTransition(() => applyTheme(next, true));
-          return t.finished.catch(() => {});
-        }
-        applyTheme(next, true);
-        return Promise.resolve();
+      /* المظهر الجديد ينبثق من الزر: دائرة تتسع من مركزه، تغطي الشريط أولًا (بطيئة في بدايتها)
+         ثم تنتشر بسرعة إلى بقية الصفحة. الصفحة كلها صورة واحدة أثناء الانتقال، فيتسع المظهر عليها معًا */
+      const swap = (next, origin) => {
+        if (!document.startViewTransition || reduce) { applyTheme(next, true); return Promise.resolve(); }
+        if (!origin) return document.startViewTransition(() => applyTheme(next, true)).finished.catch(() => {});
+        document.documentElement.classList.add("theme-reveal");
+        const t = document.startViewTransition(() => applyTheme(next, true));
+        t.ready.then(() => {
+          const { x, y, navReach } = origin;
+          const R = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+          const c = r => `circle(${r}px at ${x}px ${y}px)`;
+          document.documentElement.animate(
+            { clipPath: [c(0), c(navReach), c(R)], offset: [0, 0.42, 1] },
+            { duration: 950, easing: 'cubic-bezier(.45, 0, .25, 1)', pseudoElement: '::view-transition-new(root)' });
+        }).catch(() => {});
+        return t.finished.catch(() => {}).finally(() => document.documentElement.classList.remove("theme-reveal"));
       };
       btn.addEventListener('click', () => {
         if (busy) return;
@@ -220,7 +229,12 @@
         dock.classList.add('is-goo');
         requestAnimationFrame(() => dock.classList.add('is-merging'));
         setTimeout(() => {
-          swap(next).then(() => {
+          // مركز الانبثاق: الزر في موضع التصاقه، ومدى الشريط: أبعد زاوية منه
+          const bb = btn.getBoundingClientRect(), nb = nav.getBoundingClientRect();
+          const x = bb.left + bb.width / 2, y = bb.top + bb.height / 2;
+          const far = Math.max(...[[nb.left, nb.top], [nb.right, nb.top], [nb.left, nb.bottom], [nb.right, nb.bottom]]
+            .map(([px, py]) => Math.hypot(px - x, py - y)));
+          swap(next, { x, y, navReach: far + 8 }).then(() => {
             dock.classList.remove('is-merging');                        // تبتعد القطرتان فيتمطط العنق ثم ينقطع
             setTimeout(() => { dock.classList.remove('is-goo'); busy = false; }, 640);
           });

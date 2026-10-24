@@ -1,5 +1,5 @@
 /* sw.js — عامل الخدمة: يعمل الموقع دون اتصال (ما عدا التلاوة الصوتية فهي من الإنترنت). */
-const VERSION = 'moon-v20261024z8';
+const VERSION = 'moon-v20261024za';
 const SHELL = [
   './', 'index.html', 'MoonAge.html', 'ToTheMoon.html',
   'style.css', 'pet.css', 'quran-player.css', 'app.css', 'design.css',

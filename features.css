@@ -262,3 +262,11 @@ html:has(.nav-container.has-lens)::view-transition-new(tabbar) { animation: none
 /* المقبض الأصلي يختفي ما دامت القطرة ظاهرة */
 .qp-seek.is-lens::-webkit-slider-thumb, .qp-volume.is-lens::-webkit-slider-thumb { opacity: 0; }
 @media (prefers-reduced-motion: reduce) { .slider-lens { transition: opacity .1s; scale: 1; } }
+
+/* انبثاق المظهر من الزر (site.js › swap): الصفحة كلها صورة واحدة، والجديدة تتسع دائرةً فوق القديمة */
+html.theme-reveal .nav-container, html.theme-reveal .theme-toggle,
+html.theme-reveal .nav-link[aria-current="page"], html.theme-reveal .moon3d,
+html.theme-reveal #homeMoon, html.theme-reveal #moonImage { view-transition-name: none !important; }
+html.theme-reveal::view-transition-old(root), html.theme-reveal::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+html.theme-reveal::view-transition-old(root) { z-index: 0; }
+html.theme-reveal::view-transition-new(root) { z-index: 1; }
