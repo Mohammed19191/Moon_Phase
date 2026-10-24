@@ -297,3 +297,11 @@ html.theme-reveal::view-transition-new(root) { z-index: 1; }
 /* مع العدسة: يختفي المقبض، ويظهر القلب المكتمل داخل القطرة الزجاجية واضحًا فوق انكسارها */
 .slider-lens-heart { position: absolute; left: 50%; top: 50%; width: 17px; height: 14px; translate: -50% -50%;
   background: var(--qp-fg); -webkit-mask: var(--heart-full) center / 100% 100% no-repeat; mask: var(--heart-full) center / 100% 100% no-repeat; }
+
+/* أثناء الانتقال بين الشاشات يلتقط كروم صورة للشريط والزر ليحرّكهما، فيرسم ضبابية الخلفية في مربع
+   ويتجاهل استدارة الحواف (فتظهر زوايا حادة). نوقف الضبابية طوال الانتقال فقط؛ تبقى الخلفية شبه الشفافة */
+html.vt-fwd .nav-container, html.vt-back .nav-container,
+html.vt-fwd .theme-toggle, html.vt-back .theme-toggle,
+html.vt-fwd .nav-lens-refr, html.vt-back .nav-lens-refr {
+  backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+}
