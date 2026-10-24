@@ -144,7 +144,7 @@ body { font-family: system-ui, -apple-system, "SF Arabic", "Segoe UI", Tahoma, "
 .home-moon.is-3d .moon3d canvas { position: relative; z-index: 1; }
 /* إطار الضوء خلف القمر في المحاق، في كل المظاهر: يبدأ من حافة القرص (٨٤٫٨٪ من عرض المشهد) ويتلاشى للخارج */
 .moon-corona { display: none; pointer-events: none; }
-.home-moon.is-3d .moon-corona {
+.home-moon.is-3d .moon-corona, #view-age .moon-link.is-3d .moon-corona {
   display: block; position: absolute; z-index: 0; left: 50%; top: 50%;
   width: 180%; aspect-ratio: 1; border-radius: 50%; transform: translate(-50%, -50%);
   background: radial-gradient(circle closest-side, transparent 0 46.2%,
@@ -154,3 +154,14 @@ body { font-family: system-ui, -apple-system, "SF Arabic", "Segoe UI", Tahoma, "
 }
 @media (prefers-reduced-motion: reduce) { .moon-corona { transition: none !important; } }
 @media (prefers-reduced-motion: reduce) { .moon-sun { transition: none !important; } }
+
+/* ---------- قمر شاشة «عمر القمر»: بلا بطاقة، مقصوص دائريًا كما في الرئيسية ---------- */
+#view-age .moon-container {
+  background: none !important; border: 0 !important; box-shadow: none !important;
+  backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+  padding: 8px 0 !important; transform: none !important;
+}
+#view-age .moon-link.is-3d { isolation: isolate; }
+#view-age .moon-link.is-3d img {
+  position: relative; z-index: 1; border-radius: 0; object-fit: contain; filter: drop-shadow(0 0 26px rgba(239, 211, 215, .3));
+}

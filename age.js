@@ -9,11 +9,26 @@
       const meta = document.createElement('div');
       meta.className = 'phase-meta';
       phaseEl.after(meta);
-      moonImg.style.animation = 'float 3s ease-in-out infinite';
+      // القمر يطفو مع إطار المحاق معًا، فالحركة على الرابط الذي يضمهما لا على الصورة
+      const moonLink = moonImg.closest('.moon-link');
+      moonLink.style.animation = 'float 3s ease-in-out infinite';
+      const corona = document.createElement('span');
+      corona.className = 'moon-corona';
+      corona.setAttribute('aria-hidden', 'true');
+      moonLink.prepend(corona);
+
+      // قمر الليلة نفسه الذي في الرئيسية (ثلاثي الأبعاد بقرصه الداكن)، وإلا صورة الطور
+      let use3d = false;
+      if (window.Moon3D) Moon3D.available().then(ok => { use3d = ok; if (ok) { moonLink.classList.add('is-3d'); updateMoon(); } });
 
       function updateMoon() {
         const m = moonInfo();
-        showMoon(moonImg, m);
+        const fromNew = Math.min(m.fraction, 1 - m.fraction);
+        moonLink.style.setProperty('--corona-o', Math.pow(Math.max(0, 1 - fromNew / 0.0625), 0.8).toFixed(3));
+        if (use3d) {
+          Moon3D.snapshot(m.fraction, 640).then(url => { moonImg.onerror = null; moonImg.src = url; moonImg.alt = 'شكل القمر: ' + m.phase.name; })
+            .catch(() => showMoon(moonImg, m));
+        } else showMoon(moonImg, m);
         phaseEl.textContent = m.phase.name;
         meta.textContent = `عمر القمر ${ar(m.age, 1)} يومًا · الإضاءة نحو ${ar(Math.round(m.illum * 100))}٪`;
       }
