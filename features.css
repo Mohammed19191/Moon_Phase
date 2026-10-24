@@ -185,7 +185,7 @@ body[data-theme="light"]::before {
   transform-origin: 50% 50%; will-change: transform;
   transition: transform .34s cubic-bezier(.2, .9, .22, 1.08);
 }
-.nav-lens.is-drag { transition: transform .08s linear; }      /* تتبع الإصبع مباشرة */
+.nav-lens.is-drag { transition: transform .12s cubic-bezier(.2, .9, .3, 1.2); }   /* تتبع الإصبع، وتنتفخ بسرعة حين يبدأ السحب */
 .nav-lens.no-anim { transition: none; }
 .nav-lens-refr, .nav-lens-tint { position: absolute; inset: 0; border-radius: inherit; }
 .nav-lens-tint {

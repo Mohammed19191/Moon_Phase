@@ -38,7 +38,7 @@
 
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
   const CFG = { glassThickness: 30, bezelWidth: 16, ior: 1.4, scaleRatio: 1, blur: 0, specularOpacity: 0.5, specularSat: 0 };
-  const PRESS_SCALE = 1.18, DRAG_THRESHOLD = 6, OVERSHOOT = 22;
+  const PRESS_SCALE = 1.18, DRAG_THRESHOLD = 6, OVERSHOOT = 22, DRAG_BEYOND = 6;   // DRAG_BEYOND: كم تتجاوز العدسة الشريط أثناء السحب
   // قوة الانكسار: هادئة والعدسة ساكنة فيبقى اسم التبويب واضحًا، وكاملة عند الضغط والسحب.
   // تغيير قوة الإزاحة خاصية واحدة في المرشح، فلا يُعاد بناؤه
   const REST_STRENGTH = 0.4, PRESS_STRENGTH = 1;
@@ -168,7 +168,14 @@
     const min = 0, max = n.width - a.width, rubber = drag && drag.moved > DRAG_THRESHOLD ? OVERSHOOT : 0;
     if (left < min) left = min - Math.min(rubber, (min - left) * 0.35);
     else if (left > max) left = max + Math.min(rubber, (left - max) * 0.35);
-    lens.style.transform = `translate(${left}px, ${a.top}px) scale(${PRESS_SCALE})`;
+    // أثناء السحب تكبر العدسة حتى تتجاوز حافتي الشريط العلوية والسفلية قليلًا (كما في iOS)،
+    // وتعود إلى حجمها عند الإفلات. الضغطة وحدها تكبير خفيف
+    let sx = PRESS_SCALE, sy = PRESS_SCALE;
+    if (drag && drag.moved > DRAG_THRESHOLD) {
+      sy = (n.height + DRAG_BEYOND * 2) / a.height;
+      sx = 1 + (sy - 1) * 0.7;                                   // أعرض قليلًا لا بقدر الارتفاع
+    }
+    lens.style.transform = `translate(${left}px, ${a.top}px) scale(${sx.toFixed(3)}, ${sy.toFixed(3)})`;
   }
   function nearest(x) {
     return links().reduce((best, l) => {
