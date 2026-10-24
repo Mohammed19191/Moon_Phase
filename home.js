@@ -50,14 +50,46 @@
         Moon3D.mount(document.getElementById('homeMoon3d'), moonInfo().fraction).then(ctrl => {
           moon3d = ctrl;
           box.classList.add('is-3d');
+          placeSun(moonInfo().fraction);
           document.getElementById('moon3dHint').hidden = false;
           document.addEventListener('viewchange', e => { if (e.detail.view === 'home') ctrl.redraw(); });
         }).catch(() => { /* تبقى صورة الطور */ });
       }
+      /* الشمس في النهار (المظهر الفاتح فقط): تظهر في اتجاهها الحقيقي بالنسبة إلى القمر.
+         الحساب هو نفسه الذي يضيء القمر ثلاثي الأبعاد (moon3d.js): زاوية الشمس من القمر e = الكسر × ٣٦٠°،
+         والاتجاه (sin e، 0.08، −cos e) والناظر ينظر نحو −z.
+         - قرب المحاق: الشمس خلف القمر تقريبًا، فيظهر قرص القمر المظلم أمام وهجها.
+         - قرب التربيع: الشمس على جانب القمر المضيء.
+         - بين الأحدب والبدر: الشمس خلف الناظر، فلا تظهر. */
+      const stage = document.querySelector('.moon3d-link');
+      const sunEl = document.createElement('span'), shadeEl = document.createElement('span');
+      sunEl.className = 'moon-sun'; shadeEl.className = 'moon-shade';
+      sunEl.setAttribute('aria-hidden', 'true'); shadeEl.setAttribute('aria-hidden', 'true');
+      stage.prepend(sunEl);
+      document.getElementById('homeMoon3d').prepend(shadeEl);
+      function placeSun(f) {
+        const e = f * 2 * Math.PI, dx = Math.sin(e), dy = 0.08, dz = -Math.cos(e);
+        const S = stage.querySelector('.moon3d').offsetWidth || 250;
+        const focal = (S / 2) / Math.tan(15 * Math.PI / 180);           // كما في كاميرا moon3d.js
+        const disc = (window.Moon3D ? Moon3D.DISC : 0.85) * S / 2;     // نصف قطر قرص القمر على الشاشة
+        let x, y;
+        if (dz < -0.02) { x = dx / -dz * focal; y = -dy / -dz * focal; }  // أمام الناظر: إسقاط منظوري
+        else { x = Math.sign(dx) * 1e4; y = 0; }
+        const len = Math.hypot(x, y), max = S * 0.95;                    // لا تبتعد عن القمر أكثر من حافة المشهد
+        if (len > max) { x *= max / len; y *= max / len; }
+        const visible = Math.max(0, Math.min(1, (Math.cos(e) + 0.25) / 0.35));
+        const behind = Math.max(0, Math.min(1, 1 - (Math.hypot(x, y) - disc * 0.3) / (disc * 1.1)));
+        stage.style.setProperty('--sun-x', x.toFixed(1) + 'px');
+        stage.style.setProperty('--sun-y', y.toFixed(1) + 'px');
+        stage.style.setProperty('--sun-o', visible.toFixed(3));
+        stage.style.setProperty('--shade-o', (behind * visible).toFixed(3));
+      }
+      addEventListener('resize', () => placeSun(moonInfo().fraction));
+
       function updateMoon() {
         const m = moonInfo();
         showMoon(moonImg, m);
-        if (moon3d) moon3d.setPhase(m.fraction);
+        if (moon3d) { moon3d.setPhase(m.fraction); placeSun(m.fraction); }
         nameEl.textContent = m.phase.name;
         metaEl.textContent = `عمر القمر ${ar(m.age, 1)} يومًا · الإضاءة نحو ${ar(Math.round(m.illum * 100))}٪`;
       }

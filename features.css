@@ -126,3 +126,28 @@ body { font-family: system-ui, -apple-system, "SF Arabic", "Segoe UI", Tahoma, "
   .share-sheet { place-items: end center; }
   .share-panel { border-radius: 28px; padding-top: 8px; }
 }
+
+/* ---------- الشمس خلف القمر في النهار (home.js › placeSun) ---------- */
+.moon-sun, .moon-shade { display: none; pointer-events: none; }
+[data-theme="light"] .home-moon.is-3d .moon-sun {
+  display: block; position: absolute; z-index: -1; left: 50%; top: 50%;
+  width: 150%; aspect-ratio: 1; border-radius: 50%;
+  transform: translate(-50%, -50%) translate(var(--sun-x, 0px), var(--sun-y, 0px));
+  opacity: var(--sun-o, 0);
+  /* قرص الشمس صغير في المركز، ووهجها يمتد حولها فيبقى ظاهرًا حول القمر حين تكون خلفه */
+  background: radial-gradient(circle, #FFFDF2 0 6.5%, rgba(255, 246, 205, .95) 9%,
+              rgba(255, 232, 160, .6) 17%, rgba(255, 220, 130, .28) 32%, rgba(255, 214, 120, .1) 48%, rgba(255, 214, 120, 0) 68%);
+  transition: opacity .6s ease, transform .6s ease;
+}
+.moon3d-link { isolation: isolate; }
+.home-moon.is-3d .moon3d { position: relative; }
+/* قرص القمر المظلم: يظهر فقط حين تكون الشمس خلفه، فيحجبها كما في الواقع */
+[data-theme="light"] .home-moon.is-3d .moon-shade {
+  display: block; position: absolute; z-index: 0; left: 50%; top: 50%;
+  width: calc(var(--disc, .848) * 100%); aspect-ratio: 1; border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle at 50% 45%, #5d6478, #3b4152 70%, #30364a);
+  opacity: var(--shade-o, 0); transition: opacity .6s ease;
+}
+.home-moon.is-3d .moon3d canvas { position: relative; z-index: 1; }
+@media (prefers-reduced-motion: reduce) { .moon-sun, .moon-shade { transition: none !important; } }

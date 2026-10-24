@@ -51,10 +51,12 @@
         sh.fragmentShader = sh.fragmentShader.replace('#include <lights_physical_pars_fragment>', chunk.replace(target,
           'float muV = saturate( dot( geometry.normal, geometry.viewDir ) );' +
           'vec3 irradiance = min( 2.0 * dotNL / ( dotNL + muV + 1e-4 ), 1.35 ) * directLight.color;'));
-        // الجزء غير المضاء يأخذ لون السماء خلفه، كما يبدو القمر الحقيقي نهارًا وليلًا
+        // الجزء غير المضاء يأخذ لون السماء خلفه، كما يبدو القمر الحقيقي نهارًا وليلًا.
+        // الشفافية تُحسب من زاوية الشمس على سطح الكرة الأملس (لا من سطوع البكسل)، فيبقى خط الظل
+        // نظيفًا ولا تظهر نقاط سوداء من الفوهات في الجزء المظلم فوق الخلفيات الفاتحة
         sh.fragmentShader = sh.fragmentShader.replace('#include <dithering_fragment>',
-          'float lumA = smoothstep( 0.015, 0.09, dot( gl_FragColor.rgb, vec3( 0.299, 0.587, 0.114 ) ) );' +
-          'gl_FragColor = vec4( gl_FragColor.rgb * lumA, lumA );\n#include <dithering_fragment>');
+          'float litA = smoothstep( -0.03, 0.08, dot( normalize( vNormal ), directionalLights[ 0 ].direction ) );' +
+          'gl_FragColor = vec4( gl_FragColor.rgb * litA, litA );\n#include <dithering_fragment>');
       };
       mat.transparent = true;
       const sphere = new T.Mesh(new T.SphereGeometry(1, 160, 112), mat);
