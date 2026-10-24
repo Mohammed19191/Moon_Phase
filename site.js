@@ -113,6 +113,14 @@
   function setupNav() {
     const nav = $('.nav-container');
     if (!nav) return;
+    // زر المظهر دائرة مستقلة بجانب شريط التبويبات (كزر البحث بجانب الشريط في iOS 26)
+    const toggle = $('#themeToggle');
+    if (toggle && !nav.closest('.nav-dock')) {
+      const dock = document.createElement('div');
+      dock.className = 'nav-dock';
+      nav.before(dock);
+      dock.append(nav, toggle);                        // في اتجاه العربية: الشريط يمينًا والزر يساره
+    }
     nav.setAttribute('aria-label', 'التنقل الرئيسي');
     nav.querySelectorAll('.nav-link').forEach(a => {
       if (a.classList.contains('active')) a.setAttribute('aria-current', 'page');

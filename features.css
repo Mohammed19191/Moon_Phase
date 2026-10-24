@@ -203,3 +203,22 @@ body[data-theme="light"]::before {
 .nav-container.has-lens .nav-link[aria-current="page"] { view-transition-name: none; }
 html:has(.nav-container.has-lens)::view-transition-old(tabbar) { display: none; }
 html:has(.nav-container.has-lens)::view-transition-new(tabbar) { animation: none; }
+
+/* ---------- زر المظهر بجانب شريط التبويبات (site.js › setupNav) ---------- */
+.nav-dock { display: flex; align-items: stretch; justify-content: center; gap: 10px; margin: 8px auto 28px; max-width: 100%; }
+.nav-dock .nav-container { margin: 0; }
+.nav-dock .theme-toggle {
+  position: relative !important; inset: auto !important; top: auto !important; left: auto !important;
+  flex: none; width: 58px !important; height: 58px !important; align-self: center;   /* بارتفاع الشريط */
+  border-radius: 50%; display: grid; place-items: center; font-size: 1.4rem;
+}
+.nav-dock .theme-toggle:hover { transform: none; }
+@media (max-width: 640px) {
+  .nav-dock {
+    position: fixed; z-index: 20; margin: 0;
+    left: max(12px, env(safe-area-inset-left)); right: max(12px, env(safe-area-inset-right));
+    bottom: max(12px, env(safe-area-inset-bottom));
+  }
+  .nav-dock .nav-container { position: relative !important; inset: auto !important; flex: 1 1 auto; min-width: 0; }
+  .nav-dock .theme-toggle { width: 70px !important; height: 70px !important; font-size: 1.55rem; }
+}
