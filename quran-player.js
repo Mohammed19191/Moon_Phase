@@ -52,7 +52,7 @@
   };
 
   const pad3 = n => String(n).padStart(3, '0');
-  const ar = (n, digits = 0) => Number(n).toLocaleString('ar-SA', { useGrouping: false, maximumFractionDigits: digits });
+  const ar = (n, digits = 0) => Number(n).toLocaleString('ar-SA', { useGrouping: false, maximumFractionDigits: digits }).replace(/\u066B/g, ',');
   const fmt = s => {
     s = isFinite(s) && s > 0 ? s : 0;
     return ar(Math.floor(s / 60)) + ':' + ar(Math.floor(s % 60)).padStart(2, '٠');

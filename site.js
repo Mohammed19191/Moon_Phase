@@ -276,7 +276,8 @@
     img.src = dir + info.phase.file;
   }
 
-  const ar = (n, digits = 0) => n.toLocaleString('ar-SA', { maximumFractionDigits: digits });
+  // الفاصلة العشرية العربية «٫» يرسمها خط النظام كحرف «ر»، فنكتب «,» بدلها (١٣,٧)
+  const ar = (n, digits = 0) => n.toLocaleString('ar-SA', { maximumFractionDigits: digits }).replace(/\u066B/g, ',');
 
   /* ---------- زورو الطائر ---------- */
   function zoroPet() {
