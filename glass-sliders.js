@@ -4,9 +4,9 @@
    ويبقى المقبض العادي في سفاري وفايرفوكس وعند طلب تقليل الشفافية. */
 (() => {
   'use strict';
-  // نصف القلب في نهاية شريط التقدم يكتمل ما دام الإصبع عليه (في كل المتصفحات)
+  // نصف القلب في نهاية شريطي التقدم والصوت يكتمل ما دام الإصبع عليه (في كل المتصفحات)
   document.addEventListener('pointerdown', e => {
-    const seek = e.target.closest && e.target.closest('.qp-seek');
+    const seek = e.target.closest && e.target.closest('.qp-seek, .qp-volume');
     if (!seek || seek.disabled) return;
     seek.classList.add('is-held');
     const up = () => { seek.classList.remove('is-held'); removeEventListener('pointerup', up, true); removeEventListener('pointercancel', up, true); };
@@ -15,7 +15,7 @@
 
   if (!window.GlassLens) return;                         // المتصفح لا يدعم العدسة
   const W = 46, H = 30;                                  // مقاس القطرة
-  const thumbOf = input => input.classList.contains('qp-seek') ? 12 : 18;   // عرض المقبض (القلب أو الدائرة)
+  const thumbOf = () => 12;                              // عرض المقبض (نصف القلب)
   const SLIDERS = '.qp-seek, .qp-volume';
   let active = null;
 
@@ -30,7 +30,7 @@
     const refr = document.createElement('span'); refr.className = 'slider-lens-refr';
     const tint = document.createElement('span'); tint.className = 'slider-lens-tint';
     lens.append(refr, tint);
-    if (input.classList.contains('qp-seek')) {                   // القلب يكتمل داخل القطرة
+    {                                                            // القلب يكتمل داخل القطرة
       const heart = document.createElement('span'); heart.className = 'slider-lens-heart'; lens.appendChild(heart);
     }
     const id = GlassLens.filterFor(W, H);
