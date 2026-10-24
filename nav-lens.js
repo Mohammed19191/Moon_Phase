@@ -130,8 +130,8 @@
     lens.style.width = w + 'px'; lens.style.height = h + 'px';
     refr.style.backdropFilter = `url(#${id})`;
   }
-  function place(animate) {
-    const a = active(); if (!a) return;
+  function place(animate, target) {
+    const a = target || active(); if (!a) return;
     const r = local(a.getBoundingClientRect());
     lens.classList.toggle('no-anim', !animate || reduce.matches);
     setSize(r.width, r.height);
@@ -176,16 +176,18 @@
     drag = null;
     lens.classList.remove('is-pressed', 'is-drag');
     strength(REST_STRENGTH);
-    if (moved > DRAG_THRESHOLD) {
-      nav.dataset.dragged = '1'; setTimeout(() => { delete nav.dataset.dragged; }, 0);   // لا تُحتسب ضغطة على الرابط
-      const l = !cancelled && nearest(x);
-      if (l && l.getAttribute('aria-current') !== 'page') { location.hash = l.getAttribute('href'); return; }
-    }
-    place(true);
+    if (cancelled) { place(true); return; }
+    // الضغطة والسحب سواء: تنزلق العدسة فورًا إلى التبويب المقصود ثم تُفتح شاشته.
+    // (كانت الضغطة تعيد العدسة أولًا إلى التبويب القديم، ثم تنتقل إلى الجديد بعد تبديل الشاشة، فتتقطع)
+    const l = nearest(x);
+    place(true, l);
+    nav.dataset.handled = '1'; setTimeout(() => { delete nav.dataset.handled; }, 0);   // نتولى الانتقال بأنفسنا
+    if (l && l.getAttribute('aria-current') !== 'page') location.hash = l.getAttribute('href');
+    else if (l && moved <= DRAG_THRESHOLD) l.click();                                    // التبويب الحالي: يعيد الصفحة إلى أعلاها
   }
   addEventListener('pointerup', end);
   addEventListener('pointercancel', end);
-  nav.addEventListener('click', e => { if (nav.dataset.dragged) e.preventDefault(); }, true);
+  nav.addEventListener('click', e => { if (nav.dataset.handled && e.isTrusted) { e.preventDefault(); e.stopPropagation(); } }, true);
 
   document.addEventListener('viewchange', () => requestAnimationFrame(() => place(true)));
   let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => place(false), 120); });

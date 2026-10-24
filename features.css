@@ -197,3 +197,9 @@ body[data-theme="light"]::before {
 .nav-container.has-lens .nav-link.active, .nav-container.has-lens .nav-link[aria-current="page"] { background: transparent !important; box-shadow: none !important; }
 .nav-container.has-lens .nav-link { touch-action: none; -webkit-user-drag: none; user-select: none; }
 @media (prefers-reduced-motion: reduce) { .nav-lens, .nav-lens.is-drag { transition: none; } }
+
+/* انتقال الشاشات (View Transitions) يجمّد الشريط في صورة ويمزجها، فتظهر العدسة مكررة أو قافزة.
+   مع العدسة: يُعرض الشريط حيًّا مباشرة بلا مزج، وتنزلق العدسة بحركتها الخاصة */
+.nav-container.has-lens .nav-link[aria-current="page"] { view-transition-name: none; }
+html:has(.nav-container.has-lens)::view-transition-old(tabbar) { display: none; }
+html:has(.nav-container.has-lens)::view-transition-new(tabbar) { animation: none; }
