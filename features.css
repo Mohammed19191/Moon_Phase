@@ -270,3 +270,29 @@ html.theme-reveal #homeMoon, html.theme-reveal #moonImage { view-transition-name
 html.theme-reveal::view-transition-old(root), html.theme-reveal::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
 html.theme-reveal::view-transition-old(root) { z-index: 0; }
 html.theme-reveal::view-transition-new(root) { z-index: 1; }
+
+/* ---------- نهاية شريط التقدم: نصف قلب يكتمل عند السحب ----------
+   الجزء الملوّن من الشريط يبدأ من اليمين، وينتهي بنصف قلب: حافته المستقيمة تلتصق بالجزء الملوّن وفصّه يتقدم أمامه؛
+   عند الضغط أو السحب يكتمل القلب، وتعلوه العدسة الزجاجية في متصفحات Chromium */
+.qp { --heart-half: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='3.5 7 17 14'%3E%3CclipPath id='c'%3E%3Crect x='0' y='0' width='12' height='24'/%3E%3C/clipPath%3E%3Cpath d='M12 20.5s-8-4.7-8-10.3A4.7 4.7 0 0 1 12 7.6a4.7 4.7 0 0 1 8 2.6c0 5.6-8 10.3-8 10.3z' fill='%23000' clip-path='url%28%23c%29'/%3E%3C/svg%3E"); --heart-full: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='3.5 7 17 14'%3E%3Cpath d='M12 20.5s-8-4.7-8-10.3A4.7 4.7 0 0 1 12 7.6a4.7 4.7 0 0 1 8 2.6c0 5.6-8 10.3-8 10.3z' fill='%23000'/%3E%3C/svg%3E"); }
+/* نهاية الجزء الملوّن عند مركز المقبض تمامًا (لا عند نسبة من العرض كله)، فيلتصق نصف القلب بها بلا فراغ.
+   background-image وحدها، لتبقى بقية خصائص الخلفية (مساحة اللمس ٤٤px) كما هي */
+.qp-seek {
+  background-image: linear-gradient(to left, var(--qp-fg) calc(12px + (100% - 24px) * var(--pn, 0)), var(--qp-track) calc(12px + (100% - 24px) * var(--pn, 0))); }
+.qp-seek::-webkit-slider-thumb {
+  width: 24px; height: 20px; border: 0; border-radius: 0; box-shadow: none;
+  background: var(--qp-fg);
+  -webkit-mask: var(--heart-half) center / 100% 100% no-repeat; mask: var(--heart-half) center / 100% 100% no-repeat;
+  transition: transform .2s cubic-bezier(.3, 1.5, .5, 1);
+}
+.qp-seek::-moz-range-thumb {
+  width: 24px; height: 20px; border: 0; border-radius: 0; box-shadow: none; background: var(--qp-fg);
+  mask: var(--heart-half) center / 100% 100% no-repeat;
+}
+.qp-seek.is-held::-webkit-slider-thumb {
+  -webkit-mask-image: var(--heart-full); mask-image: var(--heart-full); transform: scale(1.12);
+}
+.qp-seek.is-held::-moz-range-thumb { mask-image: var(--heart-full); }
+/* مع العدسة: يختفي المقبض، ويظهر القلب المكتمل داخل القطرة الزجاجية واضحًا فوق انكسارها */
+.slider-lens-heart { position: absolute; left: 50%; top: 50%; width: 24px; height: 20px; translate: -50% -50%;
+  background: var(--qp-fg); -webkit-mask: var(--heart-full) center / 100% 100% no-repeat; mask: var(--heart-full) center / 100% 100% no-repeat; }

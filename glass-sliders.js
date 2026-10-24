@@ -4,8 +4,18 @@
    ويبقى المقبض العادي في سفاري وفايرفوكس وعند طلب تقليل الشفافية. */
 (() => {
   'use strict';
+  // نصف القلب في نهاية شريط التقدم يكتمل ما دام الإصبع عليه (في كل المتصفحات)
+  document.addEventListener('pointerdown', e => {
+    const seek = e.target.closest && e.target.closest('.qp-seek');
+    if (!seek || seek.disabled) return;
+    seek.classList.add('is-held');
+    const up = () => { seek.classList.remove('is-held'); removeEventListener('pointerup', up, true); removeEventListener('pointercancel', up, true); };
+    addEventListener('pointerup', up, true); addEventListener('pointercancel', up, true);
+  }, true);
+
   if (!window.GlassLens) return;                         // المتصفح لا يدعم العدسة
-  const W = 46, H = 30, THUMB = 18;                      // مقاس القطرة، وقطر المقبض الأصلي
+  const W = 46, H = 30;                                  // مقاس القطرة
+  const thumbOf = input => input.classList.contains('qp-seek') ? 24 : 18;   // عرض المقبض (القلب أو الدائرة)
   const SLIDERS = '.qp-seek, .qp-volume';
   let active = null;
 
@@ -20,6 +30,9 @@
     const refr = document.createElement('span'); refr.className = 'slider-lens-refr';
     const tint = document.createElement('span'); tint.className = 'slider-lens-tint';
     lens.append(refr, tint);
+    if (input.classList.contains('qp-seek')) {                   // القلب يكتمل داخل القطرة
+      const heart = document.createElement('span'); heart.className = 'slider-lens-heart'; lens.appendChild(heart);
+    }
     const id = GlassLens.filterFor(W, H);
     const disp = document.querySelector('#' + id + ' feDisplacementMap');
     if (disp) disp.setAttribute('scale', disp.getAttribute('data-max'));   // انكسار كامل: القطرة تظهر وقت السحب فقط
@@ -33,7 +46,7 @@
     const min = +input.min || 0, max = +input.max || 100, p = (input.value - min) / ((max - min) || 1);
     const ir = input.getBoundingClientRect(), wr = input.parentElement.getBoundingClientRect();
     const rtl = getComputedStyle(input).direction === 'rtl';
-    const along = THUMB / 2 + p * (ir.width - THUMB);
+    const T = thumbOf(input), along = T / 2 + p * (ir.width - T);
     const cx = (rtl ? ir.right - along : ir.left + along) - wr.left;
     const cy = ir.top + ir.height / 2 - wr.top;
     lens.style.transform = `translate(${(cx - W / 2).toFixed(1)}px, ${(cy - H / 2).toFixed(1)}px)`;

@@ -258,7 +258,7 @@
     /* ---------- أدوات ---------- */
     const urlFor = () => ayah ? `${BASE}${qari.dir}/${pad3(ayah.surah)}${pad3(ayah.verse)}.mp3` : '';
     const hasDuration = () => isFinite(audio.duration) && audio.duration > 0;
-    const setFill = (el, pct) => el.style.setProperty('--p', pct + '%');
+    const setFill = (el, pct) => { el.style.setProperty('--p', pct + '%'); el.style.setProperty('--pn', pct / 100); };   // --pn: لمطابقة نهاية التعبئة لمركز المقبض
     const showNote = (text, isError) => {
       note.textContent = text || '';
       note.classList.toggle('is-error', !!isError);
