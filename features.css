@@ -97,53 +97,8 @@ a.share-secondary:not([href]) { opacity: .4; pointer-events: none; }
 .share-primary:focus-visible, .share-secondary:focus-visible { outline: 2px solid var(--accent-color); outline-offset: 2px; }
 .share-status { min-height: 1.2em; margin: 10px 0 0; font-size: .9rem; }
 
-/* ---------- الزجاج السائل (glass.js) ---------- */
-.lg-root { position: fixed; inset: 0; z-index: 20; pointer-events: none; }
-.lg-root > * { pointer-events: auto; }
-.lg-root > .lg-sky { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; }
-.lg-on .lg-root > .nav-container, .lg-on .lg-root > .theme-toggle {
-  background: transparent !important; background-image: none !important;
-  backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
-  border-color: transparent !important; box-shadow: none !important; overflow: visible !important;
-}
-/* البورغندي: نص التبويب المحدد كان داكنًا فوق عدسة داكنة؛ نجعله فاتحًا ليُقرأ */
+/* البورغندي: نص التبويب المحدد كان داكنًا فوق خلفية التبويب الداكنة؛ نجعله فاتحًا ليُقرأ */
 [data-theme="burgundy"] .nav-link.active, [data-theme="burgundy"] .nav-link[aria-current="page"] { color: #FFE9EE; }
-
-/* ---------- مجموعات الزجاج داخل البطاقات والأزرار والنوافذ (glass.js) ---------- */
-.lg-group { position: absolute; inset: -48px; z-index: -1; pointer-events: none; }
-.lg-group > .lg-bg { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; }
-.lg-proxy { position: absolute; pointer-events: none; }
-.lg-root > .lg-bg { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; }
-/* المضيف (بطاقة أو زر أو نافذة) والأزرار داخله: الزجاج يرسم خلفيتها بدل CSS.
-   الزر المفعّل (مثل «إكمال التلاوة») يُستثنى فيبقى بلونه حتى تظل حالته واضحة. */
-.lg-host { isolation: isolate; overflow: visible !important; }
-.lg-host, .lg-target:not([aria-pressed="true"]), .lg-host .qp {
-  background-color: transparent !important;
-  backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
-  box-shadow: none !important; border-color: transparent !important;
-}
-.lg-host:not(.qp-qari-btn):not(.birth-pick),
-.lg-target:not(.qp-qari-btn):not(.birth-pick):not([aria-pressed="true"]) { background-image: none !important; }
-/* زر التشغيل: أيقونة بلون النص فوق الزجاج */
-.lg-target.qp-play { color: var(--qp-text) !important; }
-.lg-host.qpw-sheet { overflow: visible !important; }
-/* أزرار اللعبة كانت بتدرج ملون ونص داكن؛ فوق الزجاج يصبح النص بلون نص المظهر */
-.lg-host.start-button, .lg-host.restart-button { color: var(--secondary-color) !important; font-weight: 700; }
-
-/* ---------- عدسة شريط التبويبات (iOS 26): تنزلق بين التبويبات، وتكبر عند الضغط وتتبع الإصبع ---------- */
-.lg-lens {
-  position: fixed; z-index: 21; pointer-events: none !important; border-radius: 999px;
-  transition: left .34s cubic-bezier(.2, .9, .22, 1.08), width .26s cubic-bezier(.2, .9, .22, 1),
-              top .22s ease, height .22s ease;
-}
-.lg-lens.is-drag { transition: width .2s ease, top .2s ease, height .2s ease; }   /* تتبع الإصبع فورًا */
-.lg-lens.no-anim { transition: none; }
-.lg-lens-on .lg-root .nav-link.active, .lg-lens-on .lg-root .nav-link[aria-current="page"] { background: transparent !important; box-shadow: none !important; }
-.lg-lens-on .lg-root .nav-container { user-select: none; -webkit-user-select: none; }
-.lg-lens-on .lg-root .nav-link { touch-action: none; }
-@media (prefers-reduced-motion: reduce) { .lg-lens { transition: none; } }
-.lg-lens-on .lg-root .nav-link { -webkit-user-drag: none; }
-html.lg-capturing .age-grid { overflow: hidden !important; }
 
 /* شبكة أمان: لا شيء يوسّع الصفحة أفقيًا، فلا يصغّر متصفح الجوال الصفحة ثم يكبّرها.
    clip لا يجعل body حاوية تمرير (بخلاف hidden)، فيبقى تمرير الصفحة كما هو */
