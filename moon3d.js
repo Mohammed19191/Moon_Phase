@@ -51,14 +51,7 @@
         sh.fragmentShader = sh.fragmentShader.replace('#include <lights_physical_pars_fragment>', chunk.replace(target,
           'float muV = saturate( dot( geometry.normal, geometry.viewDir ) );' +
           'vec3 irradiance = min( 2.0 * dotNL / ( dotNL + muV + 1e-4 ), 1.35 ) * directLight.color;'));
-        // الجزء غير المضاء يأخذ لون السماء خلفه، كما يبدو القمر الحقيقي نهارًا وليلًا.
-        // الشفافية تُحسب من زاوية الشمس على سطح الكرة الأملس (لا من سطوع البكسل)، فيبقى خط الظل
-        // نظيفًا ولا تظهر نقاط سوداء من الفوهات في الجزء المظلم فوق الخلفيات الفاتحة
-        sh.fragmentShader = sh.fragmentShader.replace('#include <dithering_fragment>',
-          'float litA = smoothstep( -0.03, 0.08, dot( normalize( vNormal ), directionalLights[ 0 ].direction ) );' +
-          'gl_FragColor = vec4( gl_FragColor.rgb * litA, litA );\n#include <dithering_fragment>');
       };
-      mat.transparent = true;
       const sphere = new T.Mesh(new T.SphereGeometry(1, 160, 112), mat);
       sphere.rotation.y = -Math.PI / 2;          // خط الطول صفر (الوجه المقابل للأرض) نحو الناظر
       const group = new T.Group();
@@ -66,7 +59,7 @@
       scene.add(group);
       const sun = new T.DirectionalLight(0xfff6ea, 1.35);
       scene.add(sun);
-      scene.add(new T.AmbientLight(0x5c6f9e, 0.018));   // ضوء الأرض الخافت على الجزء المظلم
+      scene.add(new T.AmbientLight(0x5c6f9e, 0.012));   // ضوء الأرض الخافت: الجزء المظلم قرص داكن شبه أسود، فيبقى القمر دائريًا
       return { T, renderer, scene, camera, group, sun, view: null };
     })();
     return ready;

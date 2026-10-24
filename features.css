@@ -128,7 +128,7 @@ body { font-family: system-ui, -apple-system, "SF Arabic", "Segoe UI", Tahoma, "
 }
 
 /* ---------- الشمس خلف القمر في النهار (home.js › placeSun) ---------- */
-.moon-sun, .moon-shade { display: none; pointer-events: none; }
+.moon-sun { display: none; pointer-events: none; }
 [data-theme="light"] .home-moon.is-3d .moon-sun {
   display: block; position: absolute; z-index: -1; left: 50%; top: 50%;
   width: 150%; aspect-ratio: 1; border-radius: 50%;
@@ -141,13 +141,16 @@ body { font-family: system-ui, -apple-system, "SF Arabic", "Segoe UI", Tahoma, "
 }
 .moon3d-link { isolation: isolate; }
 .home-moon.is-3d .moon3d { position: relative; }
-/* قرص القمر المظلم: يظهر فقط حين تكون الشمس خلفه، فيحجبها كما في الواقع */
-[data-theme="light"] .home-moon.is-3d .moon-shade {
-  display: block; position: absolute; z-index: 0; left: 50%; top: 50%;
-  width: calc(var(--disc, .848) * 100%); aspect-ratio: 1; border-radius: 50%;
-  transform: translate(-50%, -50%);
-  background: radial-gradient(circle at 50% 45%, #5d6478, #3b4152 70%, #30364a);
-  opacity: var(--shade-o, 0); transition: opacity .6s ease;
-}
 .home-moon.is-3d .moon3d canvas { position: relative; z-index: 1; }
-@media (prefers-reduced-motion: reduce) { .moon-sun, .moon-shade { transition: none !important; } }
+/* إطار الضوء خلف القمر في المحاق، في كل المظاهر: يبدأ من حافة القرص (٨٤٫٨٪ من عرض المشهد) ويتلاشى للخارج */
+.moon-corona { display: none; pointer-events: none; }
+.home-moon.is-3d .moon-corona {
+  display: block; position: absolute; z-index: 0; left: 50%; top: 50%;
+  width: 180%; aspect-ratio: 1; border-radius: 50%; transform: translate(-50%, -50%);
+  background: radial-gradient(circle closest-side, transparent 0 46.2%,
+              rgba(255, 252, 240, .98) 47.3%, rgba(255, 238, 200, .7) 49.5%, rgba(255, 224, 170, .32) 55%,
+              rgba(255, 214, 150, .12) 66%, rgba(255, 214, 150, 0) 82%);
+  opacity: var(--corona-o, 0); transition: opacity .6s ease;
+}
+@media (prefers-reduced-motion: reduce) { .moon-corona { transition: none !important; } }
+@media (prefers-reduced-motion: reduce) { .moon-sun { transition: none !important; } }

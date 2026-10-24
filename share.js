@@ -112,6 +112,15 @@
     const glow = x.createRadialGradient(mx, my, mr * 0.8, mx, my, mr * 1.9);
     glow.addColorStop(0, `rgba(${P.glow},${0.08 + 0.2 * info.illum})`); glow.addColorStop(1, `rgba(${P.glow},0)`);
     x.fillStyle = glow; x.fillRect(0, 0, W, H);
+    // في المحاق: إطار ضوء خلف القمر كالكسوف، كما في الشاشة الرئيسية
+    const corona = Math.pow(Math.max(0, 1 - Math.min(info.fraction, 1 - info.fraction) / 0.0625), 0.8);
+    if (corona > 0) {
+      const rg = x.createRadialGradient(mx, my, mr * 0.98, mx, my, mr * 1.75);
+      rg.addColorStop(0, `rgba(255,252,240,${0.98 * corona})`); rg.addColorStop(0.06, `rgba(255,238,200,${0.7 * corona})`);
+      rg.addColorStop(0.24, `rgba(255,224,170,${0.32 * corona})`); rg.addColorStop(0.55, `rgba(255,214,150,${0.12 * corona})`);
+      rg.addColorStop(1, 'rgba(255,214,150,0)');
+      x.fillStyle = rg; x.beginPath(); x.arc(mx, my, mr * 1.75, 0, Math.PI * 2); x.fill();
+    }
     if (moon.img) { const s = (mr * 2) / moon.disc; x.drawImage(moon.img, mx - s / 2, my - s / 2, s, s); }
 
     x.direction = 'rtl'; x.textAlign = 'center';

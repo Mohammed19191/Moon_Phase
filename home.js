@@ -58,31 +58,35 @@
       /* الشمس في النهار (المظهر الفاتح فقط): تظهر في اتجاهها الحقيقي بالنسبة إلى القمر.
          الحساب هو نفسه الذي يضيء القمر ثلاثي الأبعاد (moon3d.js): زاوية الشمس من القمر e = الكسر × ٣٦٠°،
          والاتجاه (sin e، 0.08، −cos e) والناظر ينظر نحو −z.
-         - قرب المحاق: الشمس خلف القمر تقريبًا، فيظهر قرص القمر المظلم أمام وهجها.
+         - قرب المحاق: الشمس خلف القمر تقريبًا، فيحجبها قرصه المظلم ويبقى وهجها حوله.
          - قرب التربيع: الشمس على جانب القمر المضيء.
          - بين الأحدب والبدر: الشمس خلف الناظر، فلا تظهر. */
       const stage = document.querySelector('.moon3d-link');
-      const sunEl = document.createElement('span'), shadeEl = document.createElement('span');
-      sunEl.className = 'moon-sun'; shadeEl.className = 'moon-shade';
-      sunEl.setAttribute('aria-hidden', 'true'); shadeEl.setAttribute('aria-hidden', 'true');
+      const sunEl = document.createElement('span');
+      sunEl.className = 'moon-sun';
+      sunEl.setAttribute('aria-hidden', 'true');
       stage.prepend(sunEl);
-      document.getElementById('homeMoon3d').prepend(shadeEl);
+      // إطار الضوء حول القمر في المحاق (كالكسوف): داخل القمر نفسه ليطفو معه، وخلف قرصه
+      const coronaEl = document.createElement('span');
+      coronaEl.className = 'moon-corona';
+      coronaEl.setAttribute('aria-hidden', 'true');
+      document.getElementById('homeMoon3d').prepend(coronaEl);
       function placeSun(f) {
         const e = f * 2 * Math.PI, dx = Math.sin(e), dy = 0.08, dz = -Math.cos(e);
         const S = stage.querySelector('.moon3d').offsetWidth || 250;
         const focal = (S / 2) / Math.tan(15 * Math.PI / 180);           // كما في كاميرا moon3d.js
-        const disc = (window.Moon3D ? Moon3D.DISC : 0.85) * S / 2;     // نصف قطر قرص القمر على الشاشة
         let x, y;
         if (dz < -0.02) { x = dx / -dz * focal; y = -dy / -dz * focal; }  // أمام الناظر: إسقاط منظوري
         else { x = Math.sign(dx) * 1e4; y = 0; }
         const len = Math.hypot(x, y), max = S * 0.95;                    // لا تبتعد عن القمر أكثر من حافة المشهد
         if (len > max) { x *= max / len; y *= max / len; }
         const visible = Math.max(0, Math.min(1, (Math.cos(e) + 0.25) / 0.35));
-        const behind = Math.max(0, Math.min(1, 1 - (Math.hypot(x, y) - disc * 0.3) / (disc * 1.1)));
         stage.style.setProperty('--sun-x', x.toFixed(1) + 'px');
         stage.style.setProperty('--sun-y', y.toFixed(1) + 'px');
         stage.style.setProperty('--sun-o', visible.toFixed(3));
-        stage.style.setProperty('--shade-o', (behind * visible).toFixed(3));
+        // يكتمل الإطار ليلة المحاق تمامًا، ويخفت حتى يختفي مع نهاية طور المحاق (نحو يومين)
+        const fromNew = Math.min(f, 1 - f);
+        stage.style.setProperty('--corona-o', Math.pow(Math.max(0, 1 - fromNew / 0.0625), 0.8).toFixed(3));
       }
       addEventListener('resize', () => placeSun(moonInfo().fraction));
 
