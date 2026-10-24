@@ -15,7 +15,7 @@
 
   if (!window.GlassLens) return;                         // المتصفح لا يدعم العدسة
   const W = 46, H = 30;                                  // مقاس القطرة
-  const thumbOf = input => input.classList.contains('qp-seek') ? 24 : 18;   // عرض المقبض (القلب أو الدائرة)
+  const thumbOf = input => input.classList.contains('qp-seek') ? 12 : 18;   // عرض المقبض (القلب أو الدائرة)
   const SLIDERS = '.qp-seek, .qp-volume';
   let active = null;
 
