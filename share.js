@@ -143,8 +143,6 @@
       x.fillStyle = P.main; x.font = `500 40px ${UI}`;
       x.fillText(line, mx, 1110);
     }
-    x.direction = 'ltr'; x.fillStyle = P.title; x.font = `600 30px ${UI}`;
-    x.fillText(SITE, mx, H - 58);
     return cv;
   }
 
