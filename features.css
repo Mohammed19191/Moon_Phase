@@ -165,3 +165,14 @@ body { font-family: system-ui, -apple-system, "SF Arabic", "Segoe UI", Tahoma, "
 #view-age .moon-link.is-3d img {
   position: relative; z-index: 1; border-radius: 0; object-fit: contain; filter: drop-shadow(0 0 26px rgba(239, 211, 215, .3));
 }
+
+/* ---------- المظهر النهاري: سماء زرقاء في الأعلى تتدرج إلى برتقالي الغروب في الأسفل (كسماء اللعبة) ----------
+   طبقة ثابتة بحجم الشاشة خلف المحتوى، فيبقى الأزرق أعلى الشاشة والغروب أسفلها مهما مرّر الزائر */
+body[data-theme="light"] {
+  --body-gradient-start: #5E9FE3; --body-gradient-end: #FFAD72;
+  background: #FFAD72;
+}
+body[data-theme="light"]::before {
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background: linear-gradient(180deg, #5E9FE3 0%, #9DC8F2 36%, #F3DCC7 70%, #FFAD72 100%);
+}

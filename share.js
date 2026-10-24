@@ -58,7 +58,7 @@
   const PALETTES = {
     dark:     { bg: ['#070B1E', '#0B1026', '#1a2048'], stars: 1, decor: '', glow: '254,234,250',
                 title: '#FFB8D9', main: '#FEEAFA', sub: '#EFD3D7' },
-    light:    { bg: ['#FF6B3D', '#FF8F45', '#FFB347'], stars: 0, decor: 'clouds', glow: '255,255,255',
+    light:    { bg: ['#5E9FE3', '#9DC8F2', '#F3DCC7', '#FFAD72'], stars: 0, decor: 'clouds', glow: '255,255,255',
                 title: '#1B2530', main: '#1B2530', sub: '#2A323D' },
     sakura:   { bg: ['#FFF0F5', '#FFE0E6', '#FFD3DF'], stars: 0, decor: 'sakura', glow: '255,255,255',
                 title: '#B0245A', main: '#5E1B3C', sub: '#7A1744' },
@@ -67,11 +67,7 @@
   };
   function cardPalette() {
     const b = document.body, t = b.dataset.theme;
-    const base = PALETTES[t] || PALETTES.dark;
-    if (b.dataset.sky !== 'live' || !SiteKit.liveSky) return base;
-    const L = SiteKit.liveSky();                     // السماء الحية: لون السماء في هذه الساعة نفسها
-    if (L.palette === 'light') return { ...PALETTES.light, bg: [L.top, L.bottom] };
-    return { ...PALETTES.dark, bg: [L.top, L.bottom], stars: Math.max(0.35, L.night) };
+    return PALETTES[t] || PALETTES.dark;
   }
 
   /* ---------- رسم البطاقة 1080×1350 (مقاس منشورات واتساب وإنستغرام) ---------- */

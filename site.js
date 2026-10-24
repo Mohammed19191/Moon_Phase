@@ -2,8 +2,8 @@
 (() => {
   'use strict';
 
-  const THEMES = ['live', 'dark', 'light', 'sakura', 'burgundy'];
-  const BAR_COLORS = { dark: '#0B1026', light: '#FF6B3D', sakura: '#FFF0F5', burgundy: '#5C0A1F' };
+  const THEMES = ['dark', 'light', 'sakura', 'burgundy'];
+  const BAR_COLORS = { dark: '#0B1026', light: '#5E9FE3', sakura: '#FFF0F5', burgundy: '#5C0A1F' };
   const $ = (s, r = document) => r.querySelector(s);
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const store = {
@@ -88,8 +88,7 @@
     pause: '<path d="M8.5 5v14M15.5 5v14"/>',
     play: '<path d="M8 5.5v13l11-6.5z"/>',
     gem: '<path d="M6.5 3.5h11l4 5.5L12 21 2.5 9z"/><path d="M2.5 9h19M9 3.5 7.5 9 12 21M15 3.5 16.5 9 12 21"/>',
-    chevron: '<path d="M6 9l6 6 6-6"/>',
-    horizon: '<path d="M3 18h18M6.5 18a5.5 5.5 0 0 1 11 0"/><path d="M12 5v3M5.2 9.2l1.6 1.6M18.8 9.2l-1.6 1.6M2.5 14h2M19.5 14h2"/>'
+    chevron: '<path d="M6 9l6 6 6-6"/>'
   };
   const iconHTML = (name, cls = '') =>
     `<svg class="ic ic-${name} ${cls}" viewBox="0 0 24 24" aria-hidden="true" focusable="false">${ICON_PATHS[name] || ''}</svg>`;
@@ -104,7 +103,6 @@
   }
 
   const THEME_INFO = {
-    live:   { icon: 'horizon', name: 'سماء حية' },
     dark:   { icon: 'moon',   name: 'داكن' },
     light:  { icon: 'sun',    name: 'فاتح' },
     sakura: { icon: 'flower', name: 'ساكورا' },
@@ -127,55 +125,22 @@
     });
   }
 
-  /* ---------- السماء الحية: الخلفية تتبع ساعة الزائر ----------
-     ارتفاع الشمس تقريبي من الساعة المحلية (شروق ~6:10، غروب ~17:50). فوق −2° تُستعمل ألوان المظهر الفاتح،
-     وتحتها ألوان الداكن، فيبقى تباين النص كما قِيس في المظهرين. */
-  const sunAltitude = h => 75 * Math.sin(Math.PI * (h - 6.2) / 11.6);
-  const SKY_NIGHT = [[-90, '#05081A', '#0B1026'], [-14, '#070B1E', '#14173A'], [-8, '#141A4A', '#3A2D63'], [-2, '#27306A', '#8C4F70']];
-  const SKY_DAY = [[-2, '#FF6B3D', '#FFB347'], [5, '#FF8C55', '#FFC27A'], [12, '#5FA0E2', '#C9E4FA'], [90, '#5B9BE0', '#C6E2FA']];
-  const hex = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
-  const mix = (a, b, t) => { const A = hex(a), B = hex(b); return '#' + A.map((v, i) => Math.round(v + (B[i] - v) * t).toString(16).padStart(2, '0')).join(''); };
-  // إن كان الجهاز على الوضع الداكن فالسماء ليلية دائمًا (لا نفرض صفحة فاتحة على من اختار الداكن)؛
-  // وفي الوضع الفاتح تتبع السماء ساعة الزائر كما هي.
-  const systemDark = () => matchMedia('(prefers-color-scheme: dark)').matches;
-  function liveSky(date = new Date()) {
-    let alt = sunAltitude(date.getHours() + date.getMinutes() / 60);
-    if (systemDark()) alt = Math.min(alt, -16);
-    const day = alt >= -2, keys = day ? SKY_DAY : SKY_NIGHT;
-    let k = 0;
-    while (k < keys.length - 2 && alt > keys[k + 1][0]) k++;
-    const a = keys[k], b = keys[k + 1], t = Math.max(0, Math.min(1, (alt - a[0]) / (b[0] - a[0])));
-    const top = mix(a[1], b[1], t), bottom = mix(a[2], b[2], t);
-    return { palette: day ? 'light' : 'dark', top, bottom, bg: `linear-gradient(180deg, ${top} 0%, ${bottom} 100%)`,
-             night: Math.max(0, Math.min(1, (-alt - 3) / 12)) };
-  }
-
   /* ---------- المظهر ---------- */
-  let mode = 'live';
+  // من لم يختر مظهرًا يتبع مظهر جهازه (فاتح أو داكن)
+  let mode = 'dark';
   function currentTheme() {
     const t = store.get('theme');
-    return THEMES.includes(t) ? t : 'live';
+    if (THEMES.includes(t)) return t;
+    return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   }
 
   function applyTheme(theme, save) {
     mode = theme;
-    const body = document.body, sky = $('.sky');
-    let palette = theme, bar = BAR_COLORS[theme];
-    if (theme === 'live') {
-      const L = liveSky();
-      palette = L.palette; bar = L.top;
-      body.setAttribute('data-sky', 'live');
-      body.style.background = L.bg;
-      if (sky) sky.style.opacity = String(L.night);
-    } else {
-      body.removeAttribute('data-sky');
-      body.style.background = '';
-      if (sky) sky.style.opacity = '';
-    }
-    body.setAttribute('data-theme', palette);
+    const body = document.body;
+    body.setAttribute('data-theme', theme);
     if (save) store.set('theme', theme);
     let meta = $('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', bar);
+    if (meta) meta.setAttribute('content', BAR_COLORS[theme]);
     buildLeaves();
     const btn = $('#themeToggle');
     if (btn) {
@@ -201,11 +166,9 @@
       });
     }
     const mq = matchMedia('(prefers-color-scheme: dark)');
-    const onScheme = () => { if (mode === 'live') applyTheme('live', false); };
+    const onScheme = () => { if (!THEMES.includes(store.get('theme'))) applyTheme(currentTheme(), false); };
     if (mq.addEventListener) mq.addEventListener('change', onScheme); else if (mq.addListener) mq.addListener(onScheme);
     addEventListener('storage', e => { if (e.key === 'theme' && THEMES.includes(e.newValue)) applyTheme(e.newValue, false); });
-    setInterval(() => { if (mode === 'live' && !document.hidden) applyTheme('live', false); }, 60000);
-    document.addEventListener('visibilitychange', () => { if (mode === 'live' && !document.hidden) applyTheme('live', false); });
   }
 
   /* ---------- حساب طور القمر (خوارزمية Meeus، الفصل 49 — دقيقة لدقائق معدودة) ---------- */
@@ -366,7 +329,7 @@
     setTimeout(show, 5000);
   }
 
-  window.SiteKit = { icon: iconHTML, hydrateIcons, moonInfo, moonSVG, showMoon, PHASES, ar, zoroPet, store, liveSky };
+  window.SiteKit = { icon: iconHTML, hydrateIcons, moonInfo, moonSVG, showMoon, PHASES, ar, zoroPet, store };
   setupTheme();
 
   /* ---------- PWA: عامل الخدمة (يحتاج HTTPS أو localhost) ---------- */
