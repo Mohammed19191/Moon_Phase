@@ -176,3 +176,24 @@ body[data-theme="light"]::before {
   content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
   background: linear-gradient(180deg, #5E9FE3 0%, #9DC8F2 36%, #F3DCC7 70%, #FFAD72 100%);
 }
+
+/* ---------- عدسة شريط التبويبات (nav-lens.js، متصفحات Chromium فقط) ---------- */
+.nav-container.has-lens { overflow: visible; }
+@media (min-width: 641px) { .nav-container.has-lens { position: relative; } }   /* على الجوال يبقى ثابتًا أسفل الشاشة */
+.nav-lens {
+  position: absolute; top: 0; left: 0; z-index: 2; pointer-events: none; border-radius: 999px;
+  transform-origin: 50% 50%; will-change: transform;
+  transition: transform .34s cubic-bezier(.2, .9, .22, 1.08);
+}
+.nav-lens.is-drag { transition: transform .08s linear; }      /* تتبع الإصبع مباشرة */
+.nav-lens.no-anim { transition: none; }
+.nav-lens-refr, .nav-lens-tint { position: absolute; inset: 0; border-radius: inherit; }
+.nav-lens-tint {
+  background: rgba(255, 255, 255, .06);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35), 0 6px 18px rgba(0, 0, 0, .14);
+}
+[data-theme="light"] .nav-lens-tint, [data-theme="sakura"] .nav-lens-tint { background: rgba(255, 255, 255, .22); }
+/* العدسة تحل محل خلفية التبويب المحدد */
+.nav-container.has-lens .nav-link.active, .nav-container.has-lens .nav-link[aria-current="page"] { background: transparent !important; box-shadow: none !important; }
+.nav-container.has-lens .nav-link { touch-action: none; -webkit-user-drag: none; user-select: none; }
+@media (prefers-reduced-motion: reduce) { .nav-lens, .nav-lens.is-drag { transition: none; } }
