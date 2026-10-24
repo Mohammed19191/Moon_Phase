@@ -31,7 +31,7 @@
   <link rel="stylesheet" href="quran-player.css?v=20261024e">
   <link rel="stylesheet" href="app.css?v=20261024e">
   <link rel="stylesheet" href="design.css?v=20261024e">
-  <link rel="stylesheet" href="features.css?v=20261024zi">
+  <link rel="stylesheet" href="features.css?v=20261024zj">
 </head>
 <body>
 <script>try{var t=localStorage.getItem('theme');if(['dark','light','sakura','burgundy'].indexOf(t)<0)t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.body.setAttribute('data-theme',t)}catch(e){document.body.setAttribute('data-theme','dark')}</script>
@@ -68,7 +68,7 @@
       <h1 id="h-home" tabindex="-1">شكل القمر اليوم</h1>
 
     <section class="home-moon" aria-live="polite">
-      <a href="#/age" title="عمر القمر" class="moon3d-link"><span class="moon3d" id="homeMoon3d"></span><img id="homeMoon" alt="شكل القمر اليوم" width="220" height="220"></a>
+      <div role="link" tabindex="0" aria-label="عمر القمر" data-href="#/age" class="moon3d-link"><span class="moon3d" id="homeMoon3d"></span><img id="homeMoon" alt="شكل القمر اليوم" width="220" height="220" draggable="false"></div>
       <div class="home-moon-name" id="homeMoonName"></div>
       <div class="home-moon-meta" id="homeMoonMeta"></div>
       <div class="moon3d-hint" id="moon3dHint" hidden>اسحب القمر لتدويره، واضغط عليه لمعرفة عمره</div>
@@ -167,7 +167,7 @@
   <script src="site.js?v=20261024zb"></script>
   <script src="quran-player.js?v=20261024zd"></script>
   <script src="moon3d.js?v=20261024u"></script>
-  <script src="home.js?v=20261024u"></script>
+  <script src="home.js?v=20261024zj"></script>
   <script src="age.js?v=20261024w"></script>
   <script src="game.js?v=20261024e"></script>
   <script src="app.js?v=20261024e"></script>

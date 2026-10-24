@@ -305,3 +305,8 @@ html.vt-fwd .theme-toggle, html.vt-back .theme-toggle,
 html.vt-fwd .nav-lens-refr, html.vt-back .nav-lens-refr {
   backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
 }
+
+/* القمر في الرئيسية يُضغط كرابط دون أن يكون رابطًا */
+.moon3d-link { cursor: pointer; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
+.moon3d-link:focus-visible { outline: 2px solid var(--accent-color); outline-offset: 6px; border-radius: 50%; }
+.moon3d-link:hover #homeMoon { transform: scale(1.05); }

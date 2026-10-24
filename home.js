@@ -62,6 +62,11 @@
          - قرب التربيع: الشمس على جانب القمر المضيء.
          - بين الأحدب والبدر: الشمس خلف الناظر، فلا تظهر. */
       const stage = document.querySelector('.moon3d-link');
+      // القمر يفتح «عمر القمر» بالضغط أو بمفتاح Enter؛ وليس رابطًا <a> حتى لا يُظهر المتصفح عنوانه أثناء
+      // الضغط والسحب. سحب القمر لتدويره لا يُحتسب ضغطة (moon3d.js يوقف الضغطة بعد السحب)
+      const openAge = () => { location.hash = stage.dataset.href; };
+      stage.addEventListener('click', openAge);
+      stage.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openAge(); } });
       const sunEl = document.createElement('span');
       sunEl.className = 'moon-sun';
       sunEl.setAttribute('aria-hidden', 'true');
