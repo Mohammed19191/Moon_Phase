@@ -166,11 +166,36 @@
     applyTheme(currentTheme(), false);
     const btn = $('#themeToggle');
     if (btn) {
+      // الضغط على زر المظهر: يتحرك الزر نحو الشريط ويلتصق به، فيأخذ الشريط المظهر الجديد، ثم يعود الزر إلى مكانه.
+      // تبديل المظهر نفسه بتلاشٍ متقاطع ناعم (View Transitions) حيث يُدعم
+      let busy = false;
+      const swap = next => {
+        if (document.startViewTransition && !reduce) {
+          const t = document.startViewTransition(() => applyTheme(next, true));
+          return t.finished.catch(() => {});
+        }
+        applyTheme(next, true);
+        return Promise.resolve();
+      };
       btn.addEventListener('click', () => {
+        if (busy) return;
         const next = THEMES[(THEMES.indexOf(mode) + 1) % THEMES.length];
-        // تبدّل المظهر بتلاشٍ متقاطع ناعم (View Transitions) حيث يُدعم، وإلا فمباشرةً
-        if (document.startViewTransition && !reduce) document.startViewTransition(() => applyTheme(next, true));
-        else applyTheme(next, true);
+        const dock = btn.closest('.nav-dock'), nav = $('.nav-container');
+        if (reduce || !dock || !nav) { swap(next); return; }
+        busy = true;
+        const n = nav.getBoundingClientRect(), b = btn.getBoundingClientRect();
+        const dir = n.left >= b.right ? 1 : -1;                         // الشريط يمين الزر في اتجاه العربية
+        const gap = dir > 0 ? n.left - b.right : b.left - n.right;
+        btn.style.setProperty('--dock-dx', dir * (gap + 14) + 'px');   // يتداخل مع حافة الشريط ١٤px
+        nav.style.setProperty('--dock-nx', -dir * 5 + 'px');           // والشريط يتحرك نحوه قليلًا
+        dock.classList.add('is-merging');
+        setTimeout(() => {
+          swap(next).then(() => {
+            dock.classList.remove('is-merging');
+            dock.classList.add('is-release');
+            setTimeout(() => { dock.classList.remove('is-release'); busy = false; }, 520);
+          });
+        }, 230);
       });
     }
     const mq = matchMedia('(prefers-color-scheme: dark)');

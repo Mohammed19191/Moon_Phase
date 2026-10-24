@@ -222,3 +222,17 @@ html:has(.nav-container.has-lens)::view-transition-new(tabbar) { animation: none
   .nav-dock .nav-container { position: relative !important; inset: auto !important; flex: 1 1 auto; min-width: 0; }
   .nav-dock .theme-toggle { width: 70px !important; height: 70px !important; font-size: 1.55rem; }
 }
+
+/* زر المظهر يلتصق بالشريط ثم يعود (site.js › setupTheme) */
+.nav-dock .theme-toggle, .nav-dock .nav-container { transition: transform .5s cubic-bezier(.2, 1.4, .4, 1); }
+.nav-dock.is-merging .theme-toggle {
+  transform: translateX(var(--dock-dx, 0px)) scale(1.06, .94);   /* ينضغط قليلًا عند الالتصاق كالسائل */
+  transition: transform .23s cubic-bezier(.5, 0, .7, 1.2);
+}
+.nav-dock.is-merging .nav-container {
+  transform: translateX(var(--dock-nx, 0px)) scaleX(1.012);
+  transition: transform .23s cubic-bezier(.5, 0, .7, 1.2);
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav-dock .theme-toggle, .nav-dock .nav-container { transition: none !important; transform: none !important; }
+}
