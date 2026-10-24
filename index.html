@@ -31,10 +31,10 @@
   <link rel="stylesheet" href="quran-player.css?v=20261024e">
   <link rel="stylesheet" href="app.css?v=20261024e">
   <link rel="stylesheet" href="design.css?v=20261024e">
-  <link rel="stylesheet" href="features.css?v=20261024q">
+  <link rel="stylesheet" href="features.css?v=20261024r">
 </head>
 <body>
-<script>try{var t=localStorage.getItem('theme');if(['live','dark','light','sakura','burgundy'].indexOf(t)<0)t='live';if(t==='live'){var d=new Date(),h=d.getHours()+d.getMinutes()/60;t=75*Math.sin(Math.PI*(h-6.2)/11.6)>-2?'light':'dark';document.body.setAttribute('data-sky','live')}document.body.setAttribute('data-theme',t)}catch(e){document.body.setAttribute('data-theme','dark')}</script>
+<script>try{var t=localStorage.getItem('theme');if(['live','dark','light','sakura','burgundy'].indexOf(t)<0)t='live';if(t==='live'){var d=new Date(),h=d.getHours()+d.getMinutes()/60;t=(!matchMedia('(prefers-color-scheme: dark)').matches&&75*Math.sin(Math.PI*(h-6.2)/11.6)>-2)?'light':'dark';document.body.setAttribute('data-sky','live')}document.body.setAttribute('data-theme',t)}catch(e){document.body.setAttribute('data-theme','dark')}</script>
   <button class="theme-toggle" id="themeToggle"><svg class="ic ic-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg></button>
   <div class="cloud cloud-1"></div>
   <div class="cloud cloud-2"></div>
@@ -79,7 +79,7 @@
       <div id="ayahPlayer"></div>
     </div>
 
-    <button type="button" class="share-btn" id="shareTonight">بطاقة الليلة للمشاركة</button>
+    <button type="button" class="share-btn" id="shareTonight">شارك بطاقة الليلة</button>
 
     </section>
     <section class="view" id="view-age" data-view="age" hidden aria-labelledby="h-age">
@@ -116,7 +116,7 @@
           <p class="birth-phase" id="birthPhase"></p>
           <p id="birthText"></p>
           <p class="birth-count" id="birthCount"></p>
-          <button type="button" class="share-btn" id="birthShare">بطاقة ميلادي للمشاركة</button>
+          <button type="button" class="share-btn" id="birthShare">شارك بطاقة ميلادي</button>
         </div>
       </div>
     </section>
@@ -164,14 +164,14 @@
 
   <div class="sakura-branch"></div>
 
-  <script src="site.js?v=20261024e"></script>
+  <script src="site.js?v=20261024r"></script>
   <script src="quran-player.js?v=20261024e"></script>
   <script src="moon3d.js?v=20261024e"></script>
   <script src="home.js?v=20261024e"></script>
   <script src="age.js?v=20261024e"></script>
   <script src="game.js?v=20261024e"></script>
   <script src="app.js?v=20261024e"></script>
-  <script src="share.js?v=20261024e"></script>
-  <script type="module" src="player-glass.js?v=20261024a"></script>
+  <script src="share.js?v=20261024r"></script>
+  <script src="sheets.js?v=20261024a"></script>
 </body>
 </html>

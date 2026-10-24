@@ -107,16 +107,22 @@ a.share-secondary:not([href]) { opacity: .4; pointer-events: none; }
   body { overflow-x: clip !important; }
 }
 
-/* ---------- زجاج مشغّل التلاوة (player-glass.js) ---------- */
-.pg-root { position: absolute; inset: -48px; z-index: -1; pointer-events: none; }
-.pg-bg { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; }
-.pg-pane { position: absolute; pointer-events: none; }
-/* البطاقة والأزرار: الزجاج يرسم خلفيتها بدل CSS. الزر المفعّل (مثل «إكمال التلاوة») يبقى بلونه لتظل حالته واضحة */
-.pg-host { isolation: isolate; overflow: visible !important; }
-.pg-host, .pg-host .qp, .pg-target:not([aria-pressed="true"]) {
-  background-color: transparent !important;
-  backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
-  box-shadow: none !important; border-color: transparent !important;
+/* خط النظام (SF Arabic على أجهزة أبل) بدل Segoe/Tahoma غير الموجودين على الآيفون، ودعم حجم النص الذي يختاره
+   الزائر في إعدادات جهازه (Dynamic Type): typography.md › Supporting Dynamic Type */
+body { font-family: system-ui, -apple-system, "SF Arabic", "Segoe UI", Tahoma, "Geeza Pro", sans-serif; }
+@supports (font: -apple-system-body) {
+  html { font: -apple-system-body; }
+  body { font-family: system-ui, -apple-system, "SF Arabic", sans-serif; }
 }
-.pg-host, .pg-target:not(.qp-qari-btn):not([aria-pressed="true"]) { background-image: none !important; }
-.pg-target.qp-play { color: var(--qp-text) !important; }   /* أيقونة التشغيل بلون النص فوق الزجاج */
+/* أسماء التبويبات لا تكبر مع حجم النص (تبقى أيقونات الشريط واضحة ولا يتجاوز عرضه الشاشة) */
+@media (max-width: 640px) { .nav-link { font-size: min(.8125rem, 14px); } }
+
+/* الأوراق المنبثقة على الجوال (sheets.js): مقبض أعلى الورقة، وبطاقة المشاركة تصعد من أسفل الشاشة كأوراق iOS */
+.sheet-grabber { display: none; }
+@media (max-width: 640px) {
+  .sheet-grabber { display: block; width: 36px; height: 5px; border-radius: 3px; margin: 2px auto 6px;
+    background: currentColor; opacity: .3; }
+  .sheet-grabber, .qpw-head, .share-panel > h2 { touch-action: none; }
+  .share-sheet { place-items: end center; }
+  .share-panel { border-radius: 28px; padding-top: 8px; }
+}

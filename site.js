@@ -135,8 +135,12 @@
   const SKY_DAY = [[-2, '#FF6B3D', '#FFB347'], [5, '#FF8C55', '#FFC27A'], [12, '#5FA0E2', '#C9E4FA'], [90, '#5B9BE0', '#C6E2FA']];
   const hex = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
   const mix = (a, b, t) => { const A = hex(a), B = hex(b); return '#' + A.map((v, i) => Math.round(v + (B[i] - v) * t).toString(16).padStart(2, '0')).join(''); };
+  // إن كان الجهاز على الوضع الداكن فالسماء ليلية دائمًا (لا نفرض صفحة فاتحة على من اختار الداكن)؛
+  // وفي الوضع الفاتح تتبع السماء ساعة الزائر كما هي.
+  const systemDark = () => matchMedia('(prefers-color-scheme: dark)').matches;
   function liveSky(date = new Date()) {
-    const alt = sunAltitude(date.getHours() + date.getMinutes() / 60);
+    let alt = sunAltitude(date.getHours() + date.getMinutes() / 60);
+    if (systemDark()) alt = Math.min(alt, -16);
     const day = alt >= -2, keys = day ? SKY_DAY : SKY_NIGHT;
     let k = 0;
     while (k < keys.length - 2 && alt > keys[k + 1][0]) k++;
@@ -197,7 +201,7 @@
       });
     }
     const mq = matchMedia('(prefers-color-scheme: dark)');
-    const onScheme = () => { if (!THEMES.includes(store.get('theme'))) applyTheme(currentTheme(), false); };
+    const onScheme = () => { if (mode === 'live') applyTheme('live', false); };
     if (mq.addEventListener) mq.addEventListener('change', onScheme); else if (mq.addListener) mq.addListener(onScheme);
     addEventListener('storage', e => { if (e.key === 'theme' && THEMES.includes(e.newValue)) applyTheme(e.newValue, false); });
     setInterval(() => { if (mode === 'live' && !document.hidden) applyTheme('live', false); }, 60000);
