@@ -9,7 +9,6 @@
 (() => {
   'use strict';
   const nav = document.querySelector('.nav-container');
-  if (!nav) return;
   const chromium = !!(navigator.userAgentData && navigator.userAgentData.brands &&
     navigator.userAgentData.brands.some(b => /Chromium/.test(b.brand)));
   const lessGlass = matchMedia('(prefers-reduced-transparency: reduce)').matches;   // ويندوز: «تأثيرات الشفافية» مطفأة
@@ -124,6 +123,9 @@
     filters.set(key, id);
     return id;
   }
+  // تستعمله عدسات أخرى في الموقع (glass-sliders.js) بالمرشح نفسه
+  window.GlassLens = { filterFor };
+  if (!nav) return;
 
   /* ---------- العدسة ---------- */
   const lens = document.createElement('div');

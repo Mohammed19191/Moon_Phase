@@ -169,6 +169,33 @@
       // الضغط على زر المظهر: يتحرك الزر نحو الشريط ويلتصق به، فيأخذ الشريط المظهر الجديد، ثم يعود الزر إلى مكانه.
       // تبديل المظهر نفسه بتلاشٍ متقاطع ناعم (View Transitions) حيث يُدعم
       let busy = false;
+      /* اندماج كقطرتي ماء: طبقة خلف الشريط والزر فيها شكلان بمقاسهما، عليها مرشح «لزوجة»
+         (تمويه ثم حدّ حاد للشفافية)، فحين يقترب الشكلان ينشأ بينهما عنق سائل يلتحم ثم يتمطط وينقطع */
+      function goo(dock, nav) {
+        let layer = dock.querySelector(':scope > .dock-goo');
+        if (!layer) {
+          if (!document.getElementById('dock-goo-f')) {
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.setAttribute('aria-hidden', 'true');
+            svg.style.cssText = 'position:absolute;width:0;height:0;overflow:hidden';
+            svg.innerHTML = '<filter id="dock-goo-f" x="-20%" y="-60%" width="140%" height="220%">' +
+              '<feGaussianBlur in="SourceGraphic" stdDeviation="7" result="b"/>' +
+              '<feColorMatrix in="b" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 30 -8"/></filter>';
+            document.body.appendChild(svg);
+          }
+          layer = document.createElement('div');
+          layer.className = 'dock-goo';
+          layer.setAttribute('aria-hidden', 'true');
+          layer.innerHTML = '<i class="goo-nav"></i><i class="goo-btn"></i>';
+          dock.prepend(layer);
+        }
+        const d = dock.getBoundingClientRect();
+        const put = (el, r, radius) => Object.assign(el.style, { left: (r.left - d.left) + 'px', top: (r.top - d.top) + 'px',
+          width: r.width + 'px', height: r.height + 'px', borderRadius: radius });
+        put(layer.querySelector('.goo-nav'), nav.getBoundingClientRect(), getComputedStyle(nav).borderTopLeftRadius);
+        put(layer.querySelector('.goo-btn'), btn.getBoundingClientRect(), '50%');
+        return layer;
+      }
       const swap = next => {
         if (document.startViewTransition && !reduce) {
           const t = document.startViewTransition(() => applyTheme(next, true));
@@ -186,16 +213,18 @@
         const n = nav.getBoundingClientRect(), b = btn.getBoundingClientRect();
         const dir = n.left >= b.right ? 1 : -1;                         // الشريط يمين الزر في اتجاه العربية
         const gap = dir > 0 ? n.left - b.right : b.left - n.right;
-        btn.style.setProperty('--dock-dx', dir * (gap + 14) + 'px');   // يتداخل مع حافة الشريط ١٤px
-        nav.style.setProperty('--dock-nx', -dir * 5 + 'px');           // والشريط يتحرك نحوه قليلًا
-        dock.classList.add('is-merging');
+        // على الحاوية لا على العنصرين، لترثها الطبقة السائلة أيضًا
+        dock.style.setProperty('--dock-dx', dir * (gap + 14) + 'px');  // يتداخل مع حافة الشريط ١٤px
+        dock.style.setProperty('--dock-nx', -dir * 5 + 'px');          // والشريط يتحرك نحوه قليلًا
+        goo(dock, nav);
+        dock.classList.add('is-goo');
+        requestAnimationFrame(() => dock.classList.add('is-merging'));
         setTimeout(() => {
           swap(next).then(() => {
-            dock.classList.remove('is-merging');
-            dock.classList.add('is-release');
-            setTimeout(() => { dock.classList.remove('is-release'); busy = false; }, 520);
+            dock.classList.remove('is-merging');                        // تبتعد القطرتان فيتمطط العنق ثم ينقطع
+            setTimeout(() => { dock.classList.remove('is-goo'); busy = false; }, 640);
           });
-        }, 230);
+        }, 320);
       });
     }
     const mq = matchMedia('(prefers-color-scheme: dark)');
