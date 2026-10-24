@@ -106,3 +106,17 @@ a.share-secondary:not([href]) { opacity: .4; pointer-events: none; }
   html { overflow-x: hidden; }
   body { overflow-x: clip !important; }
 }
+
+/* ---------- زجاج مشغّل التلاوة (player-glass.js) ---------- */
+.pg-root { position: absolute; inset: -48px; z-index: -1; pointer-events: none; }
+.pg-bg { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; }
+.pg-pane { position: absolute; pointer-events: none; }
+/* البطاقة والأزرار: الزجاج يرسم خلفيتها بدل CSS. الزر المفعّل (مثل «إكمال التلاوة») يبقى بلونه لتظل حالته واضحة */
+.pg-host { isolation: isolate; overflow: visible !important; }
+.pg-host, .pg-host .qp, .pg-target:not([aria-pressed="true"]) {
+  background-color: transparent !important;
+  backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+  box-shadow: none !important; border-color: transparent !important;
+}
+.pg-host, .pg-target:not(.qp-qari-btn):not([aria-pressed="true"]) { background-image: none !important; }
+.pg-target.qp-play { color: var(--qp-text) !important; }   /* أيقونة التشغيل بلون النص فوق الزجاج */
