@@ -12,8 +12,29 @@
   if (!nav) return;
   const chromium = !!(navigator.userAgentData && navigator.userAgentData.brands &&
     navigator.userAgentData.brands.some(b => /Chromium/.test(b.brand)));
-  const calm = matchMedia('(prefers-reduced-transparency: reduce), (prefers-contrast: more)');
-  if (!chromium || calm.matches) return;
+  const lessGlass = matchMedia('(prefers-reduced-transparency: reduce)').matches;   // ويندوز: «تأثيرات الشفافية» مطفأة
+  const moreContrast = matchMedia('(prefers-contrast: more)').matches;               // ويندوز: «سمات التباين» مفعّلة
+
+  // تشخيص: افتح الموقع بإضافة ?lensinfo لترى لماذا تعمل العدسة أو لا تعمل على هذا الجهاز
+  if (/[?&]lensinfo\b/.test(location.search)) addEventListener('load', () => setTimeout(() => {
+    const lens = document.querySelector('.nav-lens');
+    const brands = navigator.userAgentData ? navigator.userAgentData.brands.map(b => b.brand + ' ' + b.version).join('، ') : 'غير متاح';
+    const rows = [
+      ['المتصفح', brands],
+      ['مبني على Chromium', chromium ? 'نعم' : 'لا (العدسة لا تعمل فيه)'],
+      ['تأثيرات الشفافية مطفأة في النظام', lessGlass ? 'نعم (لذلك العدسة معطّلة)' : 'لا'],
+      ['التباين العالي مفعّل في النظام', moreContrast ? 'نعم (لذلك العدسة معطّلة)' : 'لا'],
+      ['العدسة', lens ? 'تعمل: ' + getComputedStyle(lens.firstChild).backdropFilter : 'غير موجودة'],
+      ['دعم المرشح في backdrop-filter', CSS.supports('backdrop-filter', 'url(#x)') ? 'نعم' : 'لا']
+    ];
+    const box = document.createElement('div');
+    box.id = 'lensinfo'; box.setAttribute('role', 'status');
+    box.style.cssText = 'position:fixed;inset:12px 12px auto;z-index:999;padding:14px 16px;border-radius:16px;background:#0b1026;color:#fff;font:14px/1.7 system-ui,sans-serif;direction:rtl;box-shadow:0 10px 30px rgba(0,0,0,.4)';
+    box.innerHTML = '<b>تشخيص عدسة الشريط</b><br>' + rows.map(([k, v]) => k + ': ' + v).join('<br>');
+    document.body.appendChild(box);
+  }, 1500));
+
+  if (!chromium || lessGlass || moreContrast) return;
 
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
   const CFG = { glassThickness: 30, bezelWidth: 16, ior: 1.4, scaleRatio: 1, blur: 0, specularOpacity: 0.5, specularSat: 0 };
