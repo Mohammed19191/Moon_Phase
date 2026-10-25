@@ -4,7 +4,6 @@
   const { moonInfo, PHASES, ar, store } = SiteKit;
   const $ = id => document.getElementById(id);
   const SYN = 29.530588861;
-  const SITE = 'batoool.net';
 
   /* ---------- تنسيق التواريخ ---------- */
   const fmt = (opts, cal) => { try { return new Intl.DateTimeFormat('ar-SA-u-ca-' + cal, opts); } catch (e) { return null; } };
@@ -208,7 +207,7 @@
     const date = new Date(), info = moonInfo(date);
     const { verse, ref } = splitAyah(($('ayah') || {}).textContent || '');
     openCard({ date, info, title: 'قمر الليلة', verse, ref },
-      `قمر الليلة: ${info.phase.name} · ${hijri(date)}\n﴿${verse}﴾ ${ref ? '(' + ref + ')' : ''}\nhttps://${SITE}`);
+      `قمر الليلة: ${info.phase.name} · ${hijri(date)}\n﴿${verse}﴾ ${ref ? '(' + ref + ')' : ''}`);
   });
 
   /* ---------- قمر ليلة ميلادك (شاشة عمر القمر) ---------- */
@@ -416,6 +415,6 @@
     if (!birth) return;
     const { date, info, full } = birth;
     openCard({ date, info, title: 'قمر ليلة ميلادي', line: `أشرق منذ ميلادي ${fullMoons(full)}` },
-      `قمر ليلة ميلادي: ${info.phase.name} · ${hijri(date)}\nأشرق منذ ميلادي ${fullMoons(full)}\nhttps://${SITE}`);
+      `قمر ليلة ميلادي: ${info.phase.name} · ${hijri(date)}\nأشرق منذ ميلادي ${fullMoons(full)}`);
   });
 })();
