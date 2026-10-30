@@ -46,7 +46,13 @@
       // القمر ثلاثي الأبعاد: يحلّ محل الصورة متى جهز، وتبقى الصورة إن تعذّر WebGL
       let moon3d = null;
       const box = moonImg.closest('.home-moon');
-      if (window.Moon3D) {
+      // القمر ثلاثي الأبعاد يُحمَّل بعد اكتمال الصفحة وفي وقت فراغ المتصفح: تظهر صورة الطور فورًا،
+      // ثم يحلّ محلها القمر الواقعي دون أن يؤخر عرض الصفحة أو يزحزحها (مكانه محجوز في features.css)
+      const later = fn => {
+        const idle = () => ('requestIdleCallback' in window) ? requestIdleCallback(fn, { timeout: 2000 }) : setTimeout(fn, 200);
+        if (document.readyState === 'complete') idle(); else addEventListener('load', idle, { once: true });
+      };
+      if (window.Moon3D) later(() => {
         Moon3D.mount(document.getElementById('homeMoon3d'), moonInfo().fraction).then(ctrl => {
           moon3d = ctrl;
           box.classList.add('is-3d');
@@ -54,7 +60,7 @@
           document.getElementById('moon3dHint').hidden = false;
           document.addEventListener('viewchange', e => { if (e.detail.view === 'home') ctrl.redraw(); });
         }).catch(() => { /* تبقى صورة الطور */ });
-      }
+      });
       /* الشمس في النهار (المظهر الفاتح فقط): تظهر في اتجاهها الحقيقي بالنسبة إلى القمر.
          الحساب هو نفسه الذي يضيء القمر ثلاثي الأبعاد (moon3d.js): زاوية الشمس من القمر e = الكسر × ٣٦٠°،
          والاتجاه (sin e، 0.08، −cos e) والناظر ينظر نحو −z.

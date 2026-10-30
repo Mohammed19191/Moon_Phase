@@ -39,7 +39,7 @@
 
       const loader = new T.TextureLoader();
       const load = u => new Promise((res, rej) => loader.load(u, res, undefined, rej));
-      const [map, bump] = await Promise.all([load('tex/moon.jpg'), load('tex/moon-bump.jpg')]);
+      const [map, bump] = await Promise.all([load('tex/moon.webp'), load('tex/moon-bump.webp')]);
       map.encoding = T.sRGBEncoding;
       map.anisotropy = renderer.capabilities.getMaxAnisotropy();
 
@@ -120,6 +120,14 @@
 
     if ('ResizeObserver' in window) new ResizeObserver(size).observe(host); else addEventListener('resize', size);
     size();
+    // دوران الترحيب: فقط إن كان الجهاز يرسم القمر بسرعة. الأجهزة الضعيفة (أو الرسم البرمجي بلا معالج رسوميات)
+    // تعرض القمر ثابتًا حتى يسحبه الزائر، فلا تنشغل الصفحة بعشرات الإطارات الثقيلة عند الفتح
+    if (st.ry) {
+      const t0 = performance.now();
+      group.rotation.set(st.rx, st.ry, 0); renderer.render(scene, camera);
+      try { renderer.getContext().finish(); } catch (err) { /* */ }
+      if (performance.now() - t0 > 30) { st.ry = 0; kick(); }
+    }
     return {
       setPhase(f) { st.f = f; sun.position.copy(sunDir(T, f)); kick(); },
       redraw: size

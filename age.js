@@ -19,7 +19,12 @@
 
       // قمر الليلة نفسه الذي في الرئيسية (ثلاثي الأبعاد بقرصه الداكن)، وإلا صورة الطور
       let use3d = false;
-      if (window.Moon3D) Moon3D.available().then(ok => { use3d = ok; if (ok) { moonLink.classList.add('is-3d'); updateMoon(); } });
+      // يُحمَّل بعد اكتمال الصفحة حتى لا يؤخر عرضها؛ تظهر صورة الطور إلى ذلك الحين
+      const go3d = () => Moon3D.available().then(ok => { use3d = ok; if (ok) { moonLink.classList.add('is-3d'); updateMoon(); } });
+      if (window.Moon3D) {
+        const idle = () => ('requestIdleCallback' in window) ? requestIdleCallback(go3d, { timeout: 2500 }) : setTimeout(go3d, 300);
+        if (document.readyState === 'complete') idle(); else addEventListener('load', idle, { once: true });
+      }
 
       function updateMoon() {
         const m = moonInfo();

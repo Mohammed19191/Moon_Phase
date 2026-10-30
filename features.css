@@ -310,3 +310,14 @@ html.vt-fwd .nav-lens-refr, html.vt-back .nav-lens-refr {
 .moon3d-link { cursor: pointer; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
 .moon3d-link:focus-visible { outline: 2px solid var(--accent-color); outline-offset: 6px; border-radius: 50%; }
 .moon3d-link:hover #homeMoon { transform: scale(1.05); }
+
+/* ===== أداء: حجز الأماكن حتى لا تتزحزح الصفحة أثناء التحميل (CLS) ===== */
+.home-moon .moon3d-link { display: grid; place-items: center; width: 250px; height: 250px; max-width: 100%; margin-inline: auto; }
+@media (max-width: 480px) { .home-moon .moon3d-link { width: 200px; height: 200px; } }
+.home-moon .moon3d-link > .moon3d, .home-moon .moon3d-link > #homeMoon { grid-area: 1 / 1; }
+.moon3d-hint[hidden] { display: block; visibility: hidden; }
+.qp.qp-pending { visibility: hidden; }
+#view-home .ayah:empty { min-height: 1.6em; }
+#ayahPlayer:empty { min-height: 347px; }
+@media (max-width: 480px) { #ayahPlayer:empty { min-height: 335px; } }
+@media (max-width: 380px) { #ayahPlayer:empty { min-height: 360px; } }

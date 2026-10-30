@@ -26,12 +26,13 @@
   <meta name="apple-mobile-web-app-title" content="القمر">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%99%3C/text%3E%3C/svg%3E">
-    <link rel="stylesheet" href="style.css?v=20261024e">
+  <link rel="preload" as="image" href="images1/cloud.webp" type="image/webp">
+  <link rel="stylesheet" href="style.css?v=20261024e">
   <link rel="stylesheet" href="pet.css?v=20261024e">
   <link rel="stylesheet" href="quran-player.css?v=20261024e">
   <link rel="stylesheet" href="app.css?v=20261024e">
   <link rel="stylesheet" href="design.css?v=20261024e">
-  <link rel="stylesheet" href="features.css?v=20261024zj">
+  <link rel="stylesheet" href="features.css?v=20261030a">
 </head>
 <body>
 <script>try{var t=localStorage.getItem('theme');if(['dark','light','sakura','burgundy'].indexOf(t)<0)t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.body.setAttribute('data-theme',t)}catch(e){document.body.setAttribute('data-theme','dark')}</script>
@@ -88,7 +89,7 @@
     <div class="moon-container">
       <div class="moon-image-wrapper">
         <a href="#/home" class="moon-link" aria-label="العودة إلى الصفحة الرئيسية">
-          <img id="moonImage" src="" alt="شكل القمر">
+          <img id="moonImage" alt="شكل القمر" width="220" height="220" loading="lazy" decoding="async">
         </a>
       </div>
       <div id="phaseName" class="phase-name"></div>
@@ -164,16 +165,16 @@
 
   <div class="sakura-branch"></div>
 
-  <script src="site.js?v=20261024zb"></script>
-  <script src="quran-player.js?v=20261024zd"></script>
-  <script src="moon3d.js?v=20261024u"></script>
-  <script src="home.js?v=20261024zj"></script>
-  <script src="age.js?v=20261024w"></script>
-  <script src="game.js?v=20261024e"></script>
-  <script src="app.js?v=20261024e"></script>
-  <script src="share.js?v=20261024y"></script>
-  <script src="sheets.js?v=20261024a"></script>
-  <script src="nav-lens.js?v=20261024f"></script>
-  <script src="glass-sliders.js?v=20261024zh"></script>
+  <script src="site.js?v=20261024zb" defer></script>
+  <script src="quran-player.js?v=20261030a" defer></script>
+  <script src="moon3d.js?v=20261030a" defer></script>
+  <script src="home.js?v=20261030a" defer></script>
+  <script src="age.js?v=20261030a" defer></script>
+  <script src="game.js?v=20261024e" defer></script>
+  <script src="app.js?v=20261024e" defer></script>
+  <script src="share.js?v=20261024y" defer></script>
+  <script src="sheets.js?v=20261024a" defer></script>
+  <script src="nav-lens.js?v=20261024f" defer></script>
+  <script src="glass-sliders.js?v=20261024zh" defer></script>
 </body>
 </html>

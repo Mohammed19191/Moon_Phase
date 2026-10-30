@@ -90,7 +90,7 @@
     <div class="qp-tools">
       <button type="button" class="qp-btn qp-repeat" aria-pressed="false" aria-label="تكرار الآية" title="تكرار الآية">${ICONS.repeat}</button>
       <button type="button" class="qp-btn qp-cont" aria-pressed="true" aria-label="متابعة التلاوة تلقائيًا إلى الآيات والسور التالية" title="متابعة التلاوة تلقائيًا إلى الآيات والسور التالية">إكمال التلاوة</button>
-      <button type="button" class="qp-btn qp-speed" aria-label="سرعة التلاوة" title="سرعة التلاوة">١×</button>
+      <button type="button" class="qp-btn qp-speed" aria-label="١× سرعة التلاوة" title="سرعة التلاوة">١×</button>
       <div class="qp-vol">
         <button type="button" class="qp-btn qp-mute" aria-label="كتم الصوت" title="كتم الصوت">${ICONS.volOn}${ICONS.volOff}</button>
         <input type="range" class="qp-volume" min="0" max="100" step="1" value="100" aria-label="مستوى الصوت">
@@ -104,7 +104,7 @@
     root.setAttribute('role', 'group');
     root.setAttribute('aria-label', 'مشغّل تلاوة الآية');
     root.innerHTML = TEMPLATE;
-    root.hidden = true;                                      // يظهر عند وصول آية صالحة
+    root.classList.add('qp-pending');                        // يحجز مكانه حتى تصل الآية، فلا تتزحزح الصفحة
 
     const $ = s => root.querySelector(s);
     const btnPlay = $('.qp-play'), seek = $('.qp-seek'), cur = $('.qp-cur'), dur = $('.qp-dur');
@@ -408,7 +408,7 @@
       audio.playbackRate = SPEEDS[speedIdx];
     });
     audio.addEventListener('ratechange', () => {
-      btnSpeed.textContent = ar(audio.playbackRate, 2) + '×';
+      btnSpeed.textContent = ar(audio.playbackRate, 2) + '×'; btnSpeed.setAttribute('aria-label', btnSpeed.textContent + ' سرعة التلاوة');
     });
 
     btnMute.addEventListener('click', () => {
@@ -479,18 +479,18 @@
 
     bindMediaSession();
     updateMediaSession();
-    btnSpeed.textContent = '١×';
+    btnSpeed.textContent = '١×'; btnSpeed.setAttribute('aria-label', '١× سرعة التلاوة');
 
     /* ---------- واجهة المشغل العامة ---------- */
     function setAyah(entry) {
       const valid = entry && Number.isInteger(entry.surah) && Number.isInteger(entry.verse);
-      if (!valid) { unloadSource(); ayah = null; base = null; syncNav(); root.hidden = true; return; }
+      if (!valid) { unloadSource(); ayah = null; base = null; syncNav(); root.classList.remove('qp-pending'); root.hidden = true; return; }
       if (base && base.surah === entry.surah && base.verse === entry.verse) return;   // التحديث الدوري لا يقطع التلاوة
       base = { surah: entry.surah, verse: entry.verse, complete: entry.complete !== false };
       const changed = true;
       ayah = { surah: entry.surah, verse: entry.verse, complete: entry.complete !== false };
       incompleteNote = ayah.complete ? '' : 'تُتلى الآية كاملة، والنص المعروض أعلاه جزء منها.';
-      root.hidden = false;
+      root.classList.remove('qp-pending'); root.hidden = false;
       syncNav();
       if (changed) { unloadSource(); showNote('', false); }
       idleNote();
