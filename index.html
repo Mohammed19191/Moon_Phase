@@ -32,7 +32,7 @@
   <link rel="stylesheet" href="quran-player.css?v=20261024e">
   <link rel="stylesheet" href="app.css?v=20261024e">
   <link rel="stylesheet" href="design.css?v=20261024e">
-  <link rel="stylesheet" href="features.css?v=20261030a">
+  <link rel="stylesheet" href="features.css?v=20261111a">
 </head>
 <body>
 <script>try{var t=localStorage.getItem('theme');if(['dark','light','sakura','burgundy'].indexOf(t)<0)t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.body.setAttribute('data-theme',t)}catch(e){document.body.setAttribute('data-theme','dark')}</script>
@@ -60,6 +60,7 @@
     <nav class="nav-container" aria-label="التنقل الرئيسي">
       <ul class="nav-list">
         <li class="nav-item"><a href="#/home" class="nav-link" data-view="home"><svg class="ic ic-home" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span class="tab-label">الرئيسية</span></a></li>
+        <li class="nav-item"><a href="#/calendar" class="nav-link" data-view="calendar"><svg class="ic ic-calendar" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><span class="tab-label">التقويم</span></a></li>
         <li class="nav-item"><a href="#/age" class="nav-link" data-view="age"><svg class="ic ic-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg><span class="tab-label">عمر القمر</span></a></li>
         <li class="nav-item"><a href="#/game" class="nav-link" data-view="game"><svg class="ic ic-gamepad" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 8h10a4 4 0 0 1 4 4v1.5a3 3 0 0 1-5.2 2L14.5 14h-5l-1.3 1.5A3 3 0 0 1 3 13.5V12a4 4 0 0 1 4-4z"/><path d="M7.5 10.2v3.6M5.7 12h3.6M16 11.2h.01M18 12.8h.01"/></svg><span class="tab-label">إلى القمر</span></a></li>
       </ul>
@@ -72,6 +73,7 @@
       <div role="link" tabindex="0" aria-label="عمر القمر" data-href="#/age" class="moon3d-link"><span class="moon3d" id="homeMoon3d"></span><img id="homeMoon" alt="شكل القمر اليوم" width="220" height="220" draggable="false"></div>
       <div class="home-moon-name" id="homeMoonName"></div>
       <div class="home-moon-meta" id="homeMoonMeta"></div>
+      <a class="home-next" id="homeNext" href="#/calendar" hidden><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><span class="home-next-text"></span></a>
       <div class="moon3d-hint" id="moon3dHint" hidden>اسحب القمر لتدويره، واضغط عليه لمعرفة عمره</div>
     </section>
 
@@ -82,6 +84,32 @@
 
     <button type="button" class="share-btn" id="shareTonight">شارك بطاقة الليلة</button>
 
+    </section>
+    <section class="view" id="view-calendar" data-view="calendar" hidden aria-labelledby="h-cal">
+      <h1 id="h-cal" tabindex="-1">تقويم القمر</h1>
+      <div class="cal-layout">
+        <div class="cal-main">
+          <div class="cal-card">
+            <div class="cal-head">
+              <button type="button" class="cal-nav" id="calPrev" aria-label="الشهر السابق"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 6l6 6-6 6"/></svg></button>
+              <div class="cal-title"><div class="cal-month" id="calMonth" aria-live="polite"></div><div class="cal-sub" id="calSub"></div></div>
+              <button type="button" class="cal-nav" id="calNext" aria-label="الشهر التالي"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 6l-6 6 6 6"/></svg></button>
+            </div>
+            <div class="cal-week" aria-hidden="true"><span>الأحد</span><span>الإثنين</span><span>الثلاثاء</span><span>الأربعاء</span><span>الخميس</span><span>الجمعة</span><span>السبت</span></div>
+            <div class="cal-grid" id="calGrid"></div>
+            <div class="cal-foot">
+              <span class="cal-legend"><i class="cal-dot"></i>الأيام البيض</span>
+              <button type="button" class="cal-today" id="calToday" hidden>العودة إلى اليوم</button>
+            </div>
+          </div>
+          <div class="cal-day" id="calDay" aria-live="polite"></div>
+        </div>
+        <section class="cal-events" aria-labelledby="h-cal-ev">
+          <h2 id="h-cal-ev">مواعيد قادمة</h2>
+          <ul id="calEvents"></ul>
+          <p class="cal-note">التواريخ الهجرية بتقويم أم القرى، وقد تختلف يومًا عن رؤية الهلال في بلدك.</p>
+        </section>
+      </div>
     </section>
     <section class="view" id="view-age" data-view="age" hidden aria-labelledby="h-age">
       <h1 id="h-age" tabindex="-1">عمر القمر</h1>
@@ -134,7 +162,7 @@
                 </div>
                 <div class="game-over">
                     <h2>انتهت اللعبة!</h2>
-                    <p>الوقت الكلي: <span id="finalScore">00:00</span></p>
+                    <p>الوقت الكلي: <span id="finalScore">٠٠:٠٠</span></p>
                     <button class="restart-button">إعادة اللعب</button>
                 </div>
             </div>
@@ -143,15 +171,15 @@
             <div class="score-display">
                 <div class="points">
                     <svg class="ic ic-heart" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 20.5s-8-4.7-8-10.3A4.7 4.7 0 0 1 12 7.6a4.7 4.7 0 0 1 8 2.6c0 5.6-8 10.3-8 10.3z"/></svg>
-                    <span id="points">0</span>
+                    <span id="points">٠</span>
                 </div>
                 <div class="time">
                     <svg class="ic ic-clock" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
-                    <span id="time">0:00</span>
+                    <span id="time">٠:٠٠</span>
                 </div>
                 <div class="level">
                     <span>المستوى</span>
-                    <span id="level">1</span>
+                    <span id="level">١</span>
                 </div>
                 <button class="pause-button" id="pauseButton">
                     <svg class="ic ic-pause" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8.5 5v14M15.5 5v14"/></svg>
@@ -168,10 +196,11 @@
   <script src="site.js?v=20261024zb" defer></script>
   <script src="quran-player.js?v=20261030a" defer></script>
   <script src="moon3d.js?v=20261030a" defer></script>
-  <script src="home.js?v=20261030a" defer></script>
+  <script src="home.js?v=20261111a" defer></script>
   <script src="age.js?v=20261030a" defer></script>
-  <script src="game.js?v=20261024e" defer></script>
-  <script src="app.js?v=20261024e" defer></script>
+  <script src="calendar.js?v=20261111a" defer></script>
+  <script src="game.js?v=20261111a" defer></script>
+  <script src="app.js?v=20261111a" defer></script>
   <script src="share.js?v=20261024y" defer></script>
   <script src="sheets.js?v=20261024a" defer></script>
   <script src="nav-lens.js?v=20261024f" defer></script>

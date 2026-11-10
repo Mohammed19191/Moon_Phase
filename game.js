@@ -70,6 +70,7 @@
         let things = [];              // العوائق والقلوب الساقطة: {el, kind, x, y, w, h, shrink}
         const keys = new Set();
 
+        const A = v => String(v).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);   // أرقام عربية كباقي الموقع
         const fmt = s => {
             const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), r = s % 60;
             return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(r).padStart(2, '0');
@@ -80,13 +81,13 @@
         /* ---- عناصر إضافية: تلميح البداية وسطر أفضل نتيجة ---- */
         const hint = document.createElement('p');
         hint.className = 'game-hint';
-        hint.textContent = `اجمع ${GOAL} قلوب ثم المس القمر 🌙`;
+        hint.textContent = A(`اجمع ${GOAL} قلوب ثم المس القمر 🌙`);
         $('.game-stats').after(hint);          // خارج شاشة البداية: تصميمك يُخفي كل نص فيها عمدًا
         const bestLine = document.createElement('p');
         bestLine.className = 'best-line';
         restartBtn.before(bestLine);
         pauseBtn.setAttribute('aria-label', 'إيقاف مؤقت');
-        elPoints.textContent = '0/' + GOAL;
+        elPoints.textContent = A('0/' + GOAL);
 
         /* ---- القياس وموضع زورو ---- */
         function setZoro(x, y) {
@@ -132,7 +133,7 @@
 
         function collect() {
             points++; got++;
-            elPoints.textContent = got + '/' + goalOf(level);
+            elPoints.textContent = A(got + '/' + goalOf(level));
             if (got >= goalOf(level)) moon.classList.add('ready');
         }
 
@@ -140,7 +141,7 @@
         function update(dt) {
             time += dt;
             const sec = Math.floor(time);
-            if (sec !== shownSec) { shownSec = sec; elTime.textContent = fmt(sec); }
+            if (sec !== shownSec) { shownSec = sec; elTime.textContent = A(fmt(sec)); }
 
             const dx = (keys.has('r') ? 1 : 0) - (keys.has('l') ? 1 : 0);
             const dy = (keys.has('d') ? 1 : 0) - (keys.has('u') ? 1 : 0);
@@ -181,11 +182,11 @@
             things = [];
             obsTimer = 0; heartTimer = 2000;
             moon.classList.remove('ready');
-            elLevel.textContent = level;
-            elPoints.textContent = '0/' + goalOf(level);
-            hint.textContent = `المستوى ${level}: اجمع ${goalOf(level)} ${goalOf(level) <= 10 ? 'قلوب' : 'قلبًا'} ثم المس القمر 🌙`;
+            elLevel.textContent = A(level);
+            elPoints.textContent = A('0/' + goalOf(level));
+            hint.textContent = A(`المستوى ${level}: اجمع ${goalOf(level)} ${goalOf(level) <= 10 ? 'قلوب' : 'قلبًا'} ثم المس القمر 🌙`);
             setZoro(W / 2, H - 50 - zh / 2);
-            toast.textContent = 'المستوى ' + level;
+            toast.textContent = A('المستوى ' + level);
             toast.classList.remove('show'); void toast.offsetWidth; toast.classList.add('show');
         }
 
@@ -239,13 +240,13 @@
             area.querySelectorAll('.obstacle,.pickup').forEach(el => el.remove());
             things = [];
             time = 0; shownSec = -1; points = 0; got = 0; level = 1;
-            hint.textContent = `اجمع ${GOAL} قلوب ثم المس القمر 🌙`;
+            hint.textContent = A(`اجمع ${GOAL} قلوب ثم المس القمر 🌙`);
             obsTimer = 1500; heartTimer = 3000;                 // أول عائق بعد 1.5 ثانية وأول قلب بعد ثانيتين
             moon.classList.remove('ready'); area.classList.remove('paused');
             measure();
             setZoro(W / 2, H - 50 - zh / 2);
             hud.style.display = 'flex';
-            elPoints.textContent = '0/' + goalOf(1); elTime.textContent = '0:00'; elLevel.textContent = 1;
+            elPoints.textContent = A('0/' + goalOf(1)); elTime.textContent = A('0:00'); elLevel.textContent = A(1);
             pauseIcon('fa-pause');
             startScreen.style.display = 'none'; overScreen.style.display = 'none';
             state = 'playing'; last = performance.now();
@@ -259,9 +260,9 @@
             hud.style.display = 'none';
             const best = Math.max(points, parseInt(store.get('ttm_best'), 10) || 0);
             store.set('ttm_best', best);
-            overScreen.querySelector('h2').textContent = level > 1 ? `انتهت اللعبة! بلغت المستوى ${level}` : 'انتهت اللعبة!';
-            elFinal.textContent = fmt(Math.floor(time));
-            bestLine.textContent = `القلوب: ${points} · المستوى: ${level} — أفضل نتيجة: ${best}`;
+            overScreen.querySelector('h2').textContent = A(level > 1 ? `انتهت اللعبة! بلغت المستوى ${level}` : 'انتهت اللعبة!');
+            elFinal.textContent = A(fmt(Math.floor(time)));
+            bestLine.textContent = A(`القلوب: ${points} · المستوى: ${level} — أفضل نتيجة: ${best}`);
             overScreen.style.display = 'block';
         }
 
