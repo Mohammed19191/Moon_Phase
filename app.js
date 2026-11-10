@@ -1,10 +1,10 @@
-/* app.js — الموجّه (Router): صفحة واحدة بأربع شاشات، تنقّل بالتجزئة (#/home · #/calendar · #/age · #/game)
+/* app.js — الموجّه (Router): صفحة واحدة بثلاث شاشات، تنقّل بالتجزئة (#/home · #/age · #/game)
    - تُحمَّل كل الشاشات مرة واحدة، والتبديل بينها فوري مع انتقال متحرك (View Transitions) حيث يُدعم.
    - اتجاه الحركة يتبع ترتيب التبويبات، والقمر ينتقل بين الرئيسية وعمر القمر كعنصر مشترك. */
 (() => {
   'use strict';
-  const VIEWS = ['home', 'calendar', 'age', 'game'];
-  const TITLES = { home: 'شكل القمر اليوم', calendar: 'تقويم القمر', age: 'عمر القمر', game: 'إلى القمر' };
+  const VIEWS = ['home', 'age', 'game'];
+  const TITLES = { home: 'شكل القمر اليوم', age: 'عمر القمر', game: 'إلى القمر' };
   const root = document.documentElement;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
   const els = Object.fromEntries(VIEWS.map(v => [v, document.getElementById('view-' + v)]));

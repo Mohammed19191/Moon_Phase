@@ -56,7 +56,7 @@
         Moon3D.mount(document.getElementById('homeMoon3d'), moonInfo().fraction).then(ctrl => {
           moon3d = ctrl;
           box.classList.add('is-3d');
-          placeSun(moonInfo().fraction);
+          shownF = moonInfo(when()).fraction; ctrl.setPhase(shownF); placeSun(shownF);
           document.getElementById('moon3dHint').hidden = false;
           document.addEventListener('viewchange', e => { if (e.detail.view === 'home') ctrl.redraw(); });
         }).catch(() => { /* تبقى صورة الطور */ });
@@ -99,15 +99,51 @@
         const fromNew = Math.min(f, 1 - f);
         stage.style.setProperty('--corona-o', Math.pow(Math.max(0, 1 - fromNew / 0.0625), 0.8).toFixed(3));
       }
-      addEventListener('resize', () => placeSun(moonInfo().fraction));
+      addEventListener('resize', () => placeSun(shownF === null ? moonInfo().fraction : shownF));
+
+      /* الشريط الزمني: يسحبه الزائر فيرى القمر قبل ١٥ يومًا أو بعدها، يومًا بيوم. الصفر = هذه اللحظة. */
+      const range = document.getElementById('moonTimeRange'), timeText = document.getElementById('moonTimeText');
+      const resetBtn = document.getElementById('moonTimeReset');
+      let offset = 0, shownF = null, tween = 0;
+      let dateF = null, hijriF = null;
+      try {
+        dateF = new Intl.DateTimeFormat('ar-u-ca-gregory-nu-arab', { weekday: 'long', day: 'numeric', month: 'long' });
+        hijriF = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', { day: 'numeric', month: 'long' });
+      } catch (e) { /* يكفي عدد الأيام */ }
+      const dayWord = n => n === 1 ? 'يوم' : n === 2 ? 'يومين' : n <= 10 ? `${ar(n)} أيام` : `${ar(n)} يومًا`;
+      const when = () => new Date(Date.now() + offset * 864e5);
+
+      // الإضاءة تنتقل بسلاسة بين اليومين بدل القفز (وبأقصر طريق حول الدورة)
+      function lightTo(f) {
+        if (!moon3d) return;
+        cancelAnimationFrame(tween);
+        if (shownF === null || matchMedia('(prefers-reduced-motion: reduce)').matches) { shownF = f; moon3d.setPhase(f); placeSun(f); return; }
+        const from = shownF, t0 = performance.now();
+        let d = f - from; if (d > 0.5) d -= 1; else if (d < -0.5) d += 1;
+        if (Math.abs(d) < 1e-4) return;
+        const step = now => {
+          const k = Math.min(1, (now - t0) / 260), e = 1 - Math.pow(1 - k, 3);
+          shownF = ((from + d * e) % 1 + 1) % 1;
+          moon3d.setPhase(shownF); placeSun(shownF);
+          if (k < 1) tween = requestAnimationFrame(step);
+        };
+        tween = requestAnimationFrame(step);
+      }
 
       function updateMoon() {
-        const m = moonInfo();
+        const date = when(), m = moonInfo(date);
         showMoon(moonImg, m);
-        if (moon3d) { moon3d.setPhase(m.fraction); placeSun(m.fraction); }
+        lightTo(m.fraction);
         nameEl.textContent = m.phase.name;
         metaEl.textContent = `عمر القمر ${ar(m.age, 1)} يومًا · الإضاءة نحو ${ar(Math.round(m.illum * 100))}٪`;
+        const n = Math.abs(offset);
+        const rel = !offset ? 'اليوم' : (offset > 0 ? (n === 1 ? 'غدًا' : 'بعد ' + dayWord(n)) : (n === 1 ? 'أمس' : 'قبل ' + dayWord(n)));
+        timeText.textContent = rel + (dateF ? ` · ${dateF.format(date).replace('،', '')}` + (hijriF ? `\n${hijriF.format(date)}` : '') : '');
+        range.setAttribute('aria-valuetext', timeText.textContent);
+        resetBtn.disabled = !offset;
       }
+      range.addEventListener('input', () => { offset = +range.value; updateMoon(); });
+      resetBtn.addEventListener('click', () => { offset = 0; range.value = 0; updateMoon(); range.focus({ preventScroll: true }); });
 
       const refresh = () => { updateAyah(); updateMoon(); };
       refresh();
